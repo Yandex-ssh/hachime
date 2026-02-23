@@ -253,6 +253,7 @@ export default function OnboardingPage() {
     const [yearLevel, setYearLevel] = useState("");
     const [finishedSubjects, setFinishedSubjects] = useState<string[]>([]);
     const [likedSubjects, setLikedSubjects] = useState<string[]>([]);
+    const [saving, setSaving] = useState(false);
 
     const totalSteps = 4;
     const progress = (step / totalSteps) * 100;
@@ -289,13 +290,49 @@ export default function OnboardingPage() {
         }
     };
 
-    const handleNext = () => {
-        if (step < totalSteps) setStep(step + 1);
-        else {
-            // Save and go to dashboard
-            // You can save to localStorage or send to API here
-            console.log({ program, yearLevel, finishedSubjects, likedSubjects });
+    const handleNext = async () => {
+        if (step < totalSteps) {
+            setStep(step + 1);
+            return;
+        }
+
+        // Final step: save onboarding data to backend
+        const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+        if (!token) {
+            router.push("/login");
+            return;
+        }
+
+        try {
+            setSaving(true);
+
+            // Save finished subjects
+            await fetch("http://localhost:4000/students/subjects", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ subjects: finishedSubjects }),
+            });
+
+            // Save liked subjects
+            await fetch("http://localhost:4000/students/subjects/liked", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ subjects: likedSubjects }),
+            });
+
             router.push("/dashboard");
+        } catch (error) {
+            console.error("Failed to save onboarding data", error);
+            alert("Something went wrong while saving your subjects. Please try again.");
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -516,14 +553,18 @@ export default function OnboardingPage() {
                         )}
                         <button
                             onClick={handleNext}
-                            disabled={!canProceed()}
+                            disabled={!canProceed() || saving}
                             className={`flex-1 font-semibold rounded-xl py-2.5 text-sm transition
-                ${canProceed()
+                ${canProceed() && !saving
                                     ? "bg-indigo-600 hover:bg-indigo-500 text-white"
                                     : "bg-gray-800 text-gray-600 cursor-not-allowed border border-gray-700"
                                 }`}
                         >
-                            {step === totalSteps ? "View My Career Paths →" : "Continue →"}
+                            {saving
+                                ? "Saving..."
+                                : step === totalSteps
+                                    ? "View My Career Paths →"
+                                    : "Continue →"}
                         </button>
                     </div>
                 </div>

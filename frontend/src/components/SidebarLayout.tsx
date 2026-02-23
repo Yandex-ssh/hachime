@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -80,10 +80,29 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
     const router = useRouter();
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [checkingAuth, setCheckingAuth] = useState(true);
+
+    useEffect(() => {
+        try {
+            const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+            if (!token) {
+                router.replace("/login");
+                return;
+            }
+
+            setCheckingAuth(false);
+        } catch {
+            router.replace("/login");
+        }
+    }, [router]);
 
     const handleLogout = () => {
-        // Replace with your actual logout logic
-        router.push("/login");
+        if (typeof window !== "undefined") {
+            localStorage.removeItem("token");
+            localStorage.removeItem("student");
+        }
+        router.replace("/login");
     };
 
     const isActive = (href: string) => pathname === href;
@@ -181,6 +200,14 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
             </div>
         </div>
     );
+
+    if (checkingAuth) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-950">
+                <p className="text-gray-400 text-sm">Checking your session...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex h-screen bg-gray-950 overflow-hidden">
