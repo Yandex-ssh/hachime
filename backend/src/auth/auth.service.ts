@@ -35,6 +35,9 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Determine if this is the first login (no previous last_login)
+    const isFirstLogin = !student.last_login;
+
     // Update last login
     await this.studentsRepository.update(student.student_id, {
       last_login: new Date(),
@@ -48,6 +51,7 @@ export class AuthService {
     
     return {
       access_token: this.jwtService.sign(payload),
+      is_first_login: isFirstLogin,
       student: {
         student_id: student.student_id,
         name: student.name,

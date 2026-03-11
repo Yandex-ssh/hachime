@@ -1,207 +1,146 @@
-import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In, Not } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
+import { Repository } from 'typeorm';
 import { Student } from '../entities/student.entity';
-import { Subject } from '../entities/subject.entity';
-import { StudentSubject } from '../entities/student-subject.entity';
+import { SaveSubjectsDto } from './dto/save-subjects.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectRepository(Student)
-    private readonly studentsRepository: Repository<Student>,
-    @InjectRepository(Subject)
-    private readonly subjectsRepository: Repository<Subject>,
-    @InjectRepository(StudentSubject)
-    private readonly studentSubjectsRepository: Repository<StudentSubject>,
-    private readonly jwtService: JwtService,
+    private studentsRepository: Repository<Student>,
   ) {}
 
-  getStudentIdFromAuthHeader(authHeader?: string): number {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Missing or invalid authorization header');
+  async saveSubjects(studentId: number, saveSubjectsDto: SaveSubjectsDto) {
+    const { finished_subject_ids, liked_subject_ids } = saveSubjectsDto;
+
+    // Delete existing student_subjects entries for this student
+    await this.studentsRepository.query(
+      'DELETE FROM student_subjects WHERE student_id = ?',
+      [studentId]
+    );
+
+    const set = new Set<number>([
+      ...(finished_subject_ids ?? []),
+      ...(liked_subject_ids ?? []),
+    ]);
+
+    for (const subjectId of set) {
+      const isFinished = (finished_subject_ids ?? []).includes(subjectId);
+      const isLiked = (liked_subject_ids ?? []).includes(subjectId);
+      await this.studentsRepository.query(
+        'INSERT INTO student_subjects (student_id, subject_id, is_finished, is_liked) VALUES (?, ?, ?, ?)',
+        [studentId, subjectId, isFinished, isLiked],
+      );
     }
 
-    const token = authHeader.split(' ')[1];
-
-    try {
-      const payload = this.jwtService.verify<{ sub: number }>(token);
-      return payload.sub;
-    } catch {
-      throw new UnauthorizedException('Invalid token');
-    }
+    return { message: 'Subjects saved successfully' };
   }
 
-  async setFinishedSubjectsForStudent(studentId: number, subjectNames: string[]) {
-    const student = await this.studentsRepository.findOne({ where: { student_id: studentId } });
+  async getProfile(studentId: number) {
+    const student = await this.studentsRepository.findOne({
+      where: { student_id: studentId },
+      relations: ['program'],
+    });
+
+    if (!student) {
+      return null;
+    }
+
+    // Get finished and liked subjects
+    const finishedSubjects = await this.studentsRepository.query(
+      `SELECT s.subject_id, s.subject_name, ss.is_liked 
+       FROM student_subjects ss
+       JOIN subjects s ON ss.subject_id = s.subject_id
+       WHERE ss.student_id = ? AND ss.is_finished = true`,
+      [studentId]
+    );
+
+    return {
+      student_id: student.student_id,
+      name: student.name,
+      student_number: student.student_number,
+      program: student.program?.program_name,
+      year_level: student.year_level,
+      finished_subjects: finishedSubjects,
+    };
+  }
+
+  async getMeProfile(studentId: number) {
+    const student = await this.studentsRepository.findOne({
+      where: { student_id: studentId },
+      relations: ['program'],
+    });
+
     if (!student) {
       throw new NotFoundException('Student not found');
     }
 
-    // Ensure Subject rows exist for all provided names (scoped by program if available)
-    const existingSubjects = await this.subjectsRepository.find({
-      where: {
-        subject_name: In(subjectNames),
-        program_id: student.program_id ?? null,
+    const [{ finished = 0 } = {}] = await this.studentsRepository.query(
+      'SELECT COUNT(*) as finished FROM student_subjects WHERE student_id = ? AND is_finished = true',
+      [studentId],
+    );
+    const [{ total = 0 } = {}] = await this.studentsRepository.query(
+      'SELECT COUNT(*) as total FROM subjects',
+    );
+
+    return {
+      student_id: student.student_id,
+      student_number: student.student_number,
+      name: student.name,
+      email: student.email ?? undefined,
+      program_id: student.program_id ?? undefined,
+      year_level: student.year_level ?? undefined,
+      program: student.program?.program_name,
+      program_code: student.program?.program_code,
+      progress: {
+        finishedSubjects: Number(finished) || 0,
+        totalSubjects: Number(total) || 0,
       },
-    });
-
-    const existingByName = new Map(
-      existingSubjects.map((s) => [s.subject_name, s]),
-    );
-
-    const subjectsToSave: Subject[] = [];
-
-    for (const name of subjectNames) {
-      if (!existingByName.has(name)) {
-        const subject = this.subjectsRepository.create({
-          subject_name: name,
-          program_id: student.program_id ?? null,
-          year_level: student.year_level ?? null,
-        });
-        subjectsToSave.push(subject);
-        existingByName.set(name, subject);
-      }
-    }
-
-    if (subjectsToSave.length > 0) {
-      await this.subjectsRepository.save(subjectsToSave);
-    }
-
-    const allSubjects = Array.from(existingByName.values());
-    const subjectIds = allSubjects.map((s) => s.subject_id);
-
-    // Load existing StudentSubject records for this student
-    const existingStudentSubjects = await this.studentSubjectsRepository.find({
-      where: { student_id: studentId },
-    });
-
-    const existingBySubjectId = new Map(
-      existingStudentSubjects.map((ss) => [ss.subject_id, ss]),
-    );
-
-    const toSave: StudentSubject[] = [];
-
-    for (const subject of allSubjects) {
-      const existing = existingBySubjectId.get(subject.subject_id);
-      if (existing) {
-        existing.is_finished = true;
-        existing.completed_at = existing.completed_at ?? new Date();
-        toSave.push(existing);
-      } else {
-        const ss = this.studentSubjectsRepository.create({
-          student_id: studentId,
-          subject_id: subject.subject_id,
-          is_finished: true,
-          is_liked: false,
-          completed_at: new Date(),
-        });
-        toSave.push(ss);
-      }
-    }
-
-    if (toSave.length > 0) {
-      await this.studentSubjectsRepository.save(toSave);
-    }
-
-    // For any subjects not in the provided list, mark as not finished
-    if (subjectIds.length > 0) {
-      await this.studentSubjectsRepository.update(
-        {
-          student_id: studentId,
-          subject_id: Not(In(subjectIds)),
-        },
-        {
-          is_finished: false,
-          completed_at: null,
-        },
-      );
-    }
+    };
   }
 
-  async setLikedSubjectsForStudent(studentId: number, subjectNames: string[]) {
-    const student = await this.studentsRepository.findOne({ where: { student_id: studentId } });
+  async updateProfile(studentId: number, dto: UpdateProfileDto) {
+    const student = await this.studentsRepository.findOne({
+      where: { student_id: studentId },
+      relations: ['program'],
+    });
+
     if (!student) {
       throw new NotFoundException('Student not found');
     }
 
-    // Ensure Subject rows exist (same logic as finished)
-    const existingSubjects = await this.subjectsRepository.find({
-      where: {
-        subject_name: In(subjectNames),
-        program_id: student.program_id ?? null,
-      },
-    });
+    const patch: Partial<Student> = {};
+    if (dto.name !== undefined) patch.name = dto.name;
+    if (dto.email !== undefined) patch.email = dto.email;
 
-    const existingByName = new Map(
-      existingSubjects.map((s) => [s.subject_name, s]),
-    );
-
-    const subjectsToSave: Subject[] = [];
-
-    for (const name of subjectNames) {
-      if (!existingByName.has(name)) {
-        const subject = this.subjectsRepository.create({
-          subject_name: name,
-          program_id: student.program_id ?? null,
-          year_level: student.year_level ?? null,
-        });
-        subjectsToSave.push(subject);
-        existingByName.set(name, subject);
-      }
+    if (Object.keys(patch).length > 0) {
+      await this.studentsRepository.update(studentId, patch);
     }
 
-    if (subjectsToSave.length > 0) {
-      await this.subjectsRepository.save(subjectsToSave);
-    }
+    return this.getMeProfile(studentId);
+  }
 
-    const allSubjects = Array.from(existingByName.values());
-    const subjectIds = allSubjects.map((s) => s.subject_id);
-
-    // Load existing StudentSubject records
-    const existingStudentSubjects = await this.studentSubjectsRepository.find({
+  async changePassword(studentId: number, dto: ChangePasswordDto) {
+    const student = await this.studentsRepository.findOne({
       where: { student_id: studentId },
     });
 
-    const existingBySubjectId = new Map(
-      existingStudentSubjects.map((ss) => [ss.subject_id, ss]),
-    );
-
-    const toSave: StudentSubject[] = [];
-
-    for (const subject of allSubjects) {
-      const existing = existingBySubjectId.get(subject.subject_id);
-      if (existing) {
-        existing.is_liked = true;
-        toSave.push(existing);
-      } else {
-        const ss = this.studentSubjectsRepository.create({
-          student_id: studentId,
-          subject_id: subject.subject_id,
-          is_finished: false,
-          is_liked: true,
-        });
-        toSave.push(ss);
-      }
+    if (!student) {
+      throw new NotFoundException('Student not found');
     }
 
-    if (toSave.length > 0) {
-      await this.studentSubjectsRepository.save(toSave);
+    const ok = await bcrypt.compare(dto.current_password, student.password_hash);
+    if (!ok) {
+      throw new UnauthorizedException('Current password is incorrect');
     }
 
-    // For any subjects not in the liked list, mark as not liked
-    if (subjectIds.length > 0) {
-      await this.studentSubjectsRepository.update(
-        {
-          student_id: studentId,
-          subject_id: Not(In(subjectIds)),
-        },
-        {
-          is_liked: false,
-        },
-      );
-    }
+    const password_hash = await bcrypt.hash(dto.new_password, 10);
+    await this.studentsRepository.update(studentId, { password_hash });
+
+    return { message: 'Password updated successfully' };
   }
 }
-

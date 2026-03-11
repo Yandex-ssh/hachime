@@ -17,21 +17,6 @@ type ProfileResponse = {
   };
 };
 
-const programs = [
-  { id: 1, code: "BSIT", name: "BS Information Technology" },
-  { id: 2, code: "BSCRIM", name: "BS Criminology" },
-  { id: 3, code: "BSED", name: "BS Education" },
-  { id: 4, code: "BSOA", name: "BS Office Administration" },
-  { id: 5, code: "BSPOL.SCI", name: "BS Political Science" },
-];
-
-const yearLevels = [
-  { value: 1, label: "1st Year" },
-  { value: 2, label: "2nd Year" },
-  { value: 3, label: "3rd Year" },
-  { value: 4, label: "4th Year" },
-];
-
 export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -42,12 +27,14 @@ export default function ProfilePage() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [programId, setProgramId] = useState<string>("");
-  const [yearLevel, setYearLevel] = useState<string>("");
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_URL ??
+    (typeof window !== "undefined" ? `http://${window.location.hostname}:4000` : "http://localhost:4000");
 
   const loadProfile = async () => {
     try {
@@ -57,7 +44,7 @@ export default function ProfilePage() {
         throw new Error("Not authenticated");
       }
 
-      const res = await fetch("http://localhost:4000/students/me", {
+      const res = await fetch(`${apiBaseUrl}/students/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -72,8 +59,6 @@ export default function ProfilePage() {
       setProfile(data);
       setName(data.name || "");
       setEmail(data.email || "");
-      setProgramId(data.program_id ? String(data.program_id) : "");
-      setYearLevel(data.year_level ? String(data.year_level) : "");
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -105,11 +90,9 @@ export default function ProfilePage() {
       const body: Record<string, unknown> = {
         name,
         email: email || undefined,
-        program_id: programId ? parseInt(programId, 10) : undefined,
-        year_level: yearLevel ? parseInt(yearLevel, 10) : undefined,
       };
 
-      const res = await fetch("http://localhost:4000/students/me", {
+      const res = await fetch(`${apiBaseUrl}/students/me`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -176,7 +159,7 @@ export default function ProfilePage() {
 
       setChangingPassword(true);
 
-      const res = await fetch("http://localhost:4000/students/me/password", {
+      const res = await fetch(`${apiBaseUrl}/students/me/password`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -291,34 +274,18 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-gray-400">Program</label>
-                <select
-                  value={programId}
-                  onChange={(e) => setProgramId(e.target.value)}
-                  className="bg-gray-800 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                >
-                  <option value="">Select your program</option>
-                  {programs.map((prog) => (
-                    <option key={prog.id} value={prog.id}>
-                      {prog.code} - {prog.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="text-sm text-gray-300">
+                  {profile?.program || "—"}
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-gray-400">Year level</label>
-                <select
-                  value={yearLevel}
-                  onChange={(e) => setYearLevel(e.target.value)}
-                  className="bg-gray-800 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                >
-                  <option value="">Select year level</option>
-                  {yearLevels.map((y) => (
-                    <option key={y.value} value={y.value}>
-                      {y.label}
-                    </option>
-                  ))}
-                </select>
+                <div className="text-sm text-gray-300">
+                  {profile?.year_level
+                    ? `${profile.year_level}${profile.year_level === 1 ? "st" : profile.year_level === 2 ? "nd" : profile.year_level === 3 ? "rd" : "th"} Year`
+                    : "—"}
+                </div>
               </div>
             </div>
 

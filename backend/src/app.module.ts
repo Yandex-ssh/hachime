@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getDatabaseConfig } from './config/database.config';
 import { AuthModule } from './auth/auth.module';
 import { StudentsModule } from './students/students.module';
+import { CareersModule } from './careers/careers.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { StudentsModule } from './students/students.module';
       inject: [ConfigService],
     }),
     AuthModule,
-    StudentsModule,
+    StudentsModule,  
+    CareersModule,
   ],
 })
 export class AppModule {}

@@ -1,29 +1,41 @@
-import { Controller, Post, Body, Headers } from '@nestjs/common';
+import { Controller, Post, Get, Body, Request, UseGuards, Patch } from '@nestjs/common';
 import { StudentsService } from './students.service';
-import { UpdateStudentSubjectsDto } from './dto/update-subjects.dto';
+import { SaveSubjectsDto } from './dto/save-subjects.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('students')
 export class StudentsController {
-  constructor(private readonly studentsService: StudentsService) {}
+  constructor(private studentsService: StudentsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('subjects')
-  async saveFinishedSubjects(
-    @Body() body: UpdateStudentSubjectsDto,
-    @Headers('authorization') authHeader?: string,
-  ) {
-    const studentId = this.studentsService.getStudentIdFromAuthHeader(authHeader);
-    await this.studentsService.setFinishedSubjectsForStudent(studentId, body.subjects);
-    return { message: 'Finished subjects updated' };
+  async saveSubjects(@Request() req, @Body() body: SaveSubjectsDto) {
+    return this.studentsService.saveSubjects(req.user.sub, body);
   }
 
-  @Post('subjects/liked')
-  async saveLikedSubjects(
-    @Body() body: UpdateStudentSubjectsDto,
-    @Headers('authorization') authHeader?: string,
-  ) {
-    const studentId = this.studentsService.getStudentIdFromAuthHeader(authHeader);
-    await this.studentsService.setLikedSubjectsForStudent(studentId, body.subjects);
-    return { message: 'Liked subjects updated' };
+  @Get('profile/:id')
+  async getProfile(@Request() req) {
+    const studentId = parseInt(req.params.id);
+    return this.studentsService.getProfile(studentId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async getMe(@Request() req) {
+    return this.studentsService.getMeProfile(req.user.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  async updateMe(@Request() req, @Body() body: UpdateProfileDto) {
+    return this.studentsService.updateProfile(req.user.sub, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/password')
+  async changePassword(@Request() req, @Body() body: ChangePasswordDto) {
+    return this.studentsService.changePassword(req.user.sub, body);
   }
 }
-

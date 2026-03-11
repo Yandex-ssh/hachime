@@ -1,29 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+type LoginFormData = {
+  student_number: string;
+  password: string;
+};
+
 export default function LoginPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({ student_number: "", password: "" });
+  const [formData, setFormData] = useState<LoginFormData>({ student_number: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    try {
-      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-      if (token) {
-        // User already has a session, send directly to dashboard
-        router.replace("/dashboard");
-      }
-    } catch {
-      // ignore
-    }
-  }, [router]);
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_URL ??
+    (typeof window !== "undefined" ? `http://${window.location.hostname}:4000` : "http://localhost:4000");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setError("");
   };
 
@@ -33,7 +31,7 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:4000/auth/login", {
+      const response = await fetch(`${apiBaseUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -45,22 +43,13 @@ export default function LoginPage() {
         throw new Error(data.message || "Login failed");
       }
 
-      // Store token and user data
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("student", JSON.stringify(data.student));
 
-      // If this is the first login for this account, go to onboarding once
-      if (data.is_first_login) {
-        router.push("/onboarding");
-      } else {
-        router.push("/dashboard");
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message || "Invalid credentials. Please try again.");
-      } else {
-        setError("Invalid credentials. Please try again.");
-      }
+      router.push("/dashboard");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Invalid credentials. Please try again.";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -69,8 +58,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
       <div className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl">
-
-        {/* Brand */}
         <div className="flex items-center gap-2 mb-7">
           <div className="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
             ✦
@@ -81,7 +68,6 @@ export default function LoginPage() {
         <h2 className="text-2xl font-bold text-white mb-1">Welcome back</h2>
         <p className="text-gray-400 text-sm mb-7">Sign in to your account to continue</p>
 
-        {/* Error */}
         {error && (
           <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3 text-sm mb-5">
             {error}
@@ -89,7 +75,6 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          {/* Student Number */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor="student_number" className="text-sm font-medium text-gray-300">
               Student Number
@@ -106,7 +91,6 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Password */}
           <div className="flex flex-col gap-1.5">
             <div className="flex justify-between items-center">
               <label htmlFor="password" className="text-sm font-medium text-gray-300">
@@ -133,12 +117,12 @@ export default function LoginPage() {
             disabled={loading}
             className="mt-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-2.5 text-sm transition"
           >
-            {loading ? "Signing in..." : "Login"}
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-6">
-          Don&apos;t have an account?{" "}
+          Don't have an account?{" "}
           <Link href="/signup" className="text-indigo-400 hover:text-indigo-300 font-semibold transition">
             Sign up
           </Link>
