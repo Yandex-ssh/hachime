@@ -293,46 +293,38 @@ export default function OnboardingPage() {
     const handleNext = async () => {
         if (step < totalSteps) {
             setStep(step + 1);
-            return;
-        }
+        } else {
+            // Final step - save to backend
+            try {
+                setSaving(true);
 
-        // Final step: save onboarding data to backend
-        const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+                const studentData = JSON.parse(localStorage.getItem("student") || "{}");
 
-        if (!token) {
-            router.push("/login");
-            return;
-        }
+                const response = await fetch("http://localhost:4000/students/subjects", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    body: JSON.stringify({
+                        student_id: studentData.student_id,
+                        finished_subject_ids: finishedSubjects,
+                        liked_subject_ids: likedSubjects,
+                    }),
+                });
 
-        try {
-            setSaving(true);
+                if (!response.ok) {
+                    throw new Error("Failed to save subjects");
+                }
 
-            // Save finished subjects
-            await fetch("http://localhost:4000/students/subjects", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ subjects: finishedSubjects }),
-            });
-
-            // Save liked subjects
-            await fetch("http://localhost:4000/students/subjects/liked", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ subjects: likedSubjects }),
-            });
-
-            router.push("/dashboard");
-        } catch (error) {
-            console.error("Failed to save onboarding data", error);
-            alert("Something went wrong while saving your subjects. Please try again.");
-        } finally {
-            setSaving(false);
+                // Success - go to dashboard
+                router.push("/dashboard");
+            } catch (error) {
+                console.error("Error saving subjects:", error);
+                alert("Failed to save your selections. Please try again.");
+            } finally {
+                setSaving(false);
+            }
         }
     };
 

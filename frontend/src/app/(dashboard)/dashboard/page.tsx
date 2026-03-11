@@ -1,59 +1,6 @@
 "use client";
 
-// ─── MOCK DATA (replace with real API data later) ─────────────────────────────
-const student = {
-    name: "Juan dela Cruz",
-    program: "BSIT",
-    yearLevel: "2nd Year",
-    finishedSubjects: 18,
-    totalSubjects: 45,
-    likedSubjects: [
-        "Data Structures and Algorithms",
-        "Database System",
-        "Web Information System",
-        "Object-Oriented Programming 1",
-        "Software Engineering",
-    ],
-};
-
-const recommendedCareers = [
-    {
-        title: "Software Engineer",
-        match: 95,
-        description: "Build and maintain software systems and applications.",
-        salaryRange: "₱30,000 – ₱80,000/mo",
-        skills: ["OOP", "Data Structures", "Software Engineering"],
-        color: "indigo",
-        icon: "💻",
-    },
-    {
-        title: "Web Developer",
-        match: 88,
-        description: "Design and develop websites and web applications.",
-        salaryRange: "₱25,000 – ₱70,000/mo",
-        skills: ["Web Systems", "Programming", "Database"],
-        color: "violet",
-        icon: "🌐",
-    },
-    {
-        title: "Database Administrator",
-        match: 82,
-        description: "Manage and optimize databases for organizations.",
-        salaryRange: "₱30,000 – ₱65,000/mo",
-        skills: ["Database System", "SQL", "System Admin"],
-        color: "blue",
-        icon: "🗄️",
-    },
-    {
-        title: "Data Analyst",
-        match: 75,
-        description: "Analyze data to help businesses make better decisions.",
-        salaryRange: "₱25,000 – ₱60,000/mo",
-        skills: ["Database", "Statistics", "Data Structures"],
-        color: "cyan",
-        icon: "📊",
-    },
-];
+import { useState, useEffect } from "react";
 
 const matchColors: Record<string, string> = {
     indigo: "bg-indigo-600/20 border-indigo-500/30 text-indigo-400",
@@ -78,9 +25,56 @@ const matchBadgeColors: Record<string, string> = {
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
-    const progressPercent = Math.round(
-        (student.finishedSubjects / student.totalSubjects) * 100
-    );
+    const [student, setStudent] = useState<any>(null);
+    const [recommendedCareers, setRecommendedCareers] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Get student from localStorage
+        const studentData = JSON.parse(localStorage.getItem("student") || "{}");
+        setStudent(studentData);
+
+        // Fetch career matches from backend
+        const fetchCareerMatches = async () => {
+            try {
+                const response = await fetch(
+                    `http://localhost:4000/careers/matches/${studentData.student_id}`
+                );
+                const data = await response.json();
+
+                // Map backend data to frontend format
+                const formattedCareers = data.map((career: any, index: number) => ({
+                    title: career.title,
+                    match: career.match,
+                    description: career.description,
+                    salaryRange: `₱${Number(career.salary_min).toLocaleString()} – ₱${Number(career.salary_max).toLocaleString()}/mo`,
+                    skills: [], // We'll add this later
+                    color: ['indigo', 'violet', 'blue', 'cyan'][index % 4],
+                    icon: career.icon,
+                }));
+
+                setRecommendedCareers(formattedCareers);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching careers:", error);
+                setLoading(false);
+            }
+        };
+
+        if (studentData.student_id) {
+            fetchCareerMatches();
+        }
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-white">Loading...</div>
+            </div>
+        );
+    }
+
+    const progressPercent = 40; // TODO: Calculate from database
 
     const greeting = () => {
         const hour = new Date().getHours();
@@ -133,7 +127,7 @@ export default function DashboardPage() {
                     Your top subjects · <span className="text-indigo-400">based on your interests</span>
                 </p>
                 <div className="flex flex-wrap gap-2">
-                    {student.likedSubjects.map((subject) => (
+                    {(student?.likedSubjects ?? []).map((subject: string) => (
                         <span
                             key={subject}
                             className="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-full"
@@ -198,7 +192,7 @@ export default function DashboardPage() {
 
                             {/* Matched skills */}
                             <div className="flex flex-wrap gap-1.5">
-                                {career.skills.map((skill) => (
+                                {career.skills.map((skill: string) => (
                                     <span
                                         key={skill}
                                         className="bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-md border border-gray-700"

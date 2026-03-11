@@ -14,6 +14,7 @@ export default function LoginPage() {
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
       if (token) {
+        // User already has a session, send directly to dashboard
         router.replace("/dashboard");
       }
     } catch {
@@ -48,8 +49,12 @@ export default function LoginPage() {
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("student", JSON.stringify(data.student));
 
-      // Redirect to dashboard
-      router.push("/dashboard");
+      // If this is the first login for this account, go to onboarding once
+      if (data.is_first_login) {
+        router.push("/onboarding");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message || "Invalid credentials. Please try again.");
@@ -128,7 +133,7 @@ export default function LoginPage() {
             disabled={loading}
             className="mt-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-2.5 text-sm transition"
           >
-            {loading ? "Signing in..." : "Sign in"}
+            {loading ? "Signing in..." : "Login"}
           </button>
         </form>
 
