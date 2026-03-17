@@ -41,6 +41,7 @@ CREATE TABLE students (
     student_number VARCHAR(50) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     program_id INT,
+    target_career_id INT NULL,
     year_level INT CHECK (year_level BETWEEN 1 AND 4),
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(255),
@@ -116,6 +117,9 @@ CREATE TABLE career_subjects (
     INDEX idx_career_subjects_career (career_id),
     INDEX idx_career_subjects_subject (subject_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE students ADD CONSTRAINT fk_students_target_career
+    FOREIGN KEY (target_career_id) REFERENCES careers(career_id) ON DELETE SET NULL;
 
 -- ───────────────────────────────────────────────────────────────────────────
 -- 7. SKILLS TABLE

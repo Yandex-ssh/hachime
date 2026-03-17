@@ -9,13 +9,15 @@ export class RegisterDto {
   @IsString()
   name: string;
 
+  @IsOptional()
   @IsInt()
-  program_id: number;
+  program_id?: number;
 
+  @IsOptional()
   @IsInt()
   @Min(1)
   @Max(4)
-  year_level: number;
+  year_level?: number;
 
   @IsNotEmpty()
   @IsString()

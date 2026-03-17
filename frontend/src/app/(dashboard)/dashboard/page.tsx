@@ -29,42 +29,56 @@ export default function DashboardPage() {
     const [recommendedCareers, setRecommendedCareers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const apiBaseUrl =
+        process.env.NEXT_PUBLIC_API_URL ??
+        (typeof window !== "undefined" ? `http://${window.location.hostname}:4000` : "http://localhost:4000");
+
     useEffect(() => {
-        // Get student from localStorage
-        const studentData = JSON.parse(localStorage.getItem("student") || "{}");
-        setStudent(studentData);
-
-        // Fetch career matches from backend
-        const fetchCareerMatches = async () => {
+        const load = async () => {
             try {
-                const response = await fetch(
-                    `http://localhost:4000/careers/matches/${studentData.student_id}`
-                );
-                const data = await response.json();
+                const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+                if (!token) {
+                    setLoading(false);
+                    return;
+                }
 
-                // Map backend data to frontend format
-                const formattedCareers = data.map((career: any, index: number) => ({
+                // Load student profile (name, program, year, progress)
+                const profileRes = await fetch(`${apiBaseUrl}/students/me`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const profileData = await profileRes.json();
+                if (!profileRes.ok) {
+                    throw new Error(profileData.message || "Failed to load profile");
+                }
+
+                setStudent(profileData);
+
+                // Fetch career matches from backend using student_id
+                const careersRes = await fetch(`${apiBaseUrl}/careers/matches/${profileData.student_id}`);
+                const careersData = await careersRes.json();
+
+                const formattedCareers = (careersData || []).map((career: any, index: number) => ({
                     title: career.title,
                     match: career.match,
                     description: career.description,
                     salaryRange: `₱${Number(career.salary_min).toLocaleString()} – ₱${Number(career.salary_max).toLocaleString()}/mo`,
-                    skills: [], // We'll add this later
-                    color: ['indigo', 'violet', 'blue', 'cyan'][index % 4],
+                    skills: [],
+                    color: ["indigo", "violet", "blue", "cyan"][index % 4],
                     icon: career.icon,
                 }));
 
                 setRecommendedCareers(formattedCareers);
                 setLoading(false);
             } catch (error) {
-                console.error("Error fetching careers:", error);
+                console.error("Error loading dashboard:", error);
                 setLoading(false);
             }
         };
 
-        if (studentData.student_id) {
-            fetchCareerMatches();
-        }
-    }, []);
+        load();
+    }, [apiBaseUrl]);
 
     if (loading) {
         return (
@@ -74,7 +88,9 @@ export default function DashboardPage() {
         );
     }
 
-    const progressPercent = 40; // TODO: Calculate from database
+    const finishedCount = student?.progress?.finishedSubjects ?? 0;
+    const totalCount = student?.progress?.totalSubjects ?? 0;
+    const progressPercent = totalCount > 0 ? Math.round((finishedCount / totalCount) * 100) : 0;
 
     const greeting = () => {
         const hour = new Date().getHours();
@@ -94,13 +110,22 @@ export default function DashboardPage() {
 
                 <div className="relative">
                     <p className="text-indigo-300 text-sm font-medium mb-1">{greeting()},</p>
-                    <h2 className="text-3xl font-bold text-white mb-2">{student.name} 👋</h2>
+                    <h2 className="text-3xl font-bold text-white mb-2">{student?.name ?? "Student"} 👋</h2>
                     <div className="flex flex-wrap items-center gap-2 mb-5">
                         <span className="bg-indigo-500/20 text-indigo-300 text-xs font-medium px-3 py-1 rounded-full border border-indigo-500/30">
-                            {student.program}
+                            {student?.program ?? "Program"}
                         </span>
                         <span className="bg-gray-700/50 text-gray-300 text-xs font-medium px-3 py-1 rounded-full border border-gray-700">
-                            {student.yearLevel}
+                            {student?.year_level
+                                ? `${student.year_level}${student.year_level === 1
+                                      ? "st"
+                                      : student.year_level === 2
+                                      ? "nd"
+                                      : student.year_level === 3
+                                      ? "rd"
+                                      : "th"
+                                  } Year`
+                                : "Year level"}
                         </span>
                     </div>
 
@@ -108,7 +133,9 @@ export default function DashboardPage() {
                     <div>
                         <div className="flex justify-between items-center mb-2">
                             <p className="text-gray-400 text-sm">Academic Progress</p>
-                            <p className="text-white text-sm font-semibold">{student.finishedSubjects} / {student.totalSubjects} subjects</p>
+                            <p className="text-white text-sm font-semibold">
+                                {finishedCount} / {totalCount} subjects
+                            </p>
                         </div>
                         <div className="w-full bg-gray-800 rounded-full h-2.5">
                             <div
@@ -122,21 +149,7 @@ export default function DashboardPage() {
             </div>
 
             {/* ── LIKED SUBJECTS SUMMARY ── */}
-            <div>
-                <p className="text-gray-400 text-sm mb-3">
-                    Your top subjects · <span className="text-indigo-400">based on your interests</span>
-                </p>
-                <div className="flex flex-wrap gap-2">
-                    {(student?.likedSubjects ?? []).map((subject: string) => (
-                        <span
-                            key={subject}
-                            className="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-full"
-                        >
-                            ♥ {subject}
-                        </span>
-                    ))}
-                </div>
-            </div>
+            {/* For now we don't have liked subjects from backend on this view */}
 
             {/* ── RECOMMENDED CAREERS ── */}
             <div>

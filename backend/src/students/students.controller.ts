@@ -1,9 +1,11 @@
 import { Controller, Post, Get, Body, Request, UseGuards, Patch } from '@nestjs/common';
 import { StudentsService } from './students.service';
 import { SaveSubjectsDto } from './dto/save-subjects.dto';
+import { SaveSubjectsByNameDto } from './dto/save-subjects-by-name.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { SetCareerGoalDto } from './dto/set-career-goal.dto';
 
 @Controller('students')
 export class StudentsController {
@@ -13,6 +15,12 @@ export class StudentsController {
   @Post('subjects')
   async saveSubjects(@Request() req, @Body() body: SaveSubjectsDto) {
     return this.studentsService.saveSubjects(req.user.sub, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('subjects/by-names')
+  async saveSubjectsByName(@Request() req, @Body() body: SaveSubjectsByNameDto) {
+    return this.studentsService.saveSubjectsByName(req.user.sub, body);
   }
 
   @Get('profile/:id')
@@ -37,5 +45,11 @@ export class StudentsController {
   @Patch('me/password')
   async changePassword(@Request() req, @Body() body: ChangePasswordDto) {
     return this.studentsService.changePassword(req.user.sub, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/career-goal')
+  async setCareerGoal(@Request() req, @Body() body: SetCareerGoalDto) {
+    return this.studentsService.setCareerGoal(req.user.sub, body);
   }
 }

@@ -298,23 +298,24 @@ export default function OnboardingPage() {
             try {
                 setSaving(true);
 
-                const studentData = JSON.parse(localStorage.getItem("student") || "{}");
-
-                const response = await fetch("http://localhost:4000/students/subjects", {
+                const apiBaseUrl =
+                    process.env.NEXT_PUBLIC_API_URL ??
+                    (typeof window !== "undefined" ? `http://${window.location.hostname}:4000` : "http://localhost:4000");
+                const response = await fetch(`${apiBaseUrl}/students/subjects/by-names`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${localStorage.getItem("token")}`,
                     },
                     body: JSON.stringify({
-                        student_id: studentData.student_id,
-                        finished_subject_ids: finishedSubjects,
-                        liked_subject_ids: likedSubjects,
+                        finished_subject_names: finishedSubjects,
+                        liked_subject_names: likedSubjects,
                     }),
                 });
 
                 if (!response.ok) {
-                    throw new Error("Failed to save subjects");
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || "Failed to save subjects");
                 }
 
                 // Success - go to dashboard

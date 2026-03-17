@@ -2,6 +2,14 @@
 
 import { useEffect, useState } from "react";
 
+type CareerGoal = {
+  career_id: number;
+  title: string;
+  icon: string | null;
+  progress: { completed: number; total: number; percent: number };
+  gap?: { missing_subjects: { subject_id: number; subject_name: string }[] };
+};
+
 type ProfileResponse = {
   student_id: number;
   student_number: string;
@@ -15,18 +23,24 @@ type ProfileResponse = {
     finishedSubjects: number;
     totalSubjects: number;
   };
+  career_goal?: CareerGoal | null;
 };
+
+type CareerOption = { career_id: number; title: string; icon: string | null };
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
+  const [careers, setCareers] = useState<CareerOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [savingCareerGoal, setSavingCareerGoal] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [selectedCareerId, setSelectedCareerId] = useState<number | "" | null>(null);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -59,6 +73,7 @@ export default function ProfilePage() {
       setProfile(data);
       setName(data.name || "");
       setEmail(data.email || "");
+      setSelectedCareerId(data.career_goal?.career_id ?? null);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -70,9 +85,53 @@ export default function ProfilePage() {
     }
   };
 
+  const loadCareers = async () => {
+    try {
+      const res = await fetch(`${apiBaseUrl}/careers`);
+      const data = await res.json();
+      if (res.ok && Array.isArray(data)) {
+        setCareers(data.map((c: { career_id: number; title: string; icon?: string }) => ({ career_id: c.career_id, title: c.title, icon: c.icon ?? null })));
+      }
+    } catch {
+      // ignore
+    }
+  };
+
   useEffect(() => {
     loadProfile();
+    loadCareers();
   }, []);
+
+  const handleSaveCareerGoal = async (careerId: number | null) => {
+    setError("");
+    setSuccess("");
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) throw new Error("Not authenticated");
+
+      setSavingCareerGoal(true);
+
+      const res = await fetch(`${apiBaseUrl}/students/me/career-goal`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ target_career_id: careerId }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to set career goal");
+
+      setProfile(data);
+      setSelectedCareerId(careerId);
+      setSuccess("Career goal updated");
+    } catch (err) {
+      if (err instanceof Error) setError(err.message);
+    } finally {
+      setSavingCareerGoal(false);
+    }
+  };
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -301,8 +360,78 @@ export default function ProfilePage() {
           </form>
         </div>
 
-        {/* Progress + password */}
+        {/* Career goal + Progress + password */}
         <div className="space-y-5">
+          {/* Career goal */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+            <h3 className="text-white font-semibold text-sm mb-3">Career goal</h3>
+            <p className="text-gray-400 text-xs mb-3">
+              Set a target career to track your progress and milestones.
+            </p>
+
+            <div className="space-y-3">
+              <select
+                value={selectedCareerId ?? ""}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  const id = v === "" ? null : parseInt(v, 10);
+                  setSelectedCareerId(id);
+                  handleSaveCareerGoal(id);
+                }}
+                disabled={savingCareerGoal}
+                className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-60"
+              >
+                <option value="">No target career</option>
+                {careers.map((c) => (
+                  <option key={c.career_id} value={c.career_id}>
+                    {c.icon} {c.title}
+                  </option>
+                ))}
+              </select>
+
+              {profile?.career_goal && (
+                <div className="bg-indigo-600/10 border border-indigo-500/20 rounded-xl p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-lg">{profile.career_goal.icon}</span>
+                    <span className="text-indigo-300 font-medium text-sm">{profile.career_goal.title}</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-400 mb-1.5">
+                    <span>Key subjects completed</span>
+                    <span className="text-white font-semibold">
+                      {profile.career_goal.progress.completed} / {profile.career_goal.progress.total}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-800 rounded-full h-2">
+                    <div
+                      className="bg-indigo-500 h-2 rounded-full transition-all"
+                      style={{ width: `${profile.career_goal.progress.percent}%` }}
+                    />
+                  </div>
+                  <p className="text-indigo-400 text-[11px] mt-1">{profile.career_goal.progress.percent}% toward this career</p>
+
+                  {profile.career_goal.gap && profile.career_goal.gap.missing_subjects.length > 0 && (
+                    <div className="mt-3">
+                      <p className="text-gray-300 text-xs font-semibold mb-1">Gap analysis</p>
+                      <p className="text-gray-400 text-[11px] mb-1">
+                        To fully match this career, you still need these key subjects:
+                      </p>
+                      <ul className="flex flex-wrap gap-1.5">
+                        {profile.career_goal.gap.missing_subjects.map((s) => (
+                          <li
+                            key={s.subject_id}
+                            className="bg-gray-900 border border-indigo-500/30 text-gray-200 text-[11px] px-2 py-0.5 rounded-full"
+                          >
+                            {s.subject_name}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Progress card */}
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5">
             <h3 className="text-white font-semibold text-sm mb-3">Your progress</h3>

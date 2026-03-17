@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  # ─── MySQL Database ───────────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: hachime_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: tmc_career
+      MYSQL_USER: root
+      MYSQL_PASSWORD: admin123
+    ports:
+      - '3306:3306'
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./frontend/database/schema-mysql.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: [ 'CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-uroot', '-padmin123' ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── NestJS Backend ───────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hachime_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: admin123
+      DB_NAME: tmc_career
+      JWT_SECRET: tmc-local-dev-secret
+      PORT: 4000
+    ports:
+      - '4000:4000'
+
+  # ─── Next.js Frontend ────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hachime_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+    ports:
+      - '3000:3000'
+
+volumes:
+  db_data:

@@ -9,11 +9,11 @@ export default function SignupPage() {
   const [formData, setFormData] = useState({
     student_number: "",
     name: "",
-    program: "",
-    year_level: "",
     password: "",
     confirmPassword: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -27,14 +27,6 @@ export default function SignupPage() {
       // ignore
     }
   }, [router]);
-
-  const programs = [
-    { id: 1, code: "BSIT", name: "BS Information Technology" },
-    { id: 2, code: "BSCRIM", name: "BS Criminology" },
-    { id: 3, code: "BSED", name: "BS Education" },
-    { id: 4, code: "BSOA", name: "BS Office Administration" },
-    { id: 5, code: "BSPOL.SCI", name: "BS Political Science" },
-  ];
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -56,14 +48,6 @@ export default function SignupPage() {
       setError("Full name is required");
       return;
     }
-    if (!formData.program) {
-      setError("Please select a program");
-      return;
-    }
-    if (!formData.year_level) {
-      setError("Please select your year level");
-      return;
-    }
     if (formData.password.length < 8) {
       setError("Password must be at least 8 characters");
       return;
@@ -82,8 +66,6 @@ export default function SignupPage() {
         body: JSON.stringify({
           student_number: formData.student_number,
           name: formData.name,
-          program_id: parseInt(formData.program),
-          year_level: parseInt(formData.year_level),
           password: formData.password,
         }),
       });
@@ -166,64 +148,31 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* Program */}
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="program" className="text-sm font-medium text-gray-300">
-              Program
-            </label>
-            <select
-              id="program"
-              name="program"
-              required
-              value={formData.program}
-              onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            >
-              <option value="">Select your program</option>
-              {programs.map((prog) => (
-                <option key={prog.id} value={prog.id}>
-                  {prog.code} - {prog.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Year Level */}
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="year_level" className="text-sm font-medium text-gray-300">
-              Year Level
-            </label>
-            <select
-              id="year_level"
-              name="year_level"
-              required
-              value={formData.year_level}
-              onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            >
-              <option value="">Select year level</option>
-              <option value="1">1st Year</option>
-              <option value="2">2nd Year</option>
-              <option value="3">3rd Year</option>
-              <option value="4">4th Year</option>
-            </select>
-          </div>
-
           {/* Password */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor="password" className="text-sm font-medium text-gray-300">
               Password
             </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              placeholder="At least 8 characters"
-              value={formData.password}
-              onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            />
+            <div className="relative">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                placeholder="At least 8 characters"
+                value={formData.password}
+                onChange={handleChange}
+                className="bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition w-full"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((p) => !p)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 text-xs font-medium"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </div>
 
           {/* Confirm Password */}
@@ -231,16 +180,26 @@ export default function SignupPage() {
             <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-300">
               Confirm Password
             </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              required
-              placeholder="Re-enter your password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            />
+            <div className="relative">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                required
+                placeholder="Re-enter your password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition w-full"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((p) => !p)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 text-xs font-medium"
+                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+              >
+                {showConfirmPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </div>
 
           <button

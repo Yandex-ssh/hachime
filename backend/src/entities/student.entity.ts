@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
 import { Program } from './program.entity';
+import { Career } from './career.entity';
 
 @Entity('students')
 export class Student {
@@ -18,6 +19,13 @@ export class Student {
   @ManyToOne(() => Program, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'program_id' })
   program: Program;
+
+  @Column({ nullable: true })
+  target_career_id: number;
+
+  @ManyToOne(() => Career, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'target_career_id' })
+  targetCareer: Career;
 
   @Column({ type: 'int', nullable: true })
   year_level: number;

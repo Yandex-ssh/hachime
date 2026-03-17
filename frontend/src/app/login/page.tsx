@@ -12,6 +12,7 @@ type LoginFormData = {
 export default function LoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<LoginFormData>({ student_number: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -46,7 +47,7 @@ export default function LoginPage() {
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("student", JSON.stringify(data.student));
 
-      router.push("/dashboard");
+      router.push(data.is_first_login ? "/onboarding" : "/dashboard");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Invalid credentials. Please try again.";
       setError(message);
@@ -100,16 +101,26 @@ export default function LoginPage() {
                 Forgot password?
               </Link>
             </div>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              className="bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            />
+            <div className="relative">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                className="bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition w-full"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((p) => !p)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 text-xs font-medium"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </div>
 
           <button
