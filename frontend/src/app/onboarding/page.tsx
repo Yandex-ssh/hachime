@@ -301,11 +301,52 @@ export default function OnboardingPage() {
                 const apiBaseUrl =
                     process.env.NEXT_PUBLIC_API_URL ??
                     (typeof window !== "undefined" ? `http://${window.location.hostname}:4000` : "http://localhost:4000");
+                const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+                if (!token) {
+                    throw new Error("Not authenticated. Please login again.");
+                }
+
+                // 1) Persist program + year level to student profile
+                const yearIndex = yearLevels.indexOf(yearLevel);
+                const year_level = yearIndex >= 0 ? yearIndex + 1 : null;
+                if (!program || !year_level) {
+                    throw new Error("Please select your program and year level.");
+                }
+
+                const programsRes = await fetch(`${apiBaseUrl}/programs`);
+                const programsJson = await programsRes.json();
+                if (!programsRes.ok) {
+                    throw new Error(programsJson.message || "Failed to load programs list");
+                }
+                const match = (Array.isArray(programsJson) ? programsJson : []).find(
+                    (p: any) => p.program_code === program
+                );
+                if (!match?.program_id) {
+                    throw new Error(`Program ${program} not found in database.`);
+                }
+
+                const profileRes = await fetch(`${apiBaseUrl}/students/me`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        program_id: match.program_id,
+                        year_level,
+                    }),
+                });
+                const profileJson = await profileRes.json();
+                if (!profileRes.ok) {
+                    throw new Error(profileJson.message || "Failed to save program/year");
+                }
+
+                // 2) Save subjects
                 const response = await fetch(`${apiBaseUrl}/students/subjects/by-names`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                        "Authorization": `Bearer ${token}`,
                     },
                     body: JSON.stringify({
                         finished_subject_names: finishedSubjects,

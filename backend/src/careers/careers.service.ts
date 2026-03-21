@@ -15,18 +15,18 @@ export class CareersService {
     const finishedSubjects = await this.careersRepository.query(
       `SELECT subject_id FROM student_subjects 
        WHERE student_id = ? AND is_finished = true`,
-      [studentId]
+      [studentId],
     );
 
     // Get student's liked subjects
     const likedSubjects = await this.careersRepository.query(
       `SELECT subject_id FROM student_subjects 
        WHERE student_id = ? AND is_liked = true`,
-      [studentId]
+      [studentId],
     );
 
-    const finishedIds = finishedSubjects.map(s => s.subject_id);
-    const likedIds = likedSubjects.map(s => s.subject_id);
+    const finishedIds = finishedSubjects.map((s) => s.subject_id);
+    const likedIds = likedSubjects.map((s) => s.subject_id);
 
     // Get all careers with their required subjects
     const careers = await this.careersRepository.query(`
@@ -51,28 +51,30 @@ export class CareersService {
           `SELECT subject_id, weight, is_required 
            FROM career_subjects 
            WHERE career_id = ?`,
-          [career.career_id]
+          [career.career_id],
         );
 
-        const totalRequired = requiredSubjects.filter(s => s.is_required).length;
-        
+        const totalRequired = requiredSubjects.filter(
+          (s) => s.is_required,
+        ).length;
+
         if (totalRequired === 0) {
           return { ...career, match: 0 };
         }
 
         // Count how many required subjects the student finished
         const matchedRequired = requiredSubjects.filter(
-          rs => rs.is_required && finishedIds.includes(rs.subject_id)
+          (rs) => rs.is_required && finishedIds.includes(rs.subject_id),
         ).length;
 
         // Base match percentage
         let matchPercentage = (matchedRequired / totalRequired) * 100;
 
         // Bonus points for liked subjects (up to +15%)
-        const likedAndRequired = requiredSubjects.filter(
-          rs => likedIds.includes(rs.subject_id)
+        const likedAndRequired = requiredSubjects.filter((rs) =>
+          likedIds.includes(rs.subject_id),
         ).length;
-        
+
         const likedBonus = Math.min(likedAndRequired * 5, 15);
         matchPercentage = Math.min(matchPercentage + likedBonus, 100);
 
@@ -80,12 +82,12 @@ export class CareersService {
           ...career,
           match: Math.round(matchPercentage),
         };
-      })
+      }),
     );
 
     // Sort by match percentage (highest first)
     return careerMatches
-      .filter(c => c.match > 0)
+      .filter((c) => c.match > 0)
       .sort((a, b) => b.match - a.match);
   }
 

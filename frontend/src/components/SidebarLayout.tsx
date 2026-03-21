@@ -43,6 +43,34 @@ const navItems = [
         ),
     },
     {
+        label: "Job Listings",
+        href: "/jobs",
+        icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 7h18M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2M5 7v14a2 2 0 002 2h10a2 2 0 002-2V7"
+                />
+            </svg>
+        ),
+    },
+    {
+        label: "Development Resources",
+        href: "/resources",
+        icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100 4m0-4a2 2 0 110 4m12-4a2 2 0 100 4m0-4a2 2 0 110 4M6 10v4m12-4v4M12 14v4"
+                />
+            </svg>
+        ),
+    },
+    {
         label: "Alumni Tracks",
         href: "/alumni",
         icon: (
@@ -81,21 +109,53 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [checkingAuth, setCheckingAuth] = useState(true);
+    const [me, setMe] = useState<null | {
+        name?: string;
+        program_code?: string;
+        year_level?: number;
+        profile_picture_url?: string | null;
+    }>(null);
+
+    const apiBaseUrl =
+        process.env.NEXT_PUBLIC_API_URL ??
+        (typeof window !== "undefined" ? `http://${window.location.hostname}:4000` : "http://localhost:4000");
 
     useEffect(() => {
-        try {
-            const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        const load = async () => {
+            try {
+                const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-            if (!token) {
+                if (!token) {
+                    router.replace("/login");
+                    return;
+                }
+
+                // Auth ok, fetch current student profile for top bar display
+                try {
+                    const res = await fetch(`${apiBaseUrl}/students/me`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    const json = await res.json().catch(() => null);
+                    if (res.ok && json) {
+                        setMe({
+                            name: json.name,
+                            program_code: json.program_code,
+                            year_level: json.year_level,
+                            profile_picture_url: json.profile_picture_url ?? null,
+                        });
+                    }
+                } catch {
+                    // ignore
+                }
+
+                setCheckingAuth(false);
+            } catch {
                 router.replace("/login");
-                return;
             }
+        };
 
-            setCheckingAuth(false);
-        } catch {
-            router.replace("/login");
-        }
-    }, [router]);
+        load();
+    }, [router, apiBaseUrl, pathname]);
 
     const handleLogout = () => {
         if (typeof window !== "undefined") {
@@ -106,21 +166,31 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
     };
 
     const isActive = (href: string) => pathname === href;
+    const handleBrandClick = () => {
+        setMobileOpen(false);
+        router.push("/dashboard");
+        router.refresh();
+    };
 
     const SidebarContent = () => (
         <div className="flex flex-col h-full">
             {/* Brand */}
-            <div className={`flex items-center gap-3 px-4 py-5 border-b border-gray-800 ${collapsed ? "justify-center" : ""}`}>
+            <button
+                type="button"
+                onClick={handleBrandClick}
+                className={`w-full flex items-center gap-3 px-4 py-5 border-b border-gray-800 hover:bg-gray-800/60 transition-colors ${collapsed ? "justify-center" : ""}`}
+                title="Go to Dashboard"
+            >
                 <div className="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-sm flex-shrink-0">
                     ✦
                 </div>
                 {!collapsed && (
-                    <div>
+                    <div className="text-left">
                         <p className="text-white font-bold text-sm leading-tight">Ascents</p>
                         <p className="text-gray-500 text-xs">Pathway Tool</p>
                     </div>
                 )}
-            </div>
+            </button>
 
             {/* Main Nav */}
             <nav className="flex-1 px-3 py-4 flex flex-col gap-1 overflow-y-auto">
@@ -245,6 +315,7 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
                     <button
                         className="md:hidden text-gray-400 hover:text-white transition"
                         onClick={() => setMobileOpen(true)}
+                        aria-label="Open menu"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -259,15 +330,25 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
                     </h1>
 
                     {/* Student info */}
-                    <div className="flex items-center gap-3">
+                    <Link href="/profile" className="flex items-center gap-3 rounded-lg px-2 py-1 -mx-2 -my-1 hover:bg-gray-800/70 transition-colors">
                         <div className="text-right hidden sm:block">
-                            <p className="text-white text-sm font-medium leading-tight">Student</p>
-                            <p className="text-gray-500 text-xs">BSIT · 2nd Year</p>
+                            <p className="text-white text-sm font-medium leading-tight">{me?.name ?? "Student"}</p>
+                            <p className="text-gray-500 text-xs">
+                                {(me?.program_code ?? "—")} ·{" "}
+                                {me?.year_level
+                                    ? `${me.year_level}${me.year_level === 1 ? "st" : me.year_level === 2 ? "nd" : me.year_level === 3 ? "rd" : "th"} Year`
+                                    : "—"}
+                            </p>
                         </div>
-                        <div className="w-9 h-9 rounded-full bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-indigo-400 font-bold text-sm">
-                            S
+                        <div className="w-9 h-9 rounded-full bg-indigo-600/30 border border-indigo-500/40 overflow-hidden flex items-center justify-center text-indigo-400 font-bold text-sm">
+                            {me?.profile_picture_url ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={me.profile_picture_url} alt="Student profile picture" className="w-full h-full object-cover" />
+                            ) : (
+                                (me?.name?.trim()?.[0] ?? "S").toUpperCase()
+                            )}
                         </div>
-                    </div>
+                    </Link>
                 </header>
 
                 {/* Page content */}

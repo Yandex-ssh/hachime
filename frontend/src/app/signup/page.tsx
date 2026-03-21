@@ -17,6 +17,12 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_URL ??
+    (typeof window !== "undefined"
+      ? `http://${window.location.hostname}:4000`
+      : "http://localhost:4000");
+
   useEffect(() => {
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -31,6 +37,11 @@ export default function SignupPage() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
+    if (e.target.name === "student_number" && !/^\d*$/.test(e.target.value)) {
+      setError("Student number must contain numbers only");
+      return;
+    }
+
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
   };
@@ -42,6 +53,10 @@ export default function SignupPage() {
     // Validation
     if (!formData.student_number.trim()) {
       setError("Student number is required");
+      return;
+    }
+    if (!/^\d+$/.test(formData.student_number.trim())) {
+      setError("Student number must contain numbers only");
       return;
     }
     if (!formData.name.trim()) {
@@ -60,7 +75,7 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:4000/auth/register", {
+      const response = await fetch(`${apiBaseUrl}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -124,7 +139,9 @@ export default function SignupPage() {
               name="student_number"
               type="text"
               required
-              placeholder="2025-12345"
+              placeholder="202512345"
+              inputMode="numeric"
+              pattern="\d+"
               value={formData.student_number}
               onChange={handleChange}
               className="bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"

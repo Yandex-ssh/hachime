@@ -9,10 +9,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: admin123
       MYSQL_DATABASE: tmc_career
-      MYSQL_USER: root
-      MYSQL_PASSWORD: admin123
     ports:
-      - '3306:3306'
+      - '3307:3306'
     volumes:
       - db_data:/var/lib/mysql
       - ./frontend/database/schema-mysql.sql:/docker-entrypoint-initdb.d/schema.sql:ro

@@ -1,4 +1,12 @@
-import { Controller, Post, Get, Body, Request, UseGuards, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Request,
+  UseGuards,
+  Patch,
+} from '@nestjs/common';
 import { StudentsService } from './students.service';
 import { SaveSubjectsDto } from './dto/save-subjects.dto';
 import { SaveSubjectsByNameDto } from './dto/save-subjects-by-name.dto';
@@ -19,7 +27,10 @@ export class StudentsController {
 
   @UseGuards(JwtAuthGuard)
   @Post('subjects/by-names')
-  async saveSubjectsByName(@Request() req, @Body() body: SaveSubjectsByNameDto) {
+  async saveSubjectsByName(
+    @Request() req,
+    @Body() body: SaveSubjectsByNameDto,
+  ) {
     return this.studentsService.saveSubjectsByName(req.user.sub, body);
   }
 
@@ -33,6 +44,24 @@ export class StudentsController {
   @Get('me')
   async getMe(@Request() req) {
     return this.studentsService.getMeProfile(req.user.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me/skills')
+  async getMySkills(@Request() req) {
+    return this.studentsService.getMySkills(req.user.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me/pathway')
+  async getMyPathway(@Request() req) {
+    return this.studentsService.getMyPathway(req.user.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me/subjects')
+  async getMySubjects(@Request() req) {
+    return this.studentsService.getMySubjects(req.user.sub);
   }
 
   @UseGuards(JwtAuthGuard)

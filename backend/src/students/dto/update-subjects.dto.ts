@@ -6,4 +6,3 @@ export class UpdateStudentSubjectsDto {
   @IsString({ each: true })
   subjects: string[];
 }
-

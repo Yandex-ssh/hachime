@@ -1,53 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-// ─── DATA ─────────────────────────────────────────────────────────────────────
-const skillCategories = [
-    {
-        id: "programming",
-        label: "Programming",
-        icon: "💻",
-        skills: [
-            { name: "JavaScript", level: "Beginner", needed: ["Software Engineer", "Web Developer"], priority: "high", resource: "https://javascript.info" },
-            { name: "Python", level: "None", needed: ["Data Analyst", "Software Engineer"], priority: "high", resource: "https://python.org" },
-            { name: "SQL", level: "Intermediate", needed: ["Data Analyst", "Database Admin"], priority: "medium", resource: "https://sqlzoo.net" },
-            { name: "C# / .Net", level: "Beginner", needed: ["Software Engineer"], priority: "medium", resource: "https://dotnet.microsoft.com" },
-        ],
-    },
-    {
-        id: "web",
-        label: "Web Development",
-        icon: "🌐",
-        skills: [
-            { name: "HTML & CSS", level: "Intermediate", needed: ["Web Developer"], priority: "medium", resource: "https://developer.mozilla.org" },
-            { name: "React", level: "None", needed: ["Web Developer", "Software Engineer"], priority: "high", resource: "https://react.dev" },
-            { name: "REST APIs", level: "None", needed: ["Software Engineer", "Web Developer"], priority: "high", resource: "https://restfulapi.net" },
-            { name: "Responsive Design", level: "Beginner", needed: ["Web Developer"], priority: "medium", resource: "https://web.dev" },
-        ],
-    },
-    {
-        id: "data",
-        label: "Data & Analytics",
-        icon: "📊",
-        skills: [
-            { name: "Data Visualization", level: "None", needed: ["Data Analyst"], priority: "high", resource: "https://tableau.com" },
-            { name: "Excel / Spreadsheets", level: "Intermediate", needed: ["Data Analyst", "Business Analyst"], priority: "low", resource: "https://support.microsoft.com" },
-            { name: "Statistics", level: "Intermediate", needed: ["Data Analyst"], priority: "medium", resource: "https://khan academy.org" },
-        ],
-    },
-    {
-        id: "tools",
-        label: "Tools & Soft Skills",
-        icon: "🛠️",
-        skills: [
-            { name: "Git & GitHub", level: "None", needed: ["Software Engineer", "Web Developer"], priority: "high", resource: "https://github.com" },
-            { name: "Problem Solving", level: "Intermediate", needed: ["All careers"], priority: "high", resource: "https://leetcode.com" },
-            { name: "Communication", level: "Intermediate", needed: ["All careers"], priority: "medium", resource: "" },
-            { name: "Project Management", level: "Beginner", needed: ["Software Engineer", "Network Engineer"], priority: "low", resource: "" },
-        ],
-    },
-];
+type ApiSkill = {
+    name: string;
+    level: "None" | "Beginner" | "Intermediate" | "Advanced";
+    priority: "low" | "medium" | "high" | null;
+    resource: string | null;
+};
+
+type ApiCategory = {
+    id: string;
+    label: string;
+    icon: string;
+    skills: ApiSkill[];
+};
+
+type SkillsResponse = {
+    target_career: { title: string; icon: string | null } | null;
+    derived_level: "None" | "Beginner" | "Intermediate" | "Advanced";
+    categories: ApiCategory[];
+    gap?: { missing_subjects: { subject_id: number; subject_name: string }[] };
+    message?: string;
+};
 
 const levelColors: Record<string, string> = {
     None: "bg-red-500/10 text-red-400 border-red-500/20",
@@ -80,23 +55,59 @@ const priorityColors: Record<string, string> = {
 export default function SkillsPage() {
     const [activeCategory, setActiveCategory] = useState("all");
     const [priorityFilter, setPriorityFilter] = useState("all");
+    const [data, setData] = useState<SkillsResponse | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string>("");
 
-    const allSkills = skillCategories.flatMap((cat) =>
-        cat.skills.map((skill) => ({ ...skill, category: cat.label, icon: cat.icon }))
+    const apiBaseUrl =
+        process.env.NEXT_PUBLIC_API_URL ??
+        (typeof window !== "undefined" ? `http://${window.location.hostname}:4000` : "http://localhost:4000");
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                setError("");
+                const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+                if (!token) {
+                    setData({
+                        target_career: null,
+                        derived_level: "None",
+                        categories: [],
+                        message: "Please login to see your personalized skills.",
+                    });
+                    setLoading(false);
+                    return;
+                }
+
+                const res = await fetch(`${apiBaseUrl}/students/me/skills`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const json = await res.json();
+                if (!res.ok) throw new Error(json.message || "Failed to load skills");
+                setData(json);
+            } catch (e) {
+                setError(e instanceof Error ? e.message : "Failed to load skills");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        load();
+    }, [apiBaseUrl]);
+
+    const skillCategories = data?.categories ?? [];
+    const allSkills = useMemo(
+        () =>
+            skillCategories.flatMap((cat) =>
+                cat.skills.map((skill) => ({
+                    ...skill,
+                    category: cat.label,
+                    icon: cat.icon,
+                    needed: data?.target_career?.title ? [data.target_career.title] : [],
+                }))
+            ),
+        [skillCategories, data?.target_career?.title]
     );
-
-    const filteredSkills = allSkills.filter((skill) => {
-        const categoryMatch =
-            activeCategory === "all" ||
-            skillCategories.find((c) => c.id === activeCategory)?.skills.includes(
-                skillCategories
-                    .find((c) => c.id === activeCategory)
-                    ?.skills.find((s) => s.name === skill.name) as typeof skill
-            );
-        const priorityMatch =
-            priorityFilter === "all" || skill.priority === priorityFilter;
-        return categoryMatch && priorityMatch;
-    });
 
     const displaySkills =
         activeCategory === "all"
@@ -108,6 +119,7 @@ export default function SkillsPage() {
                     ...s,
                     category: skillCategories.find((c) => c.id === activeCategory)!.label,
                     icon: skillCategories.find((c) => c.id === activeCategory)!.icon,
+                    needed: data?.target_career?.title ? [data.target_career.title] : [],
                 })) || [];
 
     // Summary stats
@@ -117,6 +129,14 @@ export default function SkillsPage() {
     const intermediateSkill = allSkills.filter((s) => s.level === "Intermediate").length;
     const highPriority = allSkills.filter((s) => s.priority === "high").length;
 
+    if (loading) {
+        return (
+            <div className="min-h-[60vh] flex items-center justify-center">
+                <p className="text-gray-400 text-sm">Loading skills...</p>
+            </div>
+        );
+    }
+
     return (
         <div className="max-w-5xl mx-auto space-y-8">
 
@@ -124,9 +144,17 @@ export default function SkillsPage() {
             <div>
                 <h2 className="text-2xl font-bold text-white">Skills to Improve</h2>
                 <p className="text-gray-400 text-sm mt-1">
-                    Based on your career matches, here are the skills you should develop.
+                    {data?.target_career
+                        ? <>For your goal: <span className="text-indigo-300 font-medium">{data.target_career.icon} {data.target_career.title}</span></>
+                        : (data?.message ?? "Set a career goal in Profile to get a personalized skill plan.")}
                 </p>
             </div>
+
+            {error && (
+                <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3 text-sm">
+                    {error}
+                </div>
+            )}
 
             {/* ── SUMMARY CARDS ── */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -192,6 +220,11 @@ export default function SkillsPage() {
 
             {/* ── SKILLS LIST ── */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {displaySkills.length === 0 && (
+                    <div className="md:col-span-2 text-center py-10 text-gray-600 text-sm border border-gray-800 rounded-2xl bg-gray-900">
+                        {data?.target_career ? "No skills found for this career yet." : "Set a career goal to see skills."}
+                    </div>
+                )}
                 {displaySkills.map((skill) => (
                     <div
                         key={skill.name}
@@ -204,8 +237,8 @@ export default function SkillsPage() {
                                 <p className="text-gray-500 text-xs mt-0.5">{skill.category}</p>
                             </div>
                             <div className="flex gap-2">
-                                <span className={`text-xs px-2.5 py-1 rounded-full border font-medium ${priorityColors[skill.priority]}`}>
-                                    {skill.priority} priority
+                                <span className={`text-xs px-2.5 py-1 rounded-full border font-medium ${priorityColors[(skill.priority ?? "low") as "low" | "medium" | "high"]}`}>
+                                    {(skill.priority ?? "low")} priority
                                 </span>
                             </div>
                         </div>
@@ -227,7 +260,7 @@ export default function SkillsPage() {
                         <div className="mb-4">
                             <p className="text-gray-600 text-xs mb-1.5">Needed for:</p>
                             <div className="flex flex-wrap gap-1.5">
-                                {skill.needed.map((career) => (
+                                {(skill.needed ?? []).map((career) => (
                                     <span key={career} className="bg-gray-800 border border-gray-700 text-gray-400 text-xs px-2 py-0.5 rounded-md">
                                         {career}
                                     </span>

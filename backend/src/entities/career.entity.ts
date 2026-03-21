@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity('careers')
 export class Career {
@@ -23,10 +28,10 @@ export class Career {
   @Column({ length: 10, nullable: true })
   growth_rate: string;
 
-  @Column({ 
-    type: 'enum', 
+  @Column({
+    type: 'enum',
     enum: ['Low', 'Medium', 'High', 'Very High'],
-    nullable: true 
+    nullable: true,
   })
   demand_level: string;
 

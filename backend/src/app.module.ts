@@ -5,6 +5,13 @@ import { getDatabaseConfig } from './config/database.config';
 import { AuthModule } from './auth/auth.module';
 import { StudentsModule } from './students/students.module';
 import { CareersModule } from './careers/careers.module';
+import { AlumniModule } from './alumni/alumni.module';
+import { TrendsModule } from './trends/trends.module';
+import { JobsModule } from './jobs/jobs.module';
+import { ResourcesModule } from './resources/resources.module';
+import { InternshipsModule } from './internships/internships.module';
+import { ProgramsModule } from './programs/programs.module';
+import { SubjectsModule } from './subjects/subjects.module';
 
 @Module({
   imports: [
@@ -17,8 +24,15 @@ import { CareersModule } from './careers/careers.module';
       inject: [ConfigService],
     }),
     AuthModule,
-    StudentsModule,  
+    StudentsModule,
     CareersModule,
+    ProgramsModule,
+    SubjectsModule,
+    AlumniModule,
+    TrendsModule,
+    JobsModule,
+    ResourcesModule,
+    InternshipsModule,
   ],
 })
 export class AppModule {}

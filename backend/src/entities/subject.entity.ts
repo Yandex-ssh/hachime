@@ -41,4 +41,3 @@ export class Subject {
   @CreateDateColumn()
   created_at: Date;
 }
-

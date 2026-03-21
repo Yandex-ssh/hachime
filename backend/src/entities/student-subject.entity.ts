@@ -49,4 +49,3 @@ export class StudentSubject {
   @UpdateDateColumn()
   updated_at: Date;
 }
-

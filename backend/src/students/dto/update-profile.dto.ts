@@ -18,5 +18,8 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   email?: string;
-}
 
+  @IsOptional()
+  @IsString()
+  profile_picture_url?: string;
+}

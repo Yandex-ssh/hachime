@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  JoinColumn,
+} from 'typeorm';
 import { Program } from './program.entity';
 import { Career } from './career.entity';
 
@@ -35,6 +43,9 @@ export class Student {
 
   @Column({ length: 255, nullable: true })
   email: string;
+
+  @Column({ type: 'text', nullable: true })
+  profile_picture_url: string;
 
   @CreateDateColumn()
   created_at: Date;

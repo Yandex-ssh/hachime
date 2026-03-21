@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -17,7 +21,7 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const { student_number, password } = loginDto;
-    
+
     // Find student with program info
     const student = await this.studentsRepository.findOne({
       where: { student_number },
@@ -29,8 +33,11 @@ export class AuthService {
     }
 
     // Verify password
-    const isPasswordValid = await bcrypt.compare(password, student.password_hash);
-    
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      student.password_hash,
+    );
+
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -44,11 +51,11 @@ export class AuthService {
     });
 
     // Generate JWT token
-    const payload = { 
-      sub: student.student_id, 
-      student_number: student.student_number 
+    const payload = {
+      sub: student.student_id,
+      student_number: student.student_number,
     };
-    
+
     return {
       access_token: this.jwtService.sign(payload),
       is_first_login: isFirstLogin,
@@ -83,7 +90,7 @@ export class AuthService {
 
     await this.studentsRepository.save(student);
 
-    return { 
+    return {
       message: 'Registration successful',
       student_number: student.student_number,
     };

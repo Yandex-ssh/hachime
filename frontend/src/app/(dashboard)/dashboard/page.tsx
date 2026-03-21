@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 const matchColors: Record<string, string> = {
     indigo: "bg-indigo-600/20 border-indigo-500/30 text-indigo-400",
@@ -28,6 +29,9 @@ export default function DashboardPage() {
     const [student, setStudent] = useState<any>(null);
     const [recommendedCareers, setRecommendedCareers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [careers, setCareers] = useState<Array<{ career_id: number; title: string; icon?: string | null }>>([]);
+    const [savingCareerGoal, setSavingCareerGoal] = useState(false);
+    const [careerError, setCareerError] = useState("");
 
     const apiBaseUrl =
         process.env.NEXT_PUBLIC_API_URL ??
@@ -55,6 +59,13 @@ export default function DashboardPage() {
 
                 setStudent(profileData);
 
+                // Load careers for career-goal dropdown
+                const careersListRes = await fetch(`${apiBaseUrl}/careers`);
+                const careersListData = await careersListRes.json();
+                if (careersListRes.ok && Array.isArray(careersListData)) {
+                    setCareers(careersListData);
+                }
+
                 // Fetch career matches from backend using student_id
                 const careersRes = await fetch(`${apiBaseUrl}/careers/matches/${profileData.student_id}`);
                 const careersData = await careersRes.json();
@@ -79,6 +90,34 @@ export default function DashboardPage() {
 
         load();
     }, [apiBaseUrl]);
+
+    const handleSaveCareerGoal = async (careerId: number | null) => {
+        setCareerError("");
+        try {
+            const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+            if (!token) {
+                setCareerError("Not authenticated");
+                return;
+            }
+
+            setSavingCareerGoal(true);
+            const res = await fetch(`${apiBaseUrl}/students/me/career-goal`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ target_career_id: careerId }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || "Failed to set career goal");
+            setStudent(data);
+        } catch (e) {
+            setCareerError(e instanceof Error ? e.message : "Failed to set career goal");
+        } finally {
+            setSavingCareerGoal(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -146,6 +185,98 @@ export default function DashboardPage() {
                         <p className="text-indigo-400 text-xs mt-1.5">{progressPercent}% complete</p>
                     </div>
                 </div>
+            </div>
+
+            {/* ── CAREER GOAL + GAP ANALYSIS (moved from Profile) ── */}
+            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                    <div>
+                        <h3 className="text-white font-bold text-lg">Career goal</h3>
+                        <p className="text-gray-500 text-sm">
+                            Choose a target career to track your progress and see what’s missing.
+                        </p>
+                    </div>
+                    <div className="w-full md:w-80">
+                        <select
+                            aria-label="Select career goal"
+                            value={student?.career_goal?.career_id ?? ""}
+                            onChange={(e) => {
+                                const v = e.target.value;
+                                const id = v === "" ? null : parseInt(v, 10);
+                                handleSaveCareerGoal(id);
+                            }}
+                            disabled={savingCareerGoal}
+                            className="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-60"
+                        >
+                            <option value="">No target career</option>
+                            {careers.map((c) => (
+                                <option key={c.career_id} value={c.career_id}>
+                                    {c.icon} {c.title}
+                                </option>
+                            ))}
+                        </select>
+                        {careerError && (
+                            <p className="text-red-400 text-xs mt-2">{careerError}</p>
+                        )}
+                    </div>
+                </div>
+
+                {student?.career_goal && (
+                    <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Progress */}
+                        <div className="bg-indigo-600/10 border border-indigo-500/20 rounded-xl p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-lg">{student.career_goal.icon}</span>
+                                <span className="text-indigo-300 font-medium text-sm">{student.career_goal.title}</span>
+                            </div>
+                            <div className="flex justify-between text-xs text-gray-400 mb-1.5">
+                                <span>Key subjects completed</span>
+                                <span className="text-white font-semibold">
+                                    {student.career_goal.progress.completed} / {student.career_goal.progress.total}
+                                </span>
+                            </div>
+                            <div className="w-full bg-gray-800 rounded-full h-2">
+                                <div
+                                    className="bg-indigo-500 h-2 rounded-full transition-all"
+                                    style={{ width: `${student.career_goal.progress.percent}%` }}
+                                />
+                            </div>
+                            <p className="text-indigo-400 text-[11px] mt-1">
+                                {student.career_goal.progress.percent}% toward this career
+                            </p>
+                        </div>
+
+                        {/* Gap analysis */}
+                        <div className="bg-gray-800/40 border border-gray-700/60 rounded-xl p-4">
+                            <p className="text-white font-semibold text-sm mb-1">Gap analysis</p>
+                            {student.career_goal.progress.total === 0 ? (
+                                <p className="text-gray-400 text-xs">
+                                    No key subjects are mapped for this career yet.
+                                </p>
+                            ) : (student.career_goal.gap?.missing_subjects?.length ?? 0) === 0 ? (
+                                <p className="text-emerald-300 text-xs">
+                                    You’ve completed all mapped key subjects for this career.
+                                </p>
+                            ) : (
+                                <>
+                                    <p className="text-gray-400 text-xs mb-2">
+                                        To fully match this career, you still need these key subjects:
+                                    </p>
+                                    <ul className="flex flex-wrap gap-1.5">
+                                        {student.career_goal.gap.missing_subjects.map((s: any) => (
+                                            <li
+                                                key={s.subject_id}
+                                                className="bg-gray-900 border border-indigo-500/30 text-gray-200 text-[11px] px-2 py-0.5 rounded-full"
+                                            >
+                                                {s.subject_name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* ── LIKED SUBJECTS SUMMARY ── */}
@@ -230,9 +361,9 @@ export default function DashboardPage() {
                     { label: "View Career Paths", href: "/pathway", icon: "🗺️" },
                     { label: "Skills to Improve", href: "/skills", icon: "⚡" },
                     { label: "Find Internships", href: "/internships", icon: "💼" },
-                    { label: "Alumni Tracks", href: "/alumni", icon: "🎓" },
+                    { label: "Job Listings", href: "/jobs", icon: "🧾" },
                 ].map((action) => (
-                    <a
+                    <Link
                         key={action.label}
                         href={action.href}
                         className="bg-gray-900 border border-gray-800 hover:border-indigo-500/40 hover:bg-gray-800 rounded-xl p-4 text-center transition group"
@@ -241,7 +372,7 @@ export default function DashboardPage() {
                         <p className="text-gray-400 group-hover:text-white text-xs font-medium transition">
                             {action.label}
                         </p>
-                    </a>
+                    </Link>
                 ))}
             </div>
 
