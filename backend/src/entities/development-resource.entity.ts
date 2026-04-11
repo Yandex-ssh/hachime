@@ -40,6 +40,9 @@ export class DevelopmentResource {
   program: Program;
 
   @Column({ type: 'json', nullable: true })
+  program_ids: number[] | null;
+
+  @Column({ type: 'json', nullable: true })
   skill_ids: number[] | null;
 
   @Column({

@@ -16,4 +16,13 @@ export class Skill {
 
   @Column({ type: 'text', nullable: true })
   learning_resource_url: string | null;
+
+  @Column({ type: 'json', nullable: true })
+  program_ids: number[] | null;
+
+  @Column({ type: 'json', nullable: true })
+  expanded_skills: any | null;
+
+  @Column({ type: 'json', nullable: true })
+  subject_ids: number[] | null;
 }

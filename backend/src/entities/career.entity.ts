@@ -38,6 +38,12 @@ export class Career {
   @Column({ type: 'json', nullable: true })
   job_examples: string[];
 
+  @Column({ type: 'int', nullable: true })
+  program_id: number;
+
+  @Column({ type: 'json', nullable: true })
+  program_ids: number[] | null;
+
   @CreateDateColumn()
   created_at: Date;
 }

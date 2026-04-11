@@ -11,6 +11,7 @@ import { SaveSubjectsByNameDto } from './dto/save-subjects-by-name.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { SetCareerGoalDto } from './dto/set-career-goal.dto';
+import { UpdateStudentAdminDto } from './dto/update-student-admin.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -79,29 +80,39 @@ export class StudentsService {
       ...(liked_subject_ids ?? []),
     ]);
 
-    for (const subjectId of set) {
-      const isFinished = (finished_subject_ids ?? []).includes(subjectId);
-      const isLiked = (liked_subject_ids ?? []).includes(subjectId);
-      await this.studentsRepository.query(
-        'INSERT INTO student_subjects (student_id, subject_id, is_finished, is_liked) VALUES (?, ?, ?, ?)',
-        [studentId, subjectId, isFinished, isLiked],
-      );
+    if (set.size === 0) {
+      return { message: 'Subjects saved successfully' };
     }
+
+    // #5 – Bulk INSERT instead of N+1 individual queries
+    const values: unknown[] = [];
+    const placeholders: string[] = [];
+    for (const subjectId of set) {
+      const isFinished = (finished_subject_ids ?? []).includes(subjectId) ? 1 : 0;
+      const isLiked = (liked_subject_ids ?? []).includes(subjectId) ? 1 : 0;
+      placeholders.push('(?, ?, ?, ?)');
+      values.push(studentId, subjectId, isFinished, isLiked);
+    }
+    await this.studentsRepository.query(
+      `INSERT INTO student_subjects (student_id, subject_id, is_finished, is_liked) VALUES ${placeholders.join(', ')}`,
+      values,
+    );
 
     return { message: 'Subjects saved successfully' };
   }
 
   async getProfile(studentId: number) {
+    // #11 – Fetch student once and pass to getMeProfile to avoid double query
     const student = await this.studentsRepository.findOne({
       where: { student_id: studentId },
-      relations: ['program'],
+      relations: ['program', 'targetCareer'],
     });
+    if (!student) return null;
 
-    if (!student) {
-      return null;
-    }
+    const rich = await this.getMeProfile(studentId).catch(() => null);
+    if (!rich) return null;
 
-    // Get finished and liked subjects
+    // Get finished subjects with like info for the admin subject modal
     const finishedSubjects = await this.studentsRepository.query(
       `SELECT s.subject_id, s.subject_name, ss.is_liked 
        FROM student_subjects ss
@@ -111,12 +122,8 @@ export class StudentsService {
     );
 
     return {
-      student_id: student.student_id,
-      name: student.name,
-      student_number: student.student_number,
-      program: student.program?.program_name,
-      year_level: student.year_level,
-      profile_picture_url: student.profile_picture_url ?? null,
+      ...rich,
+      isActive: student.isActive ?? true,
       finished_subjects: finishedSubjects,
     };
   }
@@ -135,9 +142,49 @@ export class StudentsService {
       'SELECT COUNT(*) as finished FROM student_subjects WHERE student_id = ? AND is_finished = true',
       [studentId],
     );
-    const [{ total = 0 } = {}] = await this.studentsRepository.query(
-      'SELECT COUNT(*) as total FROM subjects',
-    );
+
+    // Compute the cumulative subject goal using exactly what's currently in the DB
+    // up to the END of the student's current year level.
+    const yearLevel = student.year_level ?? null;
+    const semester = student.semester ?? null;
+    const programId = student.program_id ?? null;
+
+    let total = 0;
+    let semesterLabel: string | null = null;
+
+    if (yearLevel && programId) {
+      const [{ total: cumulativeTotal = 0 } = {}] =
+        await this.studentsRepository.query(
+          `SELECT COUNT(*) as total FROM subjects
+           WHERE program_id = ?
+             AND year_level <= ?`,
+          [programId, yearLevel],
+        );
+      total = Number(cumulativeTotal) || 0;
+
+      const ordinalYear =
+        yearLevel === 1
+          ? '1st'
+          : yearLevel === 2
+            ? '2nd'
+            : yearLevel === 3
+              ? '3rd'
+              : `${yearLevel}th`;
+      
+      if (semester) {
+        const ordinalSem = semester === 1 ? '1st' : '2nd';
+        semesterLabel = `${ordinalYear} Year ${ordinalSem} Semester`;
+      } else {
+        semesterLabel = `${ordinalYear} Year`;
+      }
+    } else {
+      const [{ total: allTotal = 0 } = {}] =
+        await this.studentsRepository.query(
+          'SELECT COUNT(*) as total FROM subjects',
+        );
+      total = Number(allTotal) || 0;
+    }
+
 
     let careerGoal: {
       career_id: number;
@@ -195,11 +242,13 @@ export class StudentsService {
       profile_picture_url: student.profile_picture_url ?? null,
       program_id: student.program_id ?? undefined,
       year_level: student.year_level ?? undefined,
+      semester: student.semester ?? undefined,
       program: student.program?.program_name,
       program_code: student.program?.program_code,
       progress: {
         finishedSubjects: Number(finished) || 0,
-        totalSubjects: Number(total) || 0,
+        totalSubjects: total,
+        semesterLabel,
       },
       career_goal: careerGoal,
     };
@@ -233,11 +282,10 @@ export class StudentsService {
          s.skill_name,
          s.category,
          s.learning_resource_url,
-         cs.priority
+         s.expanded_skills
        FROM career_skills cs
        JOIN skills s ON s.skill_id = cs.skill_id
-       WHERE cs.career_id = ?
-       ORDER BY FIELD(cs.priority, 'high','medium','low'), s.skill_name ASC`,
+       WHERE cs.career_id = ?`,
       [careerGoal.career_id],
     );
 
@@ -247,8 +295,8 @@ export class StudentsService {
     const subjectSkillProgressRows = await this.studentsRepository.query(
       `SELECT 
          cs.skill_id,
-         SUM(CASE WHEN ss.is_finished = true THEN (ssk.weight) ELSE 0 END) AS earned_weight,
-         SUM(ssk.weight) AS total_weight
+         SUM(CASE WHEN ss.is_finished = true THEN (ssk.weight * (CASE WHEN ss.is_liked THEN 1.5 ELSE 1 END)) ELSE 0 END) AS earned_weight,
+         SUM(ssk.weight * (CASE WHEN ss.is_liked THEN 1.5 ELSE 1 END)) AS total_weight
        FROM career_subjects csub
        JOIN subject_skills ssk ON ssk.subject_id = csub.subject_id
        JOIN career_skills cs ON cs.skill_id = ssk.skill_id AND cs.career_id = csub.career_id
@@ -261,12 +309,16 @@ export class StudentsService {
       number,
       'None' | 'Beginner' | 'Intermediate' | 'Advanced'
     >();
+    const dynamicPriorityMap = new Map<number, 'high'|'medium'|'low'>();
+
     for (const r of subjectSkillProgressRows as any[]) {
       const total = Number(r.total_weight) || 0;
       if (total <= 0) continue;
       const earned = Number(r.earned_weight) || 0;
       const pct = Math.round((earned / total) * 100);
+      
       perSkillLevel.set(Number(r.skill_id), this.mapPercentToLevel(pct));
+      dynamicPriorityMap.set(Number(r.skill_id), pct < 100 ? 'high' : 'low');
     }
 
     const categoriesMap = new Map<
@@ -280,6 +332,7 @@ export class StudentsService {
           level: 'None' | 'Beginner' | 'Intermediate' | 'Advanced';
           priority: 'low' | 'medium' | 'high' | null;
           resource: string | null;
+          expanded_skills?: any;
         }>;
       }
     >();
@@ -313,9 +366,20 @@ export class StudentsService {
       bucket.skills.push({
         name: r.skill_name,
         level: perSkillLevel.get(Number(r.skill_id)) ?? derivedLevel,
-        priority: r.priority ?? null,
+        priority: dynamicPriorityMap.get(Number(r.skill_id)) ?? 'medium',
         resource: r.learning_resource_url ?? null,
+        expanded_skills: typeof r.expanded_skills === 'string' ? JSON.parse(r.expanded_skills) : r.expanded_skills,
       });
+    }
+
+    const priorityWeight: Record<string, number> = { high: 3, medium: 2, low: 1 };
+    for (const bucket of categoriesMap.values()) {
+        bucket.skills.sort((a, b) => {
+            const pA = priorityWeight[a.priority as string] ?? 0;
+            const pB = priorityWeight[b.priority as string] ?? 0;
+            if (pA !== pB) return pB - pA;
+            return a.name.localeCompare(b.name);
+        });
     }
 
     return {
@@ -348,8 +412,7 @@ export class StudentsService {
       `SELECT s.skill_name
        FROM career_skills cs
        JOIN skills s ON s.skill_id = cs.skill_id
-       WHERE cs.career_id = ?
-       ORDER BY FIELD(cs.priority, 'high','medium','low'), s.skill_name ASC`,
+       WHERE cs.career_id = ?`,
       [careerGoal.career_id],
     );
 
@@ -475,6 +538,7 @@ export class StudentsService {
     }
     if (dto.program_id !== undefined) patch.program_id = dto.program_id as any;
     if (dto.year_level !== undefined) patch.year_level = dto.year_level as any;
+    if (dto.semester !== undefined) patch.semester = dto.semester as any;
 
     if (Object.keys(patch).length > 0) {
       await this.studentsRepository.update(studentId, patch);
@@ -530,4 +594,52 @@ export class StudentsService {
 
     return { message: 'Password updated successfully' };
   }
+
+  async getAllStudentsAdmin(query?: string) {
+    const qb = this.studentsRepository.createQueryBuilder('student')
+      .leftJoinAndSelect('student.program', 'program')
+      .leftJoinAndSelect('student.targetCareer', 'career')
+      .where('student.isAdmin = :isAdmin', { isAdmin: false });
+
+    if (query) {
+      qb.andWhere('(student.name LIKE :query OR student.student_number LIKE :query OR student.email LIKE :query)', { query: `%${query}%` });
+    }
+
+    return qb.getMany();
+  }
+
+  // #8 – Use typed DTO instead of `any` to prevent privilege escalation
+  async updateStudentAdmin(studentId: number, dto: UpdateStudentAdminDto) {
+    const student = await this.studentsRepository.findOne({ where: { student_id: studentId } });
+    if (!student) throw new NotFoundException('Student not found');
+
+    await this.studentsRepository.update(studentId, dto as Partial<Student>);
+    return this.getProfile(studentId);
+  }
+
+  // #10 – Renamed from deleteStudentAdmin; verb is more accurate
+  async deactivateStudentAdmin(studentId: number) {
+    const student = await this.studentsRepository.findOne({ where: { student_id: studentId } });
+    if (!student) throw new NotFoundException('Student not found');
+
+    await this.studentsRepository.update(studentId, { isActive: false } as any);
+    return { message: 'Student deactivated' };
+  }
+
+  async deleteStudentPermanently(studentId: number) {
+    const student = await this.studentsRepository.findOne({ where: { student_id: studentId } });
+    if (!student) throw new NotFoundException('Student not found');
+
+    await this.studentsRepository.delete(studentId);
+    return { message: 'Student permanently deleted' };
+  }
+
+  async activateStudentAdmin(studentId: number) {
+    const student = await this.studentsRepository.findOne({ where: { student_id: studentId } });
+    if (!student) throw new NotFoundException('Student not found');
+    
+    await this.studentsRepository.update(studentId, { isActive: true } as any);
+    return { message: 'Student activated successfully' };
+  }
+
 }

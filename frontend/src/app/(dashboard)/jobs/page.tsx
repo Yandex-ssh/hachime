@@ -53,7 +53,6 @@ const typeColors: Record<string, string> = {
 
 export default function JobsPage() {
   const [typeFilter, setTypeFilter] = useState<"All" | "On-site" | "Hybrid" | "Remote">("All");
-  const [sortBy, setSortBy] = useState<"recent" | "deadline">("recent");
   const [query, setQuery] = useState("");
   const [saved, setSaved] = useState<number[]>([]);
   const [jobs, setJobs] = useState<ApiJob[]>([]);
@@ -140,14 +139,9 @@ export default function JobsPage() {
 
   const filtered = useMemo(() => {
     const list = [...jobs];
-    if (sortBy === "deadline") {
-      list.sort((a, b) => (a.deadline ?? "9999-12-31").localeCompare(b.deadline ?? "9999-12-31"));
-      return list;
-    }
-    // recent
     list.sort((a, b) => (b.posted_at ?? "").localeCompare(a.posted_at ?? ""));
     return list;
-  }, [jobs, sortBy]);
+  }, [jobs]);
 
   const toggleSave = async (id: number) => {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -169,7 +163,6 @@ export default function JobsPage() {
     }
   };
 
-  const closingSoon = filtered.filter((j) => !!j.deadline && j.deadline <= new Date().toISOString().slice(0, 10)).length;
   const finishedSet = useMemo(() => new Set((mySubjects?.finished_subjects ?? []).map((s) => s.subject_id)), [mySubjects]);
   const subjectNameById = useMemo(() => {
     const m = new Map<number, string>();
@@ -183,7 +176,7 @@ export default function JobsPage() {
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold text-white">Job Listings</h2>
-        <p className="text-gray-400 text-sm mt-1">Entry-level roles aligned to your program and progress.</p>
+        <p className="text-gray-400 text-sm mt-1">Roles aligned to your program and progress.</p>
       </div>
 
       {error && (
@@ -192,19 +185,6 @@ export default function JobsPage() {
         </div>
       )}
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { label: "Available", value: filtered.length, color: "text-white", bg: "bg-gray-800 border-gray-700" },
-          { label: "Closing Soon", value: closingSoon, color: "text-red-400", bg: "bg-red-500/5 border-red-500/20" },
-          { label: "Saved", value: saved.length, color: "text-yellow-400", bg: "bg-yellow-500/5 border-yellow-500/20" },
-        ].map((s) => (
-          <div key={s.label} className={`border rounded-2xl p-4 ${s.bg}`}>
-            <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-            <p className="text-gray-500 text-xs mt-1">{s.label}</p>
-          </div>
-        ))}
-      </div>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
@@ -226,15 +206,6 @@ export default function JobsPage() {
             </button>
           ))}
         </div>
-        <select
-          aria-label="Sort jobs"
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as any)}
-          className="bg-gray-800 border border-gray-700 text-gray-300 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option value="recent">Sort by: Most Recent</option>
-          <option value="deadline">Sort by: Deadline</option>
-        </select>
       </div>
 
       {/* Cards */}
@@ -289,7 +260,6 @@ export default function JobsPage() {
                     )}
                     <span className="bg-gray-800 border border-gray-700 text-gray-400 text-xs px-2.5 py-1 rounded-full">📍 {job.location ?? "—"}</span>
                     <span className="bg-gray-800 border border-gray-700 text-gray-400 text-xs px-2.5 py-1 rounded-full">🧾 {job.employment_type}</span>
-                    <span className="bg-gray-800 border border-gray-700 text-gray-400 text-xs px-2.5 py-1 rounded-full">⭐ {job.experience_level}</span>
                   </div>
 
                   <p className="text-gray-500 text-xs mb-3">{job.description ?? "—"}</p>
@@ -328,10 +298,7 @@ export default function JobsPage() {
                   )}
 
                   {/* Footer */}
-                  <div className="flex items-center justify-between">
-                    <p className="text-gray-600 text-xs">
-                      Deadline: <span className="text-gray-400">{job.deadline ?? "—"}</span>
-                    </p>
+                  <div className="flex items-center justify-end">
                     <div className="flex gap-2">
                       <button
                         onClick={() => toggleSave(job.job_id)}

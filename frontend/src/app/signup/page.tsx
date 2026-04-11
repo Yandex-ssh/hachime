@@ -11,6 +11,7 @@ export default function SignupPage() {
     name: "",
     password: "",
     confirmPassword: "",
+    email: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -37,12 +38,16 @@ export default function SignupPage() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    if (e.target.name === "student_number" && !/^\d*$/.test(e.target.value)) {
-      setError("Student number must contain numbers only");
-      return;
+    let { name, value } = e.target;
+
+    if (name === "student_number") {
+      value = value.replace(/[^\d-]/g, "");
+      if (value.length === 2 && formData.student_number.length === 1 && !value.includes("-")) {
+        value += "-";
+      }
     }
 
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [name]: value });
     setError("");
   };
 
@@ -55,12 +60,20 @@ export default function SignupPage() {
       setError("Student number is required");
       return;
     }
-    if (!/^\d+$/.test(formData.student_number.trim())) {
-      setError("Student number must contain numbers only");
+    if (!/^[\d-]+$/.test(formData.student_number.trim())) {
+      setError("Student number must contain numbers and hyphens only");
       return;
     }
     if (!formData.name.trim()) {
       setError("Full name is required");
+      return;
+    }
+    if (!formData.email.trim()) {
+      setError("Email is required");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      setError("Please enter a valid email address");
       return;
     }
     if (formData.password.length < 8) {
@@ -81,6 +94,7 @@ export default function SignupPage() {
         body: JSON.stringify({
           student_number: formData.student_number,
           name: formData.name,
+          email: formData.email,
           password: formData.password,
         }),
       });
@@ -139,9 +153,9 @@ export default function SignupPage() {
               name="student_number"
               type="text"
               required
-              placeholder="202512345"
-              inputMode="numeric"
-              pattern="\d+"
+              placeholder="23-12345"
+              inputMode="text"
+              pattern="[\d-]+"
               value={formData.student_number}
               onChange={handleChange}
               className="bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
@@ -160,6 +174,23 @@ export default function SignupPage() {
               required
               placeholder="Name"
               value={formData.name}
+              onChange={handleChange}
+              className="bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            />
+          </div>
+
+          {/* Email Address */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="email" className="text-sm font-medium text-gray-300">
+              Email Address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              placeholder="your@email.com"
+              value={formData.email}
               onChange={handleChange}
               className="bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />

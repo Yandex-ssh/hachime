@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Alumni } from '../entities/alumni.entity';
+import { CreateAlumniDto } from './dto/create-alumni.dto';
+import { UpdateAlumniDto } from './dto/update-alumni.dto';
 
 @Injectable()
 export class AlumniService {
@@ -10,11 +12,14 @@ export class AlumniService {
     private alumniRepository: Repository<Alumni>,
   ) {}
 
-  async list(programCode?: string) {
+  async list(programCode?: string, isAdmin = false) {
     const qb = this.alumniRepository
       .createQueryBuilder('a')
-      .leftJoinAndSelect('a.program', 'p')
-      .where('a.is_visible = true');
+      .leftJoinAndSelect('a.program', 'p');
+
+    if (!isAdmin) {
+      qb.where('a.is_visible = true');
+    }
 
     if (programCode && programCode !== 'All') {
       qb.andWhere('p.program_code = :programCode', { programCode });
@@ -71,5 +76,19 @@ export class AlumniService {
       hired_in_6_months_percent: hiredIn6Pct,
       companies: Number(companies) || 0,
     };
+  }
+
+  async create(dto: CreateAlumniDto) {
+    const alumni = this.alumniRepository.create(dto);
+    return this.alumniRepository.save(alumni);
+  }
+
+  async update(id: number, dto: UpdateAlumniDto) {
+    await this.alumniRepository.update(id, dto);
+    return this.alumniRepository.findOne({ where: { alumni_id: id } });
+  }
+
+  async delete(id: number) {
+    return this.alumniRepository.delete(id);
   }
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -7,9 +7,15 @@ import { AuthService } from './auth.service';
 import { Student } from '../entities/student.entity';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
+import { MailModule } from '../mail/mail.module';
+
+import { AdminGuard } from './admin.guard';
+
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forFeature([Student]),
+    MailModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -20,7 +26,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthGuard],
-  exports: [JwtModule, JwtAuthGuard],
+  providers: [AuthService, JwtAuthGuard, AdminGuard],
+  exports: [TypeOrmModule, JwtModule, JwtAuthGuard, AdminGuard, AuthService],
 })
 export class AuthModule {}

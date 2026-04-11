@@ -19,11 +19,13 @@ type ProfileResponse = {
   profile_picture_url?: string | null;
   program_id?: number;
   year_level?: number;
+  semester?: number;
   program?: string;
   program_code?: string;
   progress: {
     finishedSubjects: number;
     totalSubjects: number;
+    semesterLabel?: string | null;
   };
   career_goal?: CareerGoal | null;
 };
@@ -73,6 +75,9 @@ export default function ProfilePage() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [isEditingSubjects, setIsEditingSubjects] = useState(false);
+  const [subjectSearchQuery, setSubjectSearchQuery] = useState("");
 
   const apiBaseUrl =
     process.env.NEXT_PUBLIC_API_URL ??
@@ -304,9 +309,9 @@ export default function ProfilePage() {
       setError("Please select an image file.");
       return;
     }
-    const maxSizeBytes = 2 * 1024 * 1024;
+    const maxSizeBytes = 10 * 1024 * 1024;
     if (file.size > maxSizeBytes) {
-      setError("Image is too large. Please use an image up to 2MB.");
+      setError("Image is too large. Please use an image up to 10MB.");
       return;
     }
 
@@ -347,6 +352,7 @@ export default function ProfilePage() {
       setSuccess("Subjects updated");
       await loadMySubjects();
       await loadProfile();
+      setIsEditingSubjects(false);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to save subjects");
     } finally {
@@ -413,8 +419,8 @@ export default function ProfilePage() {
   const progressPercent =
     profile && profile.progress.totalSubjects > 0
       ? Math.round(
-          (profile.progress.finishedSubjects / profile.progress.totalSubjects) * 100,
-        )
+        (profile.progress.finishedSubjects / profile.progress.totalSubjects) * 100,
+      )
       : 0;
 
   if (loading) {
@@ -467,7 +473,7 @@ export default function ProfilePage() {
             </div>
             <div className="flex-1">
               <p className="text-white text-sm font-medium">Profile picture</p>
-              <p className="text-gray-400 text-xs mt-1">Upload an image (JPG/PNG/WebP, max 2MB).</p>
+              <p className="text-gray-400 text-xs mt-1">Upload an image (JPG/PNG/WebP, max 10MB).</p>
               <div className="flex items-center gap-2 mt-3">
                 <label className="inline-flex items-center justify-center bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white text-xs font-medium rounded-lg px-3 py-2 cursor-pointer transition">
                   Upload image
@@ -547,6 +553,31 @@ export default function ProfilePage() {
               </div>
             </div>
 
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="semester" className="text-xs font-medium text-gray-400">Current semester</label>
+              <select
+                id="semester"
+                defaultValue={profile?.semester ?? ""}
+                onChange={async (e) => {
+                  const val = e.target.value;
+                  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+                  if (!token || !val) return;
+                  await fetch(`${apiBaseUrl}/students/me`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ semester: Number(val) }),
+                  });
+                  await loadProfile();
+                }}
+                className="bg-gray-800 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full md:w-64"
+              >
+                <option value="">Select semester</option>
+                <option value="1">1st Semester</option>
+                <option value="2">2nd Semester</option>
+              </select>
+              <p className="text-gray-500 text-xs">Used to calculate your academic progress goal.</p>
+            </div>
+
             <div className="flex justify-end">
               <button
                 type="submit"
@@ -569,11 +600,10 @@ export default function ProfilePage() {
               </div>
               <button
                 type="button"
-                onClick={handleSaveSubjects}
-                disabled={savingSubjects}
-                className="bg-gray-800 hover:bg-gray-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl px-4 py-2 text-sm transition"
+                onClick={() => setIsEditingSubjects(true)}
+                className="bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl px-4 py-2 text-sm transition"
               >
-                {savingSubjects ? "Saving..." : "Save subjects"}
+                Edit subjects
               </button>
             </div>
 
@@ -584,64 +614,159 @@ export default function ProfilePage() {
             ) : subjects.length === 0 ? (
               <div className="text-gray-500 text-sm">No subjects found for your program yet.</div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Completed */}
-                <div className="bg-gray-800/40 border border-gray-700/60 rounded-xl p-4">
-                  <p className="text-white font-semibold text-sm mb-2">Completed</p>
-                  <div className="max-h-64 overflow-y-auto pr-1 space-y-2">
-                    {subjects.map((s) => {
-                      const checked = finishedSubjectIds.includes(s.subject_id);
-                      return (
-                        <label key={s.subject_id} className="flex items-start gap-2 text-sm text-gray-300 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={checked}
-                            onChange={(e) => {
-                              const next = e.target.checked
-                                ? Array.from(new Set([...finishedSubjectIds, s.subject_id]))
-                                : finishedSubjectIds.filter((id) => id !== s.subject_id);
-                              setFinishedSubjectIds(next);
-                            }}
-                            className="mt-1"
-                          />
-                          <span>
-                            {s.subject_name}
-                            {s.year_level ? (
-                              <span className="text-gray-500 text-xs"> · Y{s.year_level}{s.semester ? ` S${s.semester}` : ""}</span>
-                            ) : null}
-                          </span>
-                        </label>
-                      );
-                    })}
-                  </div>
+              <div className="bg-gray-800/40 border border-gray-700/60 rounded-xl p-4 mt-3">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-white font-semibold text-sm">Completed Subjects</p>
+                  <span className="text-gray-500 text-xs">{finishedSubjectIds.length} completed</span>
                 </div>
-
-                {/* Subject list */}
-                <div className="bg-gray-800/40 border border-gray-700/60 rounded-xl p-4">
-                  <p className="text-white font-semibold text-sm mb-1">Subject list</p>
-                  <p className="text-gray-500 text-xs mb-3">
-                    {finishedSubjectIds.length} completed · {subjects.length - finishedSubjectIds.length} remaining
-                  </p>
-                  <div className="max-h-64 overflow-y-auto pr-1 space-y-2">
+                {finishedSubjectIds.length === 0 ? (
+                  <p className="text-gray-500 text-xs">No subjects marked as completed yet.</p>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
                     {subjects
-                      .filter((s) => !finishedSubjectIds.includes(s.subject_id))
-                      .map((s) => {
-                        return (
-                          <div
-                            key={s.subject_id}
-                            className={`w-full text-left px-3 py-2 rounded-xl border text-sm transition
-                              bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600`}
-                          >
-                            {s.subject_name}
-                            {s.year_level ? (
-                              <span className="text-gray-500 text-xs"> · Y{s.year_level}{s.semester ? ` S${s.semester}` : ""}</span>
-                            ) : null}
-                          </div>
-                        );
-                      })}
-                    {subjects.length === finishedSubjectIds.length && (
-                      <p className="text-emerald-300 text-sm">All listed subjects are marked as completed.</p>
+                      .filter((s) => finishedSubjectIds.includes(s.subject_id))
+                      .slice(0, 12)
+                      .map((s) => (
+                        <span key={s.subject_id} className="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-2.5 py-1.5 rounded-lg">
+                          {s.subject_name}
+                        </span>
+                      ))}
+                    {finishedSubjectIds.length > 12 && (
+                      <span className="bg-gray-800/50 text-gray-500 text-xs px-2.5 py-1.5 rounded-lg">
+                        +{finishedSubjectIds.length - 12} more
+                      </span>
                     )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Glassmorphism Modal for Editing Subjects */}
+            {isEditingSubjects && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-sm transition-all duration-300">
+                <div className="relative w-full max-w-5xl max-h-[90vh] flex flex-col bg-gray-900/60 border border-white/10 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden ring-1 ring-white/5">
+                  {/* Modal Header */}
+                  <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-white/5">
+                    <div>
+                      <h3 className="text-xl font-bold tracking-tight text-white drop-shadow-sm">Edit Subjects</h3>
+                      <p className="text-indigo-200/70 text-sm mt-0.5">Manage your academic progress.</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsEditingSubjects(false);
+                          loadMySubjects();
+                        }}
+                        disabled={savingSubjects}
+                        className="bg-white/5 hover:bg-white/10 border border-white/10 text-white shadow-sm font-medium rounded-xl px-5 py-2 text-sm transition-all disabled:opacity-50"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveSubjects}
+                        disabled={savingSubjects}
+                        className="bg-indigo-500 hover:bg-indigo-400 text-white font-medium shadow-[0_0_15px_rgba(99,102,241,0.4)] rounded-xl px-5 py-2 text-sm transition-all disabled:opacity-50"
+                      >
+                        {savingSubjects ? "Saving..." : "Save changes"}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Modal Body */}
+                  <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                    {/* Search */}
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg className="h-5 w-5 text-indigo-300/50 group-focus-within:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Search subjects..."
+                        value={subjectSearchQuery}
+                        onChange={(e) => setSubjectSearchQuery(e.target.value)}
+                        className="w-full bg-black/20 border border-white/10 text-white placeholder-gray-400 rounded-2xl pl-11 pr-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 backdrop-blur-md transition-all shadow-inner"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Completed Column */}
+                      <div className="flex flex-col bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-md shadow-lg h-[45vh] min-h-[300px]">
+                        <div className="flex items-center justify-between mb-4">
+                          <p className="text-white font-medium tracking-wide">Completed</p>
+                          <span className="bg-indigo-500/20 text-indigo-300 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-indigo-500/30">
+                            {finishedSubjectIds.length}
+                          </span>
+                        </div>
+                        <div className="flex-1 overflow-y-auto pr-2 space-y-2.5 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                          {subjects
+                            .filter((s) => s.subject_name.toLowerCase().includes(subjectSearchQuery.toLowerCase()))
+                            .map((s) => {
+                              const checked = finishedSubjectIds.includes(s.subject_id);
+                              return (
+                                <label key={s.subject_id} className={`group flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${checked ? 'bg-indigo-500/10 border-indigo-500/30' : 'bg-black/20 border-white/5 hover:border-white/10'}`}>
+                                  <div className="relative flex items-center justify-center mt-0.5">
+                                    <input
+                                      type="checkbox"
+                                      checked={checked}
+                                      onChange={(e) => {
+                                        const next = e.target.checked
+                                          ? Array.from(new Set([...finishedSubjectIds, s.subject_id]))
+                                          : finishedSubjectIds.filter((id) => id !== s.subject_id);
+                                        setFinishedSubjectIds(next);
+                                      }}
+                                      className="peer appearance-none w-4 h-4 rounded-md border border-gray-500 checked:border-indigo-500 checked:bg-indigo-500 transition-colors cursor-pointer"
+                                    />
+                                    <svg className="absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" viewBox="0 0 14 10" fill="none">
+                                      <path d="M1 5L4.5 8.5L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                  </div>
+                                  <span className={`${checked ? 'text-indigo-100' : 'text-gray-300 group-hover:text-white'} text-sm font-medium transition-colors`}>
+                                    {s.subject_name}
+                                    {s.year_level && <span className="block text-indigo-300/60 text-xs font-normal mt-0.5">Year {s.year_level}{s.semester ? ` • Sem ${s.semester}` : ""}</span>}
+                                  </span>
+                                </label>
+                              );
+                            })}
+                        </div>
+                      </div>
+
+                      {/* Remaining Subject List */}
+                      <div className="flex flex-col bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-md shadow-lg h-[45vh] min-h-[300px]">
+                        <div className="flex items-center justify-between mb-4">
+                          <p className="text-white font-medium tracking-wide">Available</p>
+                          <span className="bg-white/10 text-gray-300 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-white/10">
+                            {subjects.length - finishedSubjectIds.length}
+                          </span>
+                        </div>
+                        <div className="flex-1 overflow-y-auto pr-2 space-y-2.5 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                          {subjects
+                            .filter((s) => !finishedSubjectIds.includes(s.subject_id) && s.subject_name.toLowerCase().includes(subjectSearchQuery.toLowerCase()))
+                            .map((s) => (
+                              <div
+                                key={s.subject_id}
+                                className="w-full text-left p-3 rounded-xl bg-black/20 border border-white/5 text-sm text-gray-400 group"
+                              >
+                                <span className="text-gray-300 font-medium">{s.subject_name}</span>
+                                {s.year_level && <span className="block text-gray-500 text-xs mt-0.5">Year {s.year_level}{s.semester ? ` • Sem ${s.semester}` : ""}</span>}
+                              </div>
+                            ))}
+                          {subjects.length === finishedSubjectIds.length && subjectSearchQuery === "" && (
+                            <div className="flex flex-col items-center justify-center h-full text-center space-y-3 opacity-60">
+                              <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                <svg className="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                              <p className="text-emerald-300 text-sm font-medium">All subjects completed!</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -739,8 +864,7 @@ export default function ProfilePage() {
               <div className="flex justify-between items-center mb-1.5">
                 <span className="text-gray-400 text-xs">Academic progress</span>
                 <span className="text-gray-200 text-xs font-semibold">
-                  {profile?.progress.finishedSubjects || 0} /{" "}
-                  {profile?.progress.totalSubjects || 0} subjects
+                  {profile?.progress.finishedSubjects || 0} / {profile?.progress.totalSubjects || 0} subjects ({progressPercent}%)
                 </span>
               </div>
               <div className="w-full bg-gray-800 rounded-full h-2">
@@ -750,7 +874,9 @@ export default function ProfilePage() {
                 />
               </div>
               <p className="text-indigo-400 text-[11px] mt-1.5">
-                {progressPercent}% complete
+                {profile?.progress.semesterLabel
+                  ? `You've completed ${profile.progress.finishedSubjects || 0} subjects (goal: ${profile.progress.totalSubjects} by end of ${profile.progress.semesterLabel})`
+                  : `${progressPercent}% complete`}
               </p>
             </div>
           </div>

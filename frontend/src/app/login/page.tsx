@@ -21,7 +21,15 @@ export default function LoginPage() {
     (typeof window !== "undefined" ? `http://${window.location.hostname}:4000` : "http://localhost:4000");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    if (name === "student_number") {
+      value = value.replace(/[^\d-]/g, "");
+      if (value.length === 2 && formData.student_number.length === 1 && !value.includes("-")) {
+        value += "-";
+      }
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
     setError("");
   };
@@ -47,7 +55,13 @@ export default function LoginPage() {
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("student", JSON.stringify(data.student));
 
-      router.push(data.is_first_login ? "/onboarding" : "/dashboard");
+      if (data.student.isAdmin) {
+        router.push("/admin/dashboard");
+      } else if (data.student.program_id) {
+        router.push("/dashboard");
+      } else {
+        router.push("/onboarding");
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Invalid credentials. Please try again.";
       setError(message);
@@ -85,7 +99,7 @@ export default function LoginPage() {
               name="student_number"
               type="text"
               required
-              placeholder="2025-12345"
+              placeholder="23-12345"
               value={formData.student_number}
               onChange={handleChange}
               className="bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"

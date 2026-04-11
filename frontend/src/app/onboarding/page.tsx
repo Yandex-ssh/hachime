@@ -1,244 +1,301 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 // ─── SUBJECTS DATABASE ────────────────────────────────────────────────────────
-const subjectsByProgram: Record<string, Record<string, string[]>> = {
+const subjectsByProgram: Record<string, Record<string, Record<number, string[]>>> = {
     BSIT: {
-        "1st Year": [
-            "Computer Concepts and Fundamentals",
-            "Computer Programming 1",
-            "Application and Productivity Tools",
-            "HTML and Internet Fundamentals",
-            "Computer Programming 2",
-            "Human-Computer Interaction",
-            "Mathematics in the Modern World",
-            "Advanced Algebra with Trigonometry",
-            "Purposive Communication",
-            "Understanding the Self",
-            "Ethics",
-            "The Contemporary World",
-            "Art Appreciation",
-            "Readings in Philippine History",
-        ],
-        "2nd Year": [
-            "Data Structures and Algorithms",
-            "Object-Oriented Programming 1",
-            "Object-Oriented Programming 2",
-            "Operating System",
-            "Database System",
-            "System Analysis and Design",
-            "Discrete Math",
-            "Advanced Statistics",
-            "Prof. Ethics in IT w/ Quality Consciousness",
-            "Technical Writing and Presentation Skills in IT",
-            "Computer-Mediated Communication",
-            "Science Technology and Society",
-            "Life and Works of Rizal",
-            "The Entrepreneurial Mind",
-            "Environmental Science",
-            "Gender and Society",
-        ],
-        "3rd Year": [
-            "Web Information System",
-            "ICT Trends",
-            "C#.Net Programming",
-            "VB.Net Programming",
-            "Project Management for IT",
-            "Applications Development and Emerging Technologies",
-            "Data Communication & Networking",
-            "System Management Administration",
-            "Multimedia Concepts",
-            "Software Engineering",
-            "Advanced Physics",
-            "Principles of Management w/ Personnel & Human Resource",
-            "IT Elective 1",
-            "IT Elective 2",
-            "Methodology",
-        ],
-        "4th Year": [
-            "Computer Graphics Design",
-            "Video Editing",
-            "Advanced Networking",
-            "Capstone Project 1",
-            "Capstone Project 2",
-            "Practicum 1",
-            "Practicum 2",
-            "IT Elective 3",
-            "IT Elective 4",
-            "Free Elective 1",
-            "Free Elective 2",
-            "Free Elective 3",
-        ],
+        "1st Year": {
+            1: [
+                "Computer Concepts and Fundamentals",
+                "Computer Programming 1",
+                "Application and Productivity Tools",
+                "Purposive Communication",
+                "Readings in Philippine History",
+                "Mathematics in the Modern World",
+                "Art Appreciation",
+                "Physical Education 1",
+                "Review of TMC Handbook",
+                "NSTP 1 - ROTC, CWTS, LTS",
+            ],
+            2: [
+                "HTML and Internet Fundamentals",
+                "Computer Programming 2",
+                "Human-Computer Interaction",
+                "Understanding the Self",
+                "Ethics",
+                "The Contemporary World",
+                "Advanced Algebra with Trigonometry",
+                "Physical Education 2",
+                "Values Education",
+                "NSTP 2 - ROTC, CWTS, LTS",
+            ],
+        },
+        "2nd Year": {
+            1: [
+                "Data Structures and Algorithms",
+                "Prof. Ethics in IT w/ Quality Consciousness & Habits",
+                "Object-Oriendted Programming 1",
+                "Discrete Maths",
+                "Science Technology and Society",
+                "Life and Works of Rizal",
+                "Gender and Society",
+                "Physical Education 3",
+            ],
+            2: [
+                "Object-Oriented Programming 2",
+                "Operating System",
+                "Database System",
+                "System Analysis and Design",
+                "Environmental Science",
+                "The Entrepreneurial Mind",
+                "Computer-Mediated Communication",
+                "Physical Education 4",
+            ],
+        },
+        "3rd Year": {
+            1: [
+                "Web Information System",
+                "ICT Trends",
+                "C#.Net Programming",
+                "VB.Net Programming",
+                "Project Management for IT",
+                "IT Elective 1",
+                "Advanced Physics 1",
+                "Principles of Management w/ Personnel & Human Resource",
+            ],
+            2: [
+                "Applications Development and Emerging Technologies",
+                "Data Communication and Networking",
+                "System Management Administrations",
+                "Multimedia Concept",
+                "IT Elective 2",
+                "Free Elective 1",
+                "Methodology",
+            ],
+        },
+        "4th Year": {
+            1: [
+                "Computer Graphics Design",
+                "Video Editing",
+                "Practicum 1",
+                "Capstone Project 1",
+                "IT Elective 3",
+                "Free Elective 2",
+            ],
+            2: [
+                "Advanced Networking",
+                "Capstone Project 2",
+                "Practicum 2",
+                "IT Elective 4",
+                "Free Elective 3",
+            ],
+        },
     },
     BSCRIM: {
-        "1st Year": [
-            "Criminology 1 - Introduction to Criminology",
-            "CLJ 1 - Introduction to Philippine Criminal Justice System",
-            "GE 1 - Purposive Communication",
-            "GE 2 - Readings in Philippine History",
-            "GE 3 - Mathematics in the Modern World",
-            "GE 4 - Art Appreciation",
-            "GE 5 - Understanding the Self",
-            "GE 6 - Ethics",
-            "GE 7 - The Contemporary World",
-            "GE 8 - Science, Technology and Society",
-            "GE Elec 1 - Gender and Society",
-            "GE Elec 2 - Environmental Science",
-            "IT 100 - Intro to Computer with Word Processing",
-            "PES 1 - Review of TMC Student Manual",
-            "PES 2 - Peace and Values Education",
-        ],
-        "2nd Year": [
-            "Criminology 2 - Theories of Crime Causation",
-            "Criminology 3 - Human Behavior and Victimology",
-            "CA 1 - Institutional Corrections",
-            "CDI 1 - Fundamentals of Criminal Investigation",
-            "CDI 2 - Specialized Crime Investigation 1 with Legal Medicine",
-            "CFLM 1 - Character Formation 1 (Nationalism and Patriotism)",
-            "LEA 1 - Law Enforcement Organization and Administration",
-            "LEA 2 - Comparative Models in Policing",
-            "LEA 3 - Introduction to Industrial Security Concepts",
-            "Forensic 1 - Forensic Photography",
-            "Forensic 2 - Personal Identification Techniques",
-            "AdGe 1 - Logic (Deductive and Inductive Reasoning)",
-            "AdGe 2 - General Chemistry (Organic)",
-            "GE 9 - Life and Works of Rizal",
-            "GE 10 - Komunikasyon sa Akademikong Filipino",
-            "GE 11 - Masining na Pagpapahayag",
-            "GE Elec 3 - The Entrepreneurial Mind",
-        ],
-        "3rd Year": [
-            "Criminology 4 - Professional Conduct and Ethical Standards",
-            "Criminology 5 - Juvenile Delinquency and Juvenile Justice System",
-            "CCJS - Comparative Criminal Justice System",
-            "CA 2 - Non-Institutional Corrections",
-            "CDI 3 - Specialized Criminal Investigation 2",
-            "CDI 4 - Traffic Management and Accident Investigation",
-            "CDI 5 - Technical English 1 (Investigative Report Writing)",
-            "CDI 6 - Fire Protection and Arson Investigation",
-            "CFLM 2 - Character Formation 2 (Leadership)",
-            "CLJ 2 - Human Rights Education",
-            "CLJ 3 - Criminal Law (Book 1)",
-            "CLJ 4 - Criminal Law (Book 2)",
-            "CMM - Crime Mapping and Measurement",
-            "Forensic 3 - Forensic Chemistry and Toxicology",
-            "Forensic 4 - Questioned Document Examination",
-            "Forensic 5 - Lie Detection Techniques",
-            "LEA 4 - Law Enforcement Operations and Planning",
-        ],
-        "4th Year": [
-            "Criminology 6 - Dispute Resolution and Crises/Incidents Management",
-            "Criminology 7 - Criminological Research 1",
-            "Criminology 8 - Criminological Research 2 (Thesis)",
-            "CA 3 - Therapeutic Modalities",
-            "CDI 7 - Vice and Drug Education and Control",
-            "CDI 8 - Technical English 2 (Legal Forms)",
-            "CDI 9 - Introduction to Cybercrime and Environmental Laws",
-            "CLJ 5 - Evidence",
-            "CLJ 6 - Criminal Procedure and Court Testimony",
-            "CP 1 - Internship (On-the-Job Training 1)",
-            "CP 2 - Internship (On-the-Job Training 2)",
-            "Forensic 6 - Forensic Ballistics",
-        ],
+        "1st Year": {
+            1: [
+                "Criminology 1 - Introduction to Criminology",
+                "CLJ 1 - Introduction to Philippine Criminal Justice System",
+                "GE 1 - Purposive Communication",
+                "GE 2 - Readings in Philippine History",
+                "GE 3 - Mathematics in the Modern World",
+                "GE 4 - Art Appreciation",
+                "GE 5 - Understanding the Self",
+                "GE 6 - Ethics",
+                "GE 7 - The Contemporary World",
+                "GE 8 - Science, Technology and Society",
+                "GE Elec 1 - Gender and Society",
+                "GE Elec 2 - Environmental Science",
+                "IT 100 - Intro to Computer with Word Processing",
+                "PES 1 - Review of TMC Student Manual",
+                "PES 2 - Peace and Values Education",
+            ],
+            2: []
+        },
+        "2nd Year": {
+            1: [
+                "Criminology 2 - Theories of Crime Causation",
+                "Criminology 3 - Human Behavior and Victimology",
+                "CA 1 - Institutional Corrections",
+                "CDI 1 - Fundamentals of Criminal Investigation",
+                "CDI 2 - Specialized Crime Investigation 1 with Legal Medicine",
+                "CFLM 1 - Character Formation 1 (Nationalism and Patriotism)",
+                "LEA 1 - Law Enforcement Organization and Administration",
+                "LEA 2 - Comparative Models in Policing",
+                "LEA 3 - Introduction to Industrial Security Concepts",
+                "Forensic 1 - Forensic Photography",
+                "Forensic 2 - Personal Identification Techniques",
+                "AdGe 1 - Logic (Deductive and Inductive Reasoning)",
+                "AdGe 2 - General Chemistry (Organic)",
+                "GE 9 - Life and Works of Rizal",
+                "GE 10 - Komunikasyon sa Akademikong Filipino",
+                "GE 11 - Masining na Pagpapahayag",
+                "GE Elec 3 - The Entrepreneurial Mind",
+            ],
+            2: []
+        },
+        "3rd Year": {
+            1: [
+                "Criminology 4 - Professional Conduct and Ethical Standards",
+                "Criminology 5 - Juvenile Delinquency and Juvenile Justice System",
+                "CCJS - Comparative Criminal Justice System",
+                "CA 2 - Non-Institutional Corrections",
+                "CDI 3 - Specialized Criminal Investigation 2",
+                "CDI 4 - Traffic Management and Accident Investigation",
+                "CDI 5 - Technical English 1 (Investigative Report Writing)",
+                "CDI 6 - Fire Protection and Arson Investigation",
+                "CFLM 2 - Character Formation 2 (Leadership)",
+                "CLJ 2 - Human Rights Education",
+                "CLJ 3 - Criminal Law (Book 1)",
+                "CLJ 4 - Criminal Law (Book 2)",
+                "CMM - Crime Mapping and Measurement",
+                "Forensic 3 - Forensic Chemistry and Toxicology",
+                "Forensic 4 - Questioned Document Examination",
+                "Forensic 5 - Lie Detection Techniques",
+                "LEA 4 - Law Enforcement Operations and Planning",
+            ],
+            2: []
+        },
+        "4th Year": {
+            1: [
+                "Criminology 6 - Dispute Resolution and Crises/Incidents Management",
+                "Criminology 7 - Criminological Research 1",
+                "Criminology 8 - Criminological Research 2 (Thesis)",
+                "CA 3 - Therapeutic Modalities",
+                "CDI 7 - Vice and Drug Education and Control",
+                "CDI 8 - Technical English 2 (Legal Forms)",
+                "CDI 9 - Introduction to Cybercrime and Environmental Laws",
+                "CLJ 5 - Evidence",
+                "CLJ 6 - Criminal Procedure and Court Testimony",
+                "CP 1 - Internship (On-the-Job Training 1)",
+                "CP 2 - Internship (On-the-Job Training 2)",
+                "Forensic 6 - Forensic Ballistics",
+            ],
+            2: []
+        },
     },
     BSED: {
-        "1st Year": [
-            "Introduction to Education",
-            "Child and Adolescent Development",
-            "Purposive Communication",
-            "Mathematics in the Modern World",
-            "Understanding the Self",
-            "Readings in Philippine History",
-            "Art Appreciation",
-            // TODO: Replace with actual BSED subjects
-        ],
-        "2nd Year": [
-            "Foundations of Education",
-            "The Teaching Profession",
-            "Curriculum Development",
-            "Assessment in Learning 1",
-            "Life and Works of Rizal",
-            "Ethics",
-            // TODO: Replace with actual BSED subjects
-        ],
-        "3rd Year": [
-            "Field Study 1",
-            "Field Study 2",
-            "Assessment in Learning 2",
-            "Instructional Materials Development",
-            "Educational Technology",
-            // TODO: Replace with actual BSED subjects
-        ],
-        "4th Year": [
-            "Student Teaching (Practice Teaching)",
-            "Research in Education",
-            "School Management",
-            // TODO: Replace with actual BSED subjects
-        ],
+        "1st Year": {
+            1: [
+                "Introduction to Education",
+                "Child and Adolescent Development",
+                "Purposive Communication",
+                "Mathematics in the Modern World",
+                "Understanding the Self",
+                "Readings in Philippine History",
+                "Art Appreciation",
+            ],
+            2: []
+        },
+        "2nd Year": {
+            1: [
+                "Foundations of Education",
+                "The Teaching Profession",
+                "Curriculum Development",
+                "Assessment in Learning 1",
+                "Life and Works of Rizal",
+                "Ethics",
+            ],
+            2: []
+        },
+        "3rd Year": {
+            1: [
+                "Field Study 1",
+                "Field Study 2",
+                "Assessment in Learning 2",
+                "Instructional Materials Development",
+                "Educational Technology",
+            ],
+            2: []
+        },
+        "4th Year": {
+            1: [
+                "Student Teaching (Practice Teaching)",
+                "Research in Education",
+                "School Management",
+            ],
+            2: []
+        },
     },
     BSOA: {
-        "1st Year": [
-            "Business Communication 1",
-            "Office Systems and Procedures",
-            "Keyboarding and Document Processing",
-            "Mathematics in the Modern World",
-            "Purposive Communication",
-            // TODO: Replace with actual BSOA subjects
-        ],
-        "2nd Year": [
-            "Business Communication 2",
-            "Records Management",
-            "Office Management",
-            "Accounting for Business",
-            "Human Resource Management",
-            // TODO: Replace with actual BSOA subjects
-        ],
-        "3rd Year": [
-            "Legal Office Procedures",
-            "Medical Office Procedures",
-            "Executive Secretarial Duties",
-            "Desktop Publishing",
-            // TODO: Replace with actual BSOA subjects
-        ],
-        "4th Year": [
-            "Practicum / On-the-Job Training",
-            "Research Methods",
-            "Capstone Project",
-            // TODO: Replace with actual BSOA subjects
-        ],
+        "1st Year": {
+            1: [
+                "Business Communication 1",
+                "Office Systems and Procedures",
+                "Keyboarding and Document Processing",
+                "Mathematics in the Modern World",
+                "Purposive Communication",
+            ],
+            2: []
+        },
+        "2nd Year": {
+            1: [
+                "Business Communication 2",
+                "Records Management",
+                "Office Management",
+                "Accounting for Business",
+                "Human Resource Management",
+            ],
+            2: []
+        },
+        "3rd Year": {
+            1: [
+                "Legal Office Procedures",
+                "Medical Office Procedures",
+                "Executive Secretarial Duties",
+                "Desktop Publishing",
+            ],
+            2: []
+        },
+        "4th Year": {
+            1: [
+                "Practicum / On-the-Job Training",
+                "Research Methods",
+                "Capstone Project",
+            ],
+            2: []
+        },
     },
     "BSPOL.SCI": {
-        "1st Year": [
-            "Introduction to Political Science",
-            "Philippine Government and Constitution",
-            "Purposive Communication",
-            "Mathematics in the Modern World",
-            "Readings in Philippine History",
-            // TODO: Replace with actual BSPOL.SCI subjects
-        ],
-        "2nd Year": [
-            "Comparative Politics",
-            "Political Theory",
-            "International Relations",
-            "Public Administration",
-            "Life and Works of Rizal",
-            // TODO: Replace with actual BSPOL.SCI subjects
-        ],
-        "3rd Year": [
-            "Philippine Political Parties",
-            "Local Government and Administration",
-            "Public Policy Analysis",
-            "Political Economy",
-            // TODO: Replace with actual BSPOL.SCI subjects
-        ],
-        "4th Year": [
-            "Research in Political Science",
-            "Internship / Practicum",
-            "Capstone / Thesis Writing",
-            // TODO: Replace with actual BSPOL.SCI subjects
-        ],
+        "1st Year": {
+            1: [
+                "Introduction to Political Science",
+                "Philippine Government and Constitution",
+                "Purposive Communication",
+                "Mathematics in the Modern World",
+                "Readings in Philippine History",
+            ],
+            2: []
+        },
+        "2nd Year": {
+            1: [
+                "Comparative Politics",
+                "Political Theory",
+                "International Relations",
+                "Public Administration",
+                "Life and Works of Rizal",
+            ],
+            2: []
+        },
+        "3rd Year": {
+            1: [
+                "Philippine Political Parties",
+                "Local Government and Administration",
+                "Public Policy Analysis",
+                "Political Economy",
+            ],
+            2: []
+        },
+        "4th Year": {
+            1: [
+                "Research in Political Science",
+                "Internship / Practicum",
+                "Capstone / Thesis Writing",
+            ],
+            2: []
+        },
     },
 };
 
@@ -248,37 +305,67 @@ const yearLevels = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 export default function OnboardingPage() {
     const router = useRouter();
+
+    // Guard: Redirect if already onboarded
+    useEffect(() => {
+        const storedStudent = localStorage.getItem("student");
+        if (storedStudent) {
+            try {
+                const studentData = JSON.parse(storedStudent);
+                if (studentData.program_id) {
+                    router.push("/dashboard");
+                }
+            } catch (err) {
+                console.error("Failed to parse student data", err);
+            }
+        }
+    }, [router]);
+
     const [step, setStep] = useState(1);
     const [program, setProgram] = useState("");
     const [yearLevel, setYearLevel] = useState("");
+    const [semester, setSemester] = useState<number | null>(null);
     const [finishedSubjects, setFinishedSubjects] = useState<string[]>([]);
     const [likedSubjects, setLikedSubjects] = useState<string[]>([]);
     const [saving, setSaving] = useState(false);
 
-    const totalSteps = 4;
+    const totalSteps = 5;
     const progress = (step / totalSteps) * 100;
 
-    // Get subjects based on selected program and year level (all years up to selected)
+    // Get subjects based on selected program and year level/semester
     const getAvailableSubjects = () => {
-        if (!program || !yearLevel) return [];
+        if (!program || !yearLevel || !semester) return [];
         const programSubjects = subjectsByProgram[program] || {};
         const yearIndex = yearLevels.indexOf(yearLevel);
+        
         let subjects: string[] = [];
-        yearLevels.slice(0, yearIndex + 1).forEach((year) => {
-            subjects = [...subjects, ...(programSubjects[year] || [])];
+        
+        // 1) All subjects from previous years (both semesters)
+        yearLevels.slice(0, yearIndex).forEach((year) => {
+            const yearData = programSubjects[year] || {};
+            subjects = [...subjects, ...(yearData[1] || []), ...(yearData[2] || [])];
         });
+
+        // 2) Subjects from current year up to selected semester
+        const currentYearData = programSubjects[yearLevel] || {};
+        if (semester >= 1) {
+            subjects = [...subjects, ...(currentYearData[1] || [])];
+        }
+        if (semester >= 2) {
+            subjects = [...subjects, ...(currentYearData[2] || [])];
+        }
+        
         return subjects;
     };
-
     const availableSubjects = getAvailableSubjects();
 
     const toggleFinished = (subject: string) => {
-        setFinishedSubjects((prev) =>
-            prev.includes(subject) ? prev.filter((s) => s !== subject) : [...prev, subject]
+        setFinishedSubjects((prev: string[]) =>
+            prev.includes(subject) ? prev.filter((s: string) => s !== subject) : [...prev, subject]
         );
         // Also remove from liked if unchecked from finished
         if (likedSubjects.includes(subject)) {
-            setLikedSubjects((prev) => prev.filter((s) => s !== subject));
+            setLikedSubjects((prev: string[]) => prev.filter((s: string) => s !== subject));
         }
     };
 
@@ -307,10 +394,9 @@ export default function OnboardingPage() {
                 }
 
                 // 1) Persist program + year level to student profile
-                const yearIndex = yearLevels.indexOf(yearLevel);
-                const year_level = yearIndex >= 0 ? yearIndex + 1 : null;
-                if (!program || !year_level) {
-                    throw new Error("Please select your program and year level.");
+                const yearLevelIndex = yearLevels.indexOf(yearLevel) + 1;
+                if (!program || !yearLevelIndex || !semester) {
+                    throw new Error("Please select your program, year level, and semester.");
                 }
 
                 const programsRes = await fetch(`${apiBaseUrl}/programs`);
@@ -333,7 +419,8 @@ export default function OnboardingPage() {
                     },
                     body: JSON.stringify({
                         program_id: match.program_id,
-                        year_level,
+                        year_level: yearLevelIndex,
+                        semester: semester,
                     }),
                 });
                 const profileJson = await profileRes.json();
@@ -377,8 +464,9 @@ export default function OnboardingPage() {
     const canProceed = () => {
         if (step === 1) return program !== "";
         if (step === 2) return yearLevel !== "";
-        if (step === 3) return finishedSubjects.length > 0;
-        if (step === 4) return likedSubjects.length > 0;
+        if (step === 3) return semester !== null;
+        if (step === 4) return finishedSubjects.length > 0;
+        if (step === 5) return likedSubjects.length > 0;
         return false;
     };
 
@@ -408,8 +496,9 @@ export default function OnboardingPage() {
                     <div className="flex justify-between mt-2 text-xs text-gray-600">
                         <span className={step >= 1 ? "text-indigo-400" : ""}>Program</span>
                         <span className={step >= 2 ? "text-indigo-400" : ""}>Year Level</span>
-                        <span className={step >= 3 ? "text-indigo-400" : ""}>Subjects Done</span>
-                        <span className={step >= 4 ? "text-indigo-400" : ""}>Favorites</span>
+                        <span className={step >= 3 ? "text-indigo-400" : ""}>Semester</span>
+                        <span className={step >= 4 ? "text-indigo-400" : ""}>Subjects Done</span>
+                        <span className={step >= 5 ? "text-indigo-400" : ""}>Favorites</span>
                     </div>
                 </div>
 
@@ -475,8 +564,35 @@ export default function OnboardingPage() {
                         </div>
                     )}
 
-                    {/* ── STEP 3: Finished Subjects ── */}
+                    {/* ── STEP 3: Semester ── */}
                     {step === 3 && (
+                        <div>
+                            <h2 className="text-2xl font-bold text-white mb-1">Which semester?</h2>
+                            <p className="text-gray-400 text-sm mb-6">Tell us your current semester.</p>
+                            <div className="flex flex-col gap-3">
+                                {[1, 2].map((sem) => (
+                                    <button
+                                        key={sem}
+                                        onClick={() => setSemester(sem)}
+                                        className={`w-full text-left px-5 py-4 rounded-xl border text-sm font-medium transition
+                      ${semester === sem
+                                                ? "bg-indigo-600/20 border-indigo-500 text-indigo-300"
+                                                : "bg-gray-800 border-gray-700 text-gray-300 hover:border-indigo-500/50 hover:text-white"
+                                            }`}
+                                    >
+                                        <span className="font-bold">{sem === 1 ? "1st Semester" : "2nd Semester"}</span>
+                                        <span className="ml-2 text-gray-500 font-normal text-xs">
+                                            {sem === 1 && "— First half of the academic year"}
+                                            {sem === 2 && "— Second half of the academic year"}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── STEP 4: Finished Subjects ── */}
+                    {step === 4 && (
                         <div>
                             <h2 className="text-2xl font-bold text-white mb-1">What subjects have you finished?</h2>
                             <p className="text-gray-400 text-sm mb-2">Check all subjects you've already completed.</p>
@@ -484,15 +600,8 @@ export default function OnboardingPage() {
                                 {finishedSubjects.length} subject{finishedSubjects.length !== 1 ? "s" : ""} selected
                             </p>
 
-                            {/* Select All */}
+                            {/* Global Clear All */}
                             <div className="flex gap-2 mb-4">
-                                <button
-                                    onClick={() => setFinishedSubjects(availableSubjects)}
-                                    className="text-xs text-indigo-400 hover:text-indigo-300 transition"
-                                >
-                                    Select all
-                                </button>
-                                <span className="text-gray-600">·</span>
                                 <button
                                     onClick={() => { setFinishedSubjects([]); setLikedSubjects([]); }}
                                     className="text-xs text-gray-500 hover:text-gray-300 transition"
@@ -501,39 +610,81 @@ export default function OnboardingPage() {
                                 </button>
                             </div>
 
-                            <div className="flex flex-col gap-2 max-h-80 overflow-y-auto pr-1">
-                                {availableSubjects.map((subject) => (
-                                    <button
-                                        key={subject}
-                                        onClick={() => toggleFinished(subject)}
-                                        className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition flex items-center gap-3
-                      ${finishedSubjects.includes(subject)
-                                                ? "bg-indigo-600/20 border-indigo-500 text-indigo-300"
-                                                : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
-                                            }`}
-                                    >
-                                        <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition
-                      ${finishedSubjects.includes(subject)
-                                                ? "bg-indigo-500 border-indigo-500"
-                                                : "border-gray-600"
-                                            }`}>
-                                            {finishedSubjects.includes(subject) && (
-                                                <span className="text-white text-xs">✓</span>
-                                            )}
+                            <div className="flex flex-col gap-6 max-h-96 overflow-y-auto pr-1 custom-scrollbar">
+                                {yearLevels.map((year) => {
+                                    // Filter available subjects that belong to this year
+                                    const programData = program ? (subjectsByProgram[program] || {}) : {};
+                                    const yearData = programData[year] || {};
+                                    const yearSubjects = [...(yearData[1] || []), ...(yearData[2] || [])]
+                                        .filter(s => availableSubjects.includes(s));
+
+                                    if (yearSubjects.length === 0) return null;
+
+                                    const allChecked = yearSubjects.every(s => finishedSubjects.includes(s));
+
+                                    const toggleYearSubjects = () => {
+                                        if (allChecked) {
+                                            // Uncheck all in this year
+                                            setFinishedSubjects(prev => prev.filter(s => !yearSubjects.includes(s)));
+                                            // Also remove from liked
+                                            setLikedSubjects(prev => prev.filter(s => !yearSubjects.includes(s)));
+                                        } else {
+                                            // Check all in this year (ensure no duplicates)
+                                            setFinishedSubjects(prev => {
+                                                const others = prev.filter(s => !yearSubjects.includes(s));
+                                                return [...others, ...yearSubjects];
+                                            });
+                                        }
+                                    };
+
+                                    return (
+                                        <div key={year} className="flex flex-col gap-3">
+                                            <div className="flex items-center justify-between sticky top-0 bg-gray-900 py-1 z-10 border-b border-gray-800/50 mb-1">
+                                                <h3 className="text-sm font-bold text-gray-400">{year}</h3>
+                                                <button
+                                                    onClick={toggleYearSubjects}
+                                                    className="text-[10px] font-bold uppercase tracking-wider text-indigo-400 hover:text-indigo-300 transition bg-indigo-500/10 px-2 py-0.5 rounded"
+                                                >
+                                                    {allChecked ? "Unselect Year" : "Select Year"}
+                                                </button>
+                                            </div>
+                                            <div className="flex flex-col gap-2">
+                                                {yearSubjects.map((subject) => (
+                                                    <button
+                                                        key={subject}
+                                                        onClick={() => toggleFinished(subject)}
+                                                        className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition flex items-center gap-3
+                                                            ${finishedSubjects.includes(subject)
+                                                                ? "bg-indigo-600/20 border-indigo-500 text-indigo-300"
+                                                                : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+                                                            }`}
+                                                    >
+                                                        <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition
+                                                            ${finishedSubjects.includes(subject)
+                                                                ? "bg-indigo-500 border-indigo-500"
+                                                                : "border-gray-600"
+                                                            }`}>
+                                                            {finishedSubjects.includes(subject) && (
+                                                                <span className="text-white text-xs">✓</span>
+                                                            )}
+                                                        </div>
+                                                        <span className="truncate">{subject}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
-                                        {subject}
-                                    </button>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     )}
 
-                    {/* ── STEP 4: Favorite Subjects ── */}
-                    {step === 4 && (
+                    {/* ── STEP 5: Favorite Subjects ── */}
+                    {step === 5 && (
                         <div>
                             <h2 className="text-2xl font-bold text-white mb-1">Which subjects do you enjoy most?</h2>
                             <p className="text-gray-400 text-sm mb-2">
-                                Pick up to <span className="text-indigo-400 font-semibold">5 subjects</span> you genuinely enjoy — this helps us find your best career match.
+                                Pick between <span className="text-indigo-400 font-semibold">1 to 5 subjects</span> you genuinely enjoy — this helps us find your best career match.
                             </p>
                             <p className="text-indigo-400 text-xs mb-5">
                                 {likedSubjects.length}/5 selected

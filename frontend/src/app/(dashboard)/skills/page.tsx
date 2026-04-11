@@ -7,6 +7,7 @@ type ApiSkill = {
     level: "None" | "Beginner" | "Intermediate" | "Advanced";
     priority: "low" | "medium" | "high" | null;
     resource: string | null;
+    expanded_skills?: Array<{ name: string; url?: string }> | null;
 };
 
 type ApiCategory = {
@@ -267,6 +268,29 @@ export default function SkillsPage() {
                                 ))}
                             </div>
                         </div>
+
+                        {/* Expanded Skills */}
+                        {skill.expanded_skills && skill.expanded_skills.length > 0 && (
+                            <div className="mb-4">
+                                <p className="text-gray-600 text-[10px] uppercase font-black tracking-wider mb-2">Specific Tools:</p>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {skill.expanded_skills.map((sub, idx) => (
+                                        sub.url ? (
+                                            <a 
+                                                key={idx} href={sub.url} target="_blank" rel="noreferrer" 
+                                                className="bg-indigo-500/10 hover:bg-indigo-500/20 text-[10px] text-indigo-300 hover:text-white px-2 py-1 rounded border border-indigo-500/20 uppercase tracking-tighter transition-colors flex items-center gap-1"
+                                            >
+                                                {sub.name} <span>↗</span>
+                                            </a>
+                                        ) : (
+                                            <span key={idx} className="bg-gray-900/50 text-[10px] text-gray-400 px-2 py-1 rounded border border-gray-800 uppercase tracking-tighter">
+                                                {sub.name}
+                                            </span>
+                                        )
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Learn button */}
                         {skill.resource && (

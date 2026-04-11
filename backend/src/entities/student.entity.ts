@@ -38,13 +38,16 @@ export class Student {
   @Column({ type: 'int', nullable: true })
   year_level: number;
 
+  @Column({ type: 'int', nullable: true })
+  semester: number;
+
   @Column({ length: 255 })
   password_hash: string;
 
   @Column({ length: 255, nullable: true })
   email: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'longtext', nullable: true })
   profile_picture_url: string;
 
   @CreateDateColumn()
@@ -55,4 +58,16 @@ export class Student {
 
   @Column({ type: 'timestamp', nullable: true })
   last_login: Date;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  reset_password_token: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  reset_password_expires: Date | null;
+
+  @Column({ type: 'boolean', default: false })
+  isAdmin: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  isActive: boolean;
 }

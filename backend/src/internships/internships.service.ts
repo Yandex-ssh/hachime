@@ -82,5 +82,37 @@ export class InternshipsService {
       [studentId],
     );
   }
+
+  async listAdmin() {
+    return this.internshipsRepository.query(
+      `SELECT i.* FROM internships i ORDER BY i.posted_at DESC, i.internship_id DESC`,
+    );
+  }
+
+  async createInternship(data: Partial<Internship>) {
+    const internship = this.internshipsRepository.create(data);
+    return this.internshipsRepository.save(internship);
+  }
+
+  async updateInternship(id: number, data: Partial<Internship>) {
+    await this.internshipsRepository.update(id, data as any);
+    return this.getById(id);
+  }
+
+  async deleteInternship(id: number) {
+    await this.internshipsRepository.delete(id);
+    return { message: 'Internship deleted successfully' };
+  }
+
+  async getInternshipSaves(internshipId: number) {
+    return this.internshipsRepository.query(
+      `SELECT s.student_id as id, s.name, s.email, si.saved_at
+       FROM student_saved_internships si
+       JOIN students s ON s.student_id = si.student_id
+       WHERE si.internship_id = ?
+       ORDER BY si.saved_at DESC`,
+      [internshipId]
+    );
+  }
 }
 

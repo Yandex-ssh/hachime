@@ -8,8 +8,10 @@ import {
   Query,
   Request,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AdminGuard } from '../auth/admin.guard';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
@@ -67,5 +69,29 @@ export class JobsController {
   @Get(':id')
   async get(@Param('id') id: string) {
     return this.jobsService.getById(parseInt(id, 10));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return this.jobsService.delete(parseInt(id, 10));
+  }
+
+  @UseGuards(AdminGuard)
+  @Get('admin/student/:studentId/saved')
+  async getStudentSavedJobs(@Param('studentId') studentId: string) {
+    return this.jobsService.listSaved(parseInt(studentId, 10));
+  }
+
+  @UseGuards(AdminGuard)
+  @Post('admin/student/:studentId/saves/:id/toggle')
+  async adminToggleSaveJob(
+    @Param('studentId') studentId: string,
+    @Param('id') id: string,
+  ) {
+    return this.jobsService.toggleSave(
+      parseInt(studentId, 10),
+      parseInt(id, 10),
+    );
   }
 }

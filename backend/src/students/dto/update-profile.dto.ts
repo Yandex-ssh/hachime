@@ -16,6 +16,12 @@ export class UpdateProfileDto {
   year_level?: number;
 
   @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(2)
+  semester?: number;
+
+  @IsOptional()
   @IsString()
   email?: string;
 

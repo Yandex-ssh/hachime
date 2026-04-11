@@ -25,11 +25,16 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: builder
     container_name: hachime_backend
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run start:dev
     environment:
       DB_HOST: db
       DB_PORT: 3306
@@ -38,6 +43,8 @@ services:
       DB_NAME: tmc_career
       JWT_SECRET: tmc-local-dev-secret
       PORT: 4000
+    env_file:
+      - ./backend/.env
     ports:
       - '4000:4000'
 
@@ -46,10 +53,16 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: builder
     container_name: hachime_frontend
     restart: unless-stopped
     depends_on:
       - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:4000
     ports:

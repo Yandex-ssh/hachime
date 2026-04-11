@@ -52,6 +52,9 @@ export class JobListing {
   @JoinColumn({ name: 'program_id' })
   program: Program;
 
+  @Column({ type: 'json', nullable: true })
+  program_ids: number[] | null;
+
   @Column({ type: 'int', nullable: true })
   career_id: number | null;
 

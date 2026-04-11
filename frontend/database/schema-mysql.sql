@@ -49,6 +49,7 @@ CREATE TABLE students (
     year_level INT CHECK (year_level BETWEEN 1 AND 4),
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(255),
+    profile_picture_url LONGTEXT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL,
@@ -103,6 +104,8 @@ CREATE TABLE careers (
     growth_rate VARCHAR(10),
     demand_level ENUM('Low', 'Medium', 'High', 'Very High'),
     job_examples JSON,
+    program_id INT NULL,
+    FOREIGN KEY (program_id) REFERENCES programs(program_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

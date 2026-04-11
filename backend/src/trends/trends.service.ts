@@ -41,4 +41,34 @@ export class TrendsService {
     );
     return { year: useYear, active_trends: Number(total) || 0 };
   }
+
+  async getById(trendId: number) {
+    const rows = await this.trendsRepository.query(
+      'SELECT * FROM industry_trends WHERE trend_id = ? LIMIT 1',
+      [trendId],
+    );
+    return rows[0] ?? null;
+  }
+
+  async create(dto: any) {
+    const payload = {
+      ...dto,
+      is_active: dto.is_active ?? true,
+    };
+    const created = this.trendsRepository.create(payload as any);
+    return this.trendsRepository.save(created);
+  }
+
+  async update(trendId: number, dto: any) {
+    await this.trendsRepository.update(trendId, dto);
+    return this.getById(trendId);
+  }
+
+  async delete(trendId: number) {
+    await this.trendsRepository.query(
+      'DELETE FROM industry_trends WHERE trend_id = ?',
+      [trendId],
+    );
+    return { deleted: true };
+  }
 }

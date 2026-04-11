@@ -94,6 +94,14 @@ export class ResourcesService {
     return this.getById(resourceId);
   }
 
+  async delete(resourceId: number) {
+    await this.resourcesRepository.query(
+      'DELETE FROM development_resources WHERE resource_id = ?',
+      [resourceId],
+    );
+    return { deleted: true };
+  }
+
   async toggleSave(studentId: number, resourceId: number) {
     const existing = await this.resourcesRepository.query(
       'SELECT id FROM student_saved_resources WHERE student_id = ? AND resource_id = ? LIMIT 1',

@@ -1,33 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS
+  // Increase body size limit for profile pictures
+  app.use(json({ limit: '10mb' }));
+  app.use(urlencoded({ limit: '10mb', extended: true }));
+
+  // Enable CORS – restrict in production using ALLOWED_ORIGINS env var
+  const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
+    : [];
   app.enableCors({
-    origin: (origin, callback) => {
-      // Allow non-browser clients (curl, server-to-server, etc.)
-      if (!origin) return callback(null, true);
-
-      const allowedExact = new Set([
-        'http://localhost:3000',
-        'http://127.0.0.1:3000',
-      ]);
-      if (allowedExact.has(origin)) return callback(null, true);
-
-      // Allow common LAN dev origins like http://192.168.x.x:3000
-      if (
-        /^http:\/\/(192\.168|10|172\.(1[6-9]|2\d|3[0-1]))(\.\d{1,3}){2}:3000$/.test(
-          origin,
-        )
-      ) {
-        return callback(null, true);
-      }
-
-      return callback(new Error(`CORS blocked origin: ${origin}`), false);
-    },
+    origin:
+      process.env.NODE_ENV === 'production' && allowedOrigins.length > 0
+        ? allowedOrigins
+        : true,
     credentials: true,
   });
 

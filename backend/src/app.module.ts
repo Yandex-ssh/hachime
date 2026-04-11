@@ -12,6 +12,9 @@ import { ResourcesModule } from './resources/resources.module';
 import { InternshipsModule } from './internships/internships.module';
 import { ProgramsModule } from './programs/programs.module';
 import { SubjectsModule } from './subjects/subjects.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { SkillsModule } from './skills/skills.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { SubjectsModule } from './subjects/subjects.module';
     JobsModule,
     ResourcesModule,
     InternshipsModule,
+    AnalyticsModule,
+    SkillsModule,
+    ReportsModule,
   ],
 })
 export class AppModule {}

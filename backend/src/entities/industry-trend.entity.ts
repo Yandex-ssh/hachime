@@ -46,6 +46,9 @@ export class IndustryTrend {
   @Column({ type: 'int', nullable: true })
   year: number | null;
 
+  @Column({ type: 'json', nullable: true })
+  program_ids: number[] | null;
+
   @Column({ type: 'boolean', default: true })
   is_active: boolean;
 

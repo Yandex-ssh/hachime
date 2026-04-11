@@ -130,6 +130,7 @@ export default function DashboardPage() {
     const finishedCount = student?.progress?.finishedSubjects ?? 0;
     const totalCount = student?.progress?.totalSubjects ?? 0;
     const progressPercent = totalCount > 0 ? Math.round((finishedCount / totalCount) * 100) : 0;
+    const semesterLabel: string | null = student?.progress?.semesterLabel ?? null;
 
     const greeting = () => {
         const hour = new Date().getHours();
@@ -173,7 +174,7 @@ export default function DashboardPage() {
                         <div className="flex justify-between items-center mb-2">
                             <p className="text-gray-400 text-sm">Academic Progress</p>
                             <p className="text-white text-sm font-semibold">
-                                {finishedCount} / {totalCount} subjects
+                                {finishedCount} / {totalCount} subjects ({progressPercent}%)
                             </p>
                         </div>
                         <div className="w-full bg-gray-800 rounded-full h-2.5">
@@ -182,7 +183,11 @@ export default function DashboardPage() {
                                 style={{ width: `${progressPercent}%` }}
                             />
                         </div>
-                        <p className="text-indigo-400 text-xs mt-1.5">{progressPercent}% complete</p>
+                        <p className="text-indigo-400 text-xs mt-1.5">
+                            {semesterLabel
+                                ? `You've completed ${finishedCount} subjects (goal: ${totalCount} by end of ${semesterLabel})`
+                                : `${progressPercent}% complete`}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -356,24 +361,30 @@ export default function DashboardPage() {
             </div>
 
             {/* ── QUICK ACTIONS ── */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pb-6">
-                {[
-                    { label: "View Career Paths", href: "/pathway", icon: "🗺️" },
-                    { label: "Skills to Improve", href: "/skills", icon: "⚡" },
-                    { label: "Find Internships", href: "/internships", icon: "💼" },
-                    { label: "Job Listings", href: "/jobs", icon: "🧾" },
-                ].map((action) => (
-                    <Link
-                        key={action.label}
-                        href={action.href}
-                        className="bg-gray-900 border border-gray-800 hover:border-indigo-500/40 hover:bg-gray-800 rounded-xl p-4 text-center transition group"
-                    >
-                        <div className="text-2xl mb-2">{action.icon}</div>
-                        <p className="text-gray-400 group-hover:text-white text-xs font-medium transition">
-                            {action.label}
-                        </p>
-                    </Link>
-                ))}
+            <div className="pb-6">
+                <h3 className="text-white font-bold text-lg mb-4">Quick Actions</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {[
+                        { label: "View Pathways", href: "/pathway", icon: "🗺️" },
+                        { label: "Improve Skills", href: "/skills", icon: "⚡" },
+                        { label: "Internships", href: "/internships", icon: "💼" },
+                        { label: "Jobs", href: "/jobs", icon: "🧾" },
+                        { label: "Alumni Success", href: "/alumni", icon: "🎓" },
+                        { label: "Trends", href: "/trends", icon: "📈" },
+                        { label: "Resources", href: "/resources", icon: "📚" },
+                    ].map((action) => (
+                        <Link
+                            key={action.label}
+                            href={action.href}
+                            className="bg-gray-900 border border-gray-800 hover:border-indigo-500/40 hover:bg-gray-800 rounded-2xl p-5 flex flex-col items-center justify-center text-center transition-all group"
+                        >
+                            <div className="text-2xl mb-2">{action.icon}</div>
+                            <p className="text-gray-400 group-hover:text-white text-xs font-medium transition-colors">
+                                {action.label}
+                            </p>
+                        </Link>
+                    ))}
+                </div>
             </div>
 
         </div>

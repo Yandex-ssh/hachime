@@ -40,6 +40,11 @@ export class CreateJobDto {
   program_id?: number;
 
   @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  program_ids?: number[];
+
+  @IsOptional()
   @IsInt()
   career_id?: number;
 

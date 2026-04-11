@@ -48,6 +48,7 @@ const typePills: Record<string, string> = {
 
 export default function ResourcesPage() {
   const [typeFilter, setTypeFilter] = useState<"All" | "Course" | "Certification" | "Roadmap">("All");
+  const [costFilter, setCostFilter] = useState<"All" | "Free" | "Paid" | "Freemium">("All");
   const [sortBy, setSortBy] = useState<"recent" | "difficulty">("recent");
   const [query, setQuery] = useState("");
   const [saved, setSaved] = useState<number[]>([]);
@@ -66,6 +67,7 @@ export default function ResourcesPage() {
       const params = new URLSearchParams();
       if (query.trim()) params.set("q", query.trim());
       if (typeFilter !== "All") params.set("type", typeFilter);
+      if (costFilter !== "All") params.set("cost_type", costFilter);
       const res = await fetch(`${apiBaseUrl}/resources?${params.toString()}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json.message || "Failed to load resources");
@@ -114,10 +116,13 @@ export default function ResourcesPage() {
     }, 250);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, typeFilter]);
+  }, [query, typeFilter, costFilter]);
 
   const filtered = useMemo(() => {
-    const list = [...resources].filter((r) => typeFilter === "All" || r.type === typeFilter);
+    const list = [...resources].filter((r) => 
+      (typeFilter === "All" || r.type === typeFilter) &&
+      (costFilter === "All" || r.cost_type === costFilter)
+    );
     if (sortBy === "difficulty") {
       const order = { Beginner: 0, Intermediate: 1, Advanced: 2 } as const;
       list.sort((a, b) => order[a.difficulty] - order[b.difficulty]);
@@ -125,7 +130,7 @@ export default function ResourcesPage() {
     }
     list.sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? ""));
     return list;
-  }, [resources, typeFilter, sortBy]);
+  }, [resources, typeFilter, costFilter, sortBy]);
 
   const certCount = filtered.filter((r) => r.type === "Certification").length;
   const freeCount = filtered.filter((r) => r.cost_type === "Free").length;
@@ -163,20 +168,6 @@ export default function ResourcesPage() {
         </div>
       )}
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { label: "Available", value: filtered.length, color: "text-white", bg: "bg-gray-800 border-gray-700" },
-          { label: "Certifications", value: certCount, color: "text-emerald-300", bg: "bg-emerald-500/5 border-emerald-500/20" },
-          { label: "Free resources", value: freeCount, color: "text-indigo-300", bg: "bg-indigo-500/5 border-indigo-500/20" },
-          { label: "Saved", value: saved.length, color: "text-yellow-400", bg: "bg-yellow-500/5 border-yellow-500/20" },
-        ].map((s) => (
-          <div key={s.label} className={`border rounded-2xl p-4 ${s.bg}`}>
-            <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-            <p className="text-gray-500 text-xs mt-1">{s.label}</p>
-          </div>
-        ))}
-      </div>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
@@ -195,6 +186,17 @@ export default function ResourcesPage() {
                 ${typeFilter === t ? "bg-indigo-600/20 border-indigo-500/40 text-indigo-300" : "bg-gray-800 border-gray-700 text-gray-400 hover:text-white"}`}
             >
               {t}
+            </button>
+          ))}
+          <div className="w-px h-6 bg-gray-700 mx-1"></div>
+          {(["All", "Free", "Paid", "Freemium"] as const).map((c) => (
+            <button
+              key={c}
+              onClick={() => setCostFilter(c)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition border
+                ${costFilter === c ? "bg-emerald-600/20 border-emerald-500/40 text-emerald-300" : "bg-gray-800 border-gray-700 text-gray-400 hover:text-white"}`}
+            >
+              {c === "All" ? "All Costs" : c}
             </button>
           ))}
         </div>
@@ -248,7 +250,7 @@ export default function ResourcesPage() {
                     <span className={`text-xs px-2.5 py-1 rounded-full border ${typePills[r.type]}`}>{r.type}</span>
                     <span className="bg-gray-800 border border-gray-700 text-gray-400 text-xs px-2.5 py-1 rounded-full">⚡ {r.difficulty}</span>
                     <span className="bg-gray-800 border border-gray-700 text-gray-400 text-xs px-2.5 py-1 rounded-full">💳 {r.cost_type}</span>
-                    {r.certificate_offered && (
+                    {!!r.certificate_offered && (
                       <span className="bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-xs px-2.5 py-1 rounded-full">
                         ✅ Certificate
                       </span>

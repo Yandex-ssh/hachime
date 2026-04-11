@@ -241,7 +241,7 @@ export default function AlumniTracksPage() {
 
                                     {/* Advice */}
                                     <div className="bg-gray-800/60 border border-gray-700 rounded-xl p-4">
-                                        <p className="text-gray-500 text-xs mb-1">💬 Advice to current students:</p>
+                                        <p className="text-gray-500 text-xs mb-1">💬 Story from this alumni:</p>
                                         <p className="text-gray-300 text-sm italic">{person.advice ? `"${person.advice}"` : "—"}</p>
                                     </div>
                                 </div>

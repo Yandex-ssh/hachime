@@ -8,8 +8,10 @@ import {
   Query,
   Request,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AdminGuard } from '../auth/admin.guard';
 import { ResourcesService } from './resources.service';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { UpdateResourceDto } from './dto/update-resource.dto';
@@ -70,5 +72,29 @@ export class ResourcesController {
   @Get(':id')
   async get(@Param('id') id: string) {
     return this.resourcesService.getById(parseInt(id, 10));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return this.resourcesService.delete(parseInt(id, 10));
+  }
+
+  @UseGuards(AdminGuard)
+  @Get('admin/student/:studentId/saved')
+  async getStudentSavedResources(@Param('studentId') studentId: string) {
+    return this.resourcesService.listSaved(parseInt(studentId, 10));
+  }
+
+  @UseGuards(AdminGuard)
+  @Post('admin/student/:studentId/saves/:id/toggle')
+  async adminToggleSaveResource(
+    @Param('studentId') studentId: string,
+    @Param('id') id: string,
+  ) {
+    return this.resourcesService.toggleSave(
+      parseInt(studentId, 10),
+      parseInt(id, 10),
+    );
   }
 }

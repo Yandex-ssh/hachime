@@ -95,6 +95,14 @@ export class JobsService {
     return this.getById(jobId);
   }
 
+  async delete(jobId: number) {
+    await this.jobsRepository.query(
+      'DELETE FROM job_listings WHERE job_id = ?',
+      [jobId],
+    );
+    return { deleted: true };
+  }
+
   async toggleSave(studentId: number, jobId: number) {
     const existing = await this.jobsRepository.query(
       'SELECT id FROM student_saved_jobs WHERE student_id = ? AND job_id = ? LIMIT 1',

@@ -23,6 +23,9 @@ export class Alumni {
   @JoinColumn({ name: 'program_id' })
   program: Program | null;
 
+  @Column({ type: 'json', nullable: true })
+  program_ids: number[] | null;
+
   @Column({ type: 'int', nullable: true })
   batch_year: number | null;
 
