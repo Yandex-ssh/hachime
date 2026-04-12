@@ -12,4 +12,3 @@ import { SubjectsService } from './subjects.service';
   providers: [SubjectsService],
 })
 export class SubjectsModule {}
-

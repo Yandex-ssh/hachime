@@ -121,8 +121,8 @@ export default function AdminJobsPage() {
     <div className="max-w-7xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight text-glow">Job <span className="text-blue-500">Listings</span></h1>
-          <p className="text-gray-500 text-sm mt-1 uppercase tracking-widest font-black text-[10px]">Partner Opportunities</p>
+          <h1 className="text-2xl font-bold text-latte-text tracking-tight text-glow">Job <span className="text-blue-500">Listings</span></h1>
+          <p className="text-latte-overlay1 text-sm mt-1 uppercase tracking-widest font-black text-[10px]">Partner Opportunities</p>
         </div>
       </div>
 
@@ -132,8 +132,8 @@ export default function AdminJobsPage() {
           onClick={() => setSelectedProgramId(null)}
           className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
             selectedProgramId === null
-              ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-600/20'
-              : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+              ? 'bg-blue-600 text-latte-text border-blue-500 shadow-lg shadow-blue-600/20'
+              : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
           }`}
         >
           🌐 Global View
@@ -144,17 +144,17 @@ export default function AdminJobsPage() {
             onClick={() => setSelectedProgramId(p.program_id)}
             className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
               selectedProgramId === p.program_id
-                ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-600/20'
-                : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+                ? 'bg-blue-600 text-latte-text border-blue-500 shadow-lg shadow-blue-600/20'
+                : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
             }`}
           >
             {p.program_code} Track
           </button>
         ))}
       </div>
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl shadow-xl overflow-hidden glass-card transition-all duration-500">
-        <div className="px-8 py-6 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950/40 flex items-center justify-between">
-           <h2 className="text-sm font-black text-gray-800 dark:text-white uppercase tracking-[0.2em] flex items-center gap-3">
+      <div className="bg-latte-surface0 border border-latte-crust rounded-3xl shadow-xl overflow-hidden glass-card transition-all duration-500">
+        <div className="px-8 py-6 border-b border-latte-crust bg-latte-surface1/40 flex items-center justify-between">
+           <h2 className="text-sm font-black text-gray-800 text-latte-text uppercase tracking-[0.2em] flex items-center gap-3">
              <span className="text-xl">{isEditing ? '💎' : '✨'}</span>
              {isEditing ? 'Refine Listing' : 'Register New Listing'}
            </h2>
@@ -162,41 +162,41 @@ export default function AdminJobsPage() {
         <form onSubmit={handleSubmit} className="p-8 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Company *</label>
-              <input type="text" required className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.company_name} onChange={e => setFormData({...formData, company_name: e.target.value})} />
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Company *</label>
+              <input type="text" required className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.company_name} onChange={e => setFormData({...formData, company_name: e.target.value})} />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Role Title *</label>
-              <input type="text" required className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.role_title} onChange={e => setFormData({...formData, role_title: e.target.value})} />
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Role Title *</label>
+              <input type="text" required className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.role_title} onChange={e => setFormData({...formData, role_title: e.target.value})} />
             </div>
             <div className="group md:col-span-2">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Application URL (Optional)</label>
-              <input type="url" placeholder="https://..." className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.apply_url} onChange={e => setFormData({...formData, apply_url: e.target.value})} />
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Application URL (Optional)</label>
+              <input type="url" placeholder="https://..." className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.apply_url} onChange={e => setFormData({...formData, apply_url: e.target.value})} />
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="group md:col-span-2">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Location</label>
-              <input type="text" className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} />
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Location</label>
+              <input type="text" className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Work Type</label>
-              <select className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.work_type} onChange={e => setFormData({...formData, work_type: e.target.value as any})}>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Work Type</label>
+              <select className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.work_type} onChange={e => setFormData({...formData, work_type: e.target.value as any})}>
                 <option value="On-site">On-site</option>
                 <option value="Hybrid">Hybrid</option>
                 <option value="Remote">Remote</option>
               </select>
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Employment Type</label>
-              <select className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.employment_type} onChange={e => setFormData({...formData, employment_type: e.target.value as any})}>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Employment Type</label>
+              <select className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/50 outline-none" value={formData.employment_type} onChange={e => setFormData({...formData, employment_type: e.target.value as any})}>
                 <option value="Full-time">Full-time</option>
                 <option value="Part-time">Part-time</option>
                 <option value="Contract">Contract</option>
               </select>
             </div>
             <div className="md:col-span-4">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-1 text-blue-400">Target Academic Tracks (Flexible Selection)</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-3 ml-1 text-blue-400">Target Academic Tracks (Flexible Selection)</label>
               <div className="flex flex-wrap gap-2">
                 {allPrograms.map(p => (
                   <button
@@ -211,7 +211,7 @@ export default function AdminJobsPage() {
                     className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
                       formData.program_ids.includes(p.program_id)
                         ? 'bg-blue-600/20 border-blue-500/50 text-blue-400 shadow-[0_0_15px_rgba(37,99,235,0.1)]'
-                        : 'bg-gray-950 border-gray-800 text-gray-600 hover:border-gray-700'
+                        : 'bg-latte-base border-latte-crust text-latte-overlay0 hover:border-latte-mantle'
                     }`}
                   >
                     {p.program_code}
@@ -220,22 +220,22 @@ export default function AdminJobsPage() {
               </div>
             </div>
           </div>
-          <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-800">
-            <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-12 py-3.5 rounded-2xl font-bold text-sm shadow-lg active:scale-95 text-glow transition-all">
+          <div className="flex justify-end pt-4 border-t border-latte-crust">
+            <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-latte-text px-12 py-3.5 rounded-2xl font-bold text-sm shadow-lg active:scale-95 text-glow transition-all">
               {isEditing ? 'COMMIT UPDATES' : 'INITIALIZE LISTING'}
             </button>
           </div>
         </form>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl shadow-xl overflow-hidden">
-        {loading ? ( <div className="p-32 text-center text-gray-500">Syncing Opportunities...</div> ) : (
+      <div className="bg-latte-surface0 border border-latte-crust rounded-3xl shadow-xl overflow-hidden">
+        {loading ? ( <div className="p-32 text-center text-latte-overlay1">Syncing Opportunities...</div> ) : (
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-950/60 border-b border-gray-200 dark:border-gray-800">
-                <th className="px-8 py-6 font-black text-[10px] text-gray-500 uppercase tracking-widest">Opportunity</th>
-                <th className="px-8 py-6 font-black text-[10px] text-gray-500 uppercase tracking-widest">Setup</th>
-                <th className="px-8 py-6 font-black text-[10px] text-gray-500 uppercase tracking-widest text-right">Operations</th>
+              <tr className="bg-latte-surface1/60 border-b border-latte-crust">
+                <th className="px-8 py-6 font-black text-[10px] text-latte-overlay1 uppercase tracking-widest">Opportunity</th>
+                <th className="px-8 py-6 font-black text-[10px] text-latte-overlay1 uppercase tracking-widest">Setup</th>
+                <th className="px-8 py-6 font-black text-[10px] text-latte-overlay1 uppercase tracking-widest text-right">Operations</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-800/50">
@@ -251,8 +251,8 @@ export default function AdminJobsPage() {
                     <tr>
                       <td colSpan={3} className="px-8 py-20 text-center">
                          <div className="text-4xl mb-4 grayscale opacity-20">💼</div>
-                         <h4 className="text-gray-400 font-black text-[10px] uppercase tracking-widest">No Opportunities Found</h4>
-                         <p className="text-gray-600 text-[10px] font-bold uppercase tracking-widest mt-2 leading-relaxed">
+                         <h4 className="text-latte-subtext0 font-black text-[10px] uppercase tracking-widest">No Opportunities Found</h4>
+                         <p className="text-latte-overlay0 text-[10px] font-bold uppercase tracking-widest mt-2 leading-relaxed">
                            The {selectedProgramId === null ? 'entire database' : allPrograms.find(p => p.program_id === selectedProgramId)?.program_code || 'current'} track doesn't have active listings yet.
                          </p>
                       </td>
@@ -261,19 +261,19 @@ export default function AdminJobsPage() {
                 }
 
                 return filteredJobs.map(j => (
-                  <tr key={j.job_id} className="hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors">
+                  <tr key={j.job_id} className="hover:bg-latte-mantle hover:bg-latte-surface2/40 transition-colors">
                     <td className="px-8 py-6">
-                      <div className="font-bold text-sm text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+                      <div className="font-bold text-sm text-latte-text uppercase tracking-tight flex items-center gap-2">
                         {j.role_title}
                         {j.apply_url && (
                           <a href={j.apply_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-400 text-lg transition-colors" title="Open Job Link">🔗</a>
                         )}
                       </div>
-                      <div className="text-[10px] font-black text-gray-500">{j.company_name}</div>
+                      <div className="text-[10px] font-black text-latte-overlay1">{j.company_name}</div>
                     </td>
-                    <td className="px-8 py-6 text-sm text-gray-600 dark:text-gray-300">
+                    <td className="px-8 py-6 text-sm text-latte-overlay0 text-latte-subtext1">
                       <span className="text-blue-600 dark:text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded">{j.work_type as string}</span>
-                      <span className="ml-2 text-[10px] text-gray-400 uppercase tracking-widest">{j.employment_type as string}</span>
+                      <span className="ml-2 text-[10px] text-latte-subtext0 uppercase tracking-widest">{j.employment_type as string}</span>
                     </td>
                     <td className="px-8 py-6 text-right space-x-3">
                       <button onClick={() => handleEdit(j)} className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest hover:underline">Refine</button>

@@ -111,8 +111,7 @@ export class InternshipsService {
        JOIN students s ON s.student_id = si.student_id
        WHERE si.internship_id = ?
        ORDER BY si.saved_at DESC`,
-      [internshipId]
+      [internshipId],
     );
   }
 }
-

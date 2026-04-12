@@ -10,4 +10,3 @@ export class ProgramsController {
     return this.programsService.list();
   }
 }
-

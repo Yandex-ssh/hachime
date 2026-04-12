@@ -29,11 +29,11 @@ function SubjectModal({ subjects, onClose }: { subjects: any[]; onClose: () => v
           <div className="flex items-center gap-3">
             <span className="text-2xl">📚</span>
             <div>
-              <h2 className="text-white font-bold text-lg leading-tight">Completed Subjects</h2>
-              <p className="text-white/60 text-xs mt-0.5">{subjects.length} subject{subjects.length !== 1 ? 's' : ''} total</p>
+              <h2 className="text-latte-text font-bold text-lg leading-tight">Completed Subjects</h2>
+              <p className="text-latte-text/60 text-xs mt-0.5">{subjects.length} subject{subjects.length !== 1 ? 's' : ''} total</p>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-white/15 transition-all text-lg font-bold">✕</button>
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-latte-text/70 hover:text-latte-text hover:bg-latte-base/15 transition-all text-lg font-bold">✕</button>
         </div>
 
         <div className="px-6 py-4 max-h-[60vh] overflow-y-auto space-y-2">
@@ -41,19 +41,19 @@ function SubjectModal({ subjects, onClose }: { subjects: any[]; onClose: () => v
             <div key={sub.subject_id} className="flex items-center justify-between px-4 py-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.15)' }}>
               <div className="flex items-center gap-3">
                 <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ background: 'rgba(99,102,241,0.35)', color: '#c7d2fe' }}>{idx + 1}</span>
-                <span className="text-white/90 text-sm font-medium">{sub.subject_name}</span>
+                <span className="text-latte-text/90 text-sm font-medium">{sub.subject_name}</span>
               </div>
               {sub.is_liked && <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(244,63,94,0.25)', color: '#fda4af' }}>♥ Liked</span>}
             </div>
           )) : (
-            <p className="text-white/50 text-sm italic text-center py-8">No completed subjects recorded.</p>
+            <p className="text-latte-text/50 text-sm italic text-center py-8">No completed subjects recorded.</p>
           )}
         </div>
 
         <div className="px-6 py-4 flex justify-end" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl text-sm font-semibold text-white transition-all"
+            className="px-5 py-2 rounded-xl text-sm font-semibold text-latte-text transition-all"
             style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)' }}
             onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.22)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.15)')}
@@ -85,14 +85,13 @@ function EditSubjectModal({ allSubjects, studentFinished, studentLiked, studentI
   };
 
   const toggleCheck = (id: number) => setCheckedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
-  const toggleLike = (id: number) => setLikedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
-      <div className="w-full max-w-2xl bg-white rounded-xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
-        <div className="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+      <div className="w-full max-w-2xl bg-latte-base rounded-xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="px-6 py-4 border-b flex justify-between items-center bg-latte-mantle">
           <h2 className="text-xl font-bold">Edit Completed Subjects</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-800">✕</button>
+          <button onClick={onClose} className="text-latte-overlay1 hover:text-gray-800">✕</button>
         </div>
         <div className="p-6 max-h-[60vh] overflow-y-auto space-y-2">
           {allSubjects.map((sub: any) => (
@@ -101,23 +100,102 @@ function EditSubjectModal({ allSubjects, studentFinished, studentLiked, studentI
                 <input type="checkbox" checked={checkedIds.includes(sub.subject_id)} onChange={() => toggleCheck(sub.subject_id)} className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500" />
                 <span className="text-sm font-medium">{sub.subject_name}</span>
               </label>
-              {checkedIds.includes(sub.subject_id) && (
-                <label className="flex items-center gap-2 text-xs">
-                  <input type="checkbox" checked={likedIds.includes(sub.subject_id)} onChange={() => toggleLike(sub.subject_id)} className="w-3 h-3 text-pink-500 focus:ring-pink-400 rounded" />
-                  Liked
-                </label>
-              )}
             </div>
           ))}
         </div>
-        <div className="px-6 py-4 bg-gray-50 flex justify-end gap-3 border-t">
-          <button onClick={onClose} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Cancel</button>
-          <button onClick={handleSave} className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700">Save Subjects</button>
+        <div className="px-6 py-4 bg-latte-mantle flex justify-end gap-3 border-t">
+          <button onClick={onClose} className="px-4 py-2 text-latte-overlay0 hover:bg-latte-mantle rounded-lg">Cancel</button>
+          <button onClick={handleSave} className="bg-blue-600 text-latte-text px-4 py-2 rounded-lg font-medium hover:bg-blue-700">Save Subjects</button>
         </div>
       </div>
     </div>
   );
 }
+
+function EditFavoritesModal({ allSubjects, studentFinished, studentLiked, studentId, onClose, onSave }: any) {
+  const [likedIds, setLikedIds] = React.useState<number[]>([]);
+  const [searchTerm, setSearchTerm] = React.useState('');
+
+  React.useEffect(() => {
+    setLikedIds(studentLiked.map((s: any) => s.subject_id));
+  }, [studentLiked]);
+
+  const handleSave = async () => {
+    const token = localStorage.getItem('token');
+    const finishedIds = studentFinished.map((s: any) => s.subject_id);
+    await fetch(`${API}/students/${studentId}/admin/subjects`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ finished_subject_ids: finishedIds, liked_subject_ids: likedIds })
+    });
+    onSave();
+    onClose();
+  };
+
+  const toggleLike = (id: number) => {
+    if (likedIds.includes(id)) {
+      setLikedIds(prev => prev.filter(x => x !== id));
+    } else {
+      if (likedIds.length >= 5) {
+        alert("A student can only have up to 5 favorite subjects.");
+        return;
+      }
+      setLikedIds(prev => [...prev, id]);
+    }
+  };
+
+  const filteredSubjects = studentFinished.filter((s: any) => 
+    s.subject_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
+      <div className="w-full max-w-xl bg-latte-base rounded-xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="px-6 py-4 border-b flex justify-between items-center bg-latte-mantle">
+          <div>
+            <h2 className="text-xl font-bold">Manage Favorite Subjects</h2>
+            <p className="text-xs text-latte-overlay1 mt-0.5">{likedIds.length}/5 subjects selected</p>
+          </div>
+          <button onClick={onClose} className="text-latte-overlay1 hover:text-gray-800">✕</button>
+        </div>
+        <div className="p-4 bg-latte-mantle border-b">
+          <input 
+            type="text" 
+            placeholder="Search subjects..." 
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none text-sm"
+          />
+        </div>
+        <div className="p-6 max-h-[50vh] overflow-y-auto space-y-2">
+          {filteredSubjects.map((sub: any) => (
+            <div key={sub.subject_id} className="flex items-center justify-between p-3 rounded-lg border border-gray-100 hover:bg-latte-mantle transition-colors">
+              <span className="text-sm font-medium text-gray-700">{sub.subject_name}</span>
+              <button 
+                onClick={() => toggleLike(sub.subject_id)}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                  likedIds.includes(sub.subject_id) 
+                    ? 'bg-pink-100 text-pink-600 border border-pink-200 shadow-sm' 
+                    : 'bg-latte-mantle text-latte-subtext0 border border-latte-crust hover:bg-gray-200'
+                }`}
+              >
+                ♥
+              </button>
+            </div>
+          ))}
+          {filteredSubjects.length === 0 && (
+            <p className="text-center text-latte-overlay1 py-10 italic">No subjects matching "{searchTerm}"</p>
+          )}
+        </div>
+        <div className="px-6 py-4 bg-latte-mantle flex justify-end gap-3 border-t">
+          <button onClick={onClose} className="px-4 py-2 text-latte-overlay0 hover:bg-latte-mantle rounded-lg">Cancel</button>
+          <button onClick={handleSave} className="bg-pink-600 text-latte-text px-5 py-2 rounded-lg font-medium hover:bg-pink-700 shadow-md transition-all">Save Favorites</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 function EditCareerModal({ allCareers, currentCareerId, studentId, onClose, onSave }: any) {
   const [selected, setSelected] = React.useState(currentCareerId || '');
@@ -134,15 +212,15 @@ function EditCareerModal({ allCareers, currentCareerId, studentId, onClose, onSa
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
-      <div className="w-full max-w-sm bg-white rounded-xl shadow-2xl p-6" onClick={e => e.stopPropagation()}>
+      <div className="w-full max-w-sm bg-latte-base rounded-xl shadow-2xl p-6" onClick={e => e.stopPropagation()}>
         <h2 className="text-lg font-bold mb-4">Edit Target Career</h2>
         <select value={selected} onChange={e => setSelected(e.target.value)} className="w-full border px-3 py-2 rounded-lg mb-6">
           <option value="">No Career Goal</option>
           {allCareers.map((c: any) => <option key={c.career_id} value={c.career_id}>{c.title}</option>)}
         </select>
         <div className="flex justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Cancel</button>
-          <button onClick={handleSave} className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700">Set Goal</button>
+          <button onClick={onClose} className="px-4 py-2 text-latte-overlay0 hover:bg-latte-mantle rounded-lg">Cancel</button>
+          <button onClick={handleSave} className="bg-green-600 text-latte-text px-4 py-2 rounded-lg font-medium hover:bg-green-700">Set Goal</button>
         </div>
       </div>
     </div>
@@ -167,10 +245,10 @@ function EditSavedModal({ title, allItems, savedItems, studentId, idKey, display
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
-      <div className="w-full max-w-2xl bg-white rounded-xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
-        <div className="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+      <div className="w-full max-w-2xl bg-latte-base rounded-xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="px-6 py-4 border-b flex justify-between items-center bg-latte-mantle">
           <h2 className="text-xl font-bold">{title}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-800">✕</button>
+          <button onClick={onClose} className="text-latte-overlay1 hover:text-gray-800">✕</button>
         </div>
         <div className="p-6 max-h-[60vh] overflow-y-auto space-y-2">
           {allItems.map((item: any) => (
@@ -181,10 +259,10 @@ function EditSavedModal({ title, allItems, savedItems, studentId, idKey, display
               </label>
             </div>
           ))}
-          {allItems.length === 0 && <p className="text-gray-500 text-sm">No items available to add.</p>}
+          {allItems.length === 0 && <p className="text-latte-overlay1 text-sm">No items available to add.</p>}
         </div>
-        <div className="px-6 py-4 bg-gray-50 flex justify-end gap-3 border-t">
-          <button onClick={() => { onSave(); onClose(); }} className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700">Done</button>
+        <div className="px-6 py-4 bg-latte-mantle flex justify-end gap-3 border-t">
+          <button onClick={() => { onSave(); onClose(); }} className="bg-blue-600 text-latte-text px-4 py-2 rounded-lg font-medium hover:bg-blue-700">Done</button>
         </div>
       </div>
     </div>
@@ -195,16 +273,16 @@ function EditSavedModal({ title, allItems, savedItems, studentId, idKey, display
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
-      <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
-      <p className="text-gray-900 font-medium text-sm">{value || <span className="text-gray-400 italic">Not set</span>}</p>
+      <p className="text-xs font-medium text-latte-overlay1 mb-1">{label}</p>
+      <p className="text-latte-text font-medium text-sm">{value || <span className="text-latte-subtext0 italic">Not set</span>}</p>
     </div>
   );
 }
 
 function SectionCard({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-      <div className="font-semibold text-gray-900 mb-4 flex items-center gap-2 text-sm">{title}</div>
+    <div className="bg-latte-base rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="font-semibold text-latte-text mb-4 flex items-center gap-2 text-sm">{title}</div>
       {children}
     </div>
   );
@@ -238,6 +316,7 @@ export default function AdminStudentDetailsPage() {
   const [showEditInternships, setShowEditInternships] = React.useState(false);
   const [showEditJobs, setShowEditJobs] = React.useState(false);
   const [showEditResources, setShowEditResources] = React.useState(false);
+  const [showEditFavorites, setShowEditFavorites] = React.useState(false);
 
   const [isEditing, setIsEditing] = React.useState(false);
   const [editForm, setEditForm] = React.useState({ name: '', email: '', student_number: '', year_level: '', semester: '', program_id: '', profile_picture_url: '', isActive: true });
@@ -361,8 +440,8 @@ export default function AdminStudentDetailsPage() {
     if (res.ok) fetchStudent(); else alert(`Failed to ${action} student`);
   };
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-gray-400">Loading...</div>;
-  if (!student) return <div className="text-gray-500 p-8">Student not found.</div>;
+  if (loading) return <div className="flex items-center justify-center h-64 text-latte-subtext0">Loading...</div>;
+  if (!student) return <div className="text-latte-overlay1 p-8">Student not found.</div>;
 
   const subjectCount = student.finished_subjects?.length ?? 0;
   const progress = student.progress ?? {};
@@ -437,15 +516,26 @@ export default function AdminStudentDetailsPage() {
         />
       )}
 
+      {showEditFavorites && (
+        <EditFavoritesModal 
+          allSubjects={allSubjects}
+          studentFinished={student.finished_subjects ?? []}
+          studentLiked={(student.finished_subjects ?? []).filter((s:any) => s.is_liked)}
+          studentId={id}
+          onClose={() => setShowEditFavorites(false)}
+          onSave={fetchStudent}
+        />
+      )}
+
       <div className="space-y-6 max-w-5xl mx-auto">
         {/* Back */}
-        <Link href="/admin/students" className="inline-flex items-center gap-1 text-gray-500 hover:text-gray-900 transition-colors text-sm">
+        <Link href="/admin/students" className="inline-flex items-center gap-1 text-latte-overlay1 hover:text-latte-text transition-colors text-sm">
           ← Back to Students
         </Link>
 
         {/* ── Profile header ── */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-8 flex flex-wrap items-start justify-between gap-4 border-b border-gray-100 bg-gray-50/50">
+        <div className="bg-latte-base rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-8 flex flex-wrap items-start justify-between gap-4 border-b border-gray-100 bg-latte-mantle/50">
             <div className="flex gap-5 items-center">
               <div className="relative group/avatar">
                 <input
@@ -469,7 +559,7 @@ export default function AdminStudentDetailsPage() {
                   )}
                   {isEditing && (
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity">
-                      <span className="text-[10px] text-white font-bold leading-tight text-center px-1">
+                      <span className="text-[10px] text-latte-text font-bold leading-tight text-center px-1">
                         CHANGE<br/>PHOTO
                       </span>
                     </div>
@@ -477,8 +567,8 @@ export default function AdminStudentDetailsPage() {
                 </label>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">{student.name}</h1>
-                <p className="text-gray-500 mt-1 text-sm">{student.student_number} • {student.program || 'No Program'}</p>
+                <h1 className="text-2xl font-bold text-latte-text">{student.name}</h1>
+                <p className="text-latte-overlay1 mt-1 text-sm">{student.student_number} • {student.program || 'No Program'}</p>
                 <span className={`inline-block mt-2 text-xs font-semibold px-2.5 py-1 rounded-full ${student.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'}`}>
                   {student.isActive ? 'Active' : 'Inactive'}
                 </span>
@@ -487,11 +577,11 @@ export default function AdminStudentDetailsPage() {
 
             <div className="flex flex-wrap gap-2">
               {!isEditing ? (
-                <button onClick={() => setIsEditing(true)} className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-sm">Edit Profile</button>
+                <button onClick={() => setIsEditing(true)} className="bg-latte-base border border-gray-300 text-gray-700 hover:bg-latte-mantle px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-sm">Edit Profile</button>
               ) : (
                 <>
-                  <button onClick={() => setIsEditing(false)} className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg font-medium transition-colors text-sm">Cancel</button>
-                  <button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-sm">Save Changes</button>
+                  <button onClick={() => setIsEditing(false)} className="bg-latte-base border border-gray-300 text-gray-700 hover:bg-latte-mantle px-4 py-2 rounded-lg font-medium transition-colors text-sm">Cancel</button>
+                  <button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-latte-text px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-sm">Save Changes</button>
                 </>
               )}
               <button onClick={handleResetPassword} className="bg-orange-100 text-orange-700 border border-orange-200 hover:bg-orange-200 px-4 py-2 rounded-lg font-medium transition-colors text-sm">Reset Password</button>
@@ -503,31 +593,31 @@ export default function AdminStudentDetailsPage() {
 
           {/* Student info fields */}
           <div className="p-8">
-            <h3 className="text-base font-semibold text-gray-900 mb-5">Account Details</h3>
+            <h3 className="text-base font-semibold text-latte-text mb-5">Account Details</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-6">
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5">Full Name</label>
+                <label className="block text-xs font-medium text-latte-overlay1 mb-1.5">Full Name</label>
                 {isEditing ? (
                   <input type="text" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-                ) : <p className="text-gray-900 font-medium text-sm">{student.name}</p>}
+                ) : <p className="text-latte-text font-medium text-sm">{student.name}</p>}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5">Student Number</label>
+                <label className="block text-xs font-medium text-latte-overlay1 mb-1.5">Student Number</label>
                 {isEditing ? (
                   <input type="text" value={editForm.student_number} onChange={e => setEditForm({ ...editForm, student_number: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-                ) : <p className="text-gray-900 font-medium text-sm">{student.student_number}</p>}
+                ) : <p className="text-latte-text font-medium text-sm">{student.student_number}</p>}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5">Email Address</label>
+                <label className="block text-xs font-medium text-latte-overlay1 mb-1.5">Email Address</label>
                 {isEditing ? (
                   <input type="email" value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-                ) : <p className="text-gray-900 font-medium text-sm">{student.email || <span className="text-gray-400 italic">Not provided</span>}</p>}
+                ) : <p className="text-latte-text font-medium text-sm">{student.email || <span className="text-latte-subtext0 italic">Not provided</span>}</p>}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5">Program</label>
+                <label className="block text-xs font-medium text-latte-overlay1 mb-1.5">Program</label>
                 {isEditing ? (
                   <select
                     value={editForm.program_id}
@@ -540,19 +630,19 @@ export default function AdminStudentDetailsPage() {
                     ))}
                   </select>
                 ) : (
-                  <p className="text-gray-900 font-medium text-sm">{student.program || <span className="text-gray-400 italic">—</span>}</p>
+                  <p className="text-latte-text font-medium text-sm">{student.program || <span className="text-latte-subtext0 italic">—</span>}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5">Year Level</label>
+                <label className="block text-xs font-medium text-latte-overlay1 mb-1.5">Year Level</label>
                 {isEditing ? (
                   <input type="number" min="1" max="4" value={editForm.year_level} onChange={e => setEditForm({ ...editForm, year_level: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-                ) : <p className="text-gray-900 font-medium text-sm">{student.year_level ? yearStr(Number(student.year_level)) : <span className="text-gray-400 italic">Not set</span>}</p>}
+                ) : <p className="text-latte-text font-medium text-sm">{student.year_level ? yearStr(Number(student.year_level)) : <span className="text-latte-subtext0 italic">Not set</span>}</p>}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5">Current Semester</label>
+                <label className="block text-xs font-medium text-latte-overlay1 mb-1.5">Current Semester</label>
                 {isEditing ? (
                   <select value={editForm.semester} onChange={e => setEditForm({ ...editForm, semester: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                     <option value="">Not set</option>
@@ -560,8 +650,8 @@ export default function AdminStudentDetailsPage() {
                     <option value="2">2nd Semester</option>
                   </select>
                 ) : (
-                  <p className="text-gray-900 font-medium text-sm">
-                    {student.semester ? `${student.semester === 1 ? '1st' : '2nd'} Semester` : <span className="text-gray-400 italic">Not set</span>}
+                  <p className="text-latte-text font-medium text-sm">
+                    {student.semester ? `${student.semester === 1 ? '1st' : '2nd'} Semester` : <span className="text-latte-subtext0 italic">Not set</span>}
                   </p>
                 )}
               </div>
@@ -569,7 +659,7 @@ export default function AdminStudentDetailsPage() {
               {isEditing && (
                 <>
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1.5">Account Status</label>
+                    <label className="block text-xs font-medium text-latte-overlay1 mb-1.5">Account Status</label>
                     <select value={editForm.isActive ? 'active' : 'inactive'} onChange={e => setEditForm({ ...editForm, isActive: e.target.value === 'active' })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                       <option value="active">Active</option>
                       <option value="inactive">Inactive</option>
@@ -583,15 +673,15 @@ export default function AdminStudentDetailsPage() {
 
         {/* ── Progress bar ── */}
         {progress.totalSubjects > 0 && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h3 className="text-sm font-semibold text-gray-900 mb-1">Academic Progress</h3>
-            <p className="text-xs text-gray-500 mb-3">
+          <div className="bg-latte-base rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 className="text-sm font-semibold text-latte-text mb-1">Academic Progress</h3>
+            <p className="text-xs text-latte-overlay1 mb-3">
               {progress.semesterLabel
                 ? `${progress.finishedSubjects} subjects completed (goal: ${progress.totalSubjects} by end of ${progress.semesterLabel})`
                 : `${progress.finishedSubjects} / ${progress.totalSubjects} subjects completed`}
             </p>
             <div className="flex items-center gap-3">
-              <div className="flex-1 bg-gray-100 rounded-full h-2.5 overflow-hidden">
+              <div className="flex-1 bg-latte-mantle rounded-full h-2.5 overflow-hidden">
                 <div className="bg-gradient-to-r from-indigo-500 to-violet-500 h-2.5 rounded-full transition-all duration-700" style={{ width: `${progressPercent}%` }} />
               </div>
               <span className="text-sm font-semibold text-gray-700 min-w-[3rem] text-right">{progressPercent}%</span>
@@ -604,12 +694,12 @@ export default function AdminStudentDetailsPage() {
           {/* Subjects */}
           <SectionCard title={<><span className="text-blue-600">📚</span> Completed Subjects {subjectCount > 0 && <span className="ml-1 bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full">{subjectCount}</span>}</>}>
             {subjectCount === 0 ? (
-              <p className="text-gray-400 text-sm italic">No completed subjects recorded.</p>
+              <p className="text-latte-subtext0 text-sm italic">No completed subjects recorded.</p>
             ) : (
               <>
                 <div className="space-y-2 mb-3">
                   {student.finished_subjects.slice(0, 3).map((sub: any) => (
-                    <div key={sub.subject_id} className="p-2.5 bg-gray-50 rounded-lg border border-gray-100 text-sm flex justify-between">
+                    <div key={sub.subject_id} className="p-2.5 bg-latte-mantle rounded-lg border border-gray-100 text-sm flex justify-between">
                       <span className="font-medium text-gray-800">{sub.subject_name}</span>
                       {sub.is_liked && <span className="text-pink-500 text-xs font-bold">♥ Liked</span>}
                     </div>
@@ -621,8 +711,27 @@ export default function AdminStudentDetailsPage() {
               </>
             )}
             
-            <button onClick={() => setShowEditSubjects(true)} className="w-full py-2 text-xs font-semibold text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 transition-colors">
+            <button onClick={() => setShowEditSubjects(true)} className="w-full py-2 text-xs font-semibold text-latte-text bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 transition-colors">
               Manage Subjects
+            </button>
+          </SectionCard>
+
+          {/* Favorite Subjects */}
+          <SectionCard title={<><span className="text-pink-500">💖</span> Favorite Subjects {student.finished_subjects?.filter((s:any) => s.is_liked).length > 0 && <span className="ml-1 bg-pink-100 text-pink-700 text-xs font-bold px-2 py-0.5 rounded-full">{student.finished_subjects.filter((s:any) => s.is_liked).length}</span>}</>}>
+            {student.finished_subjects?.filter((s:any) => s.is_liked).length === 0 ? (
+              <p className="text-latte-subtext0 text-sm italic mb-3">No favorite subjects selected.</p>
+            ) : (
+              <div className="space-y-2 mb-4">
+                {student.finished_subjects.filter((s:any) => s.is_liked).map((sub: any) => (
+                  <div key={sub.subject_id} className="p-2.5 bg-pink-50/50 rounded-lg border border-pink-100 text-sm flex items-center gap-3">
+                    <span className="text-pink-400">♥</span>
+                    <span className="font-medium text-gray-800">{sub.subject_name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            <button onClick={() => setShowEditFavorites(true)} className="w-full py-2 text-xs font-semibold text-latte-text bg-pink-600 border border-transparent rounded-lg hover:bg-pink-700 transition-colors">
+              Manage Favorites
             </button>
           </SectionCard>
 
@@ -632,108 +741,108 @@ export default function AdminStudentDetailsPage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   {careerGoal.icon && <span className="text-2xl">{careerGoal.icon}</span>}
-                  <p className="font-semibold text-gray-900 text-sm">{careerGoal.title}</p>
+                  <p className="font-semibold text-latte-text text-sm">{careerGoal.title}</p>
                 </div>
                 <div>
-                  <div className="flex justify-between text-xs text-gray-500 mb-1">
+                  <div className="flex justify-between text-xs text-latte-overlay1 mb-1">
                     <span>Required subjects progress</span>
                     <span className="font-semibold text-gray-700">{careerGoal.progress.completed}/{careerGoal.progress.total} ({careerGoal.progress.percent}%)</span>
                   </div>
-                  <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                  <div className="w-full bg-latte-mantle rounded-full h-2 overflow-hidden">
                     <div className="bg-gradient-to-r from-green-400 to-emerald-500 h-2 rounded-full transition-all" style={{ width: `${careerGoal.progress.percent}%` }} />
                   </div>
                 </div>
                 {careerGoal.gap?.missing_subjects?.length > 0 && (
                   <div>
-                    <p className="text-xs font-medium text-gray-500 mb-1.5">Missing required subjects</p>
+                    <p className="text-xs font-medium text-latte-overlay1 mb-1.5">Missing required subjects</p>
                     <div className="flex flex-wrap gap-1.5">
                       {careerGoal.gap.missing_subjects.slice(0, 6).map((s: any) => (
                         <span key={s.subject_id} className="bg-amber-50 border border-amber-200 text-amber-700 text-xs px-2 py-0.5 rounded-md">{s.subject_name}</span>
                       ))}
                       {careerGoal.gap.missing_subjects.length > 6 && (
-                        <span className="text-gray-400 text-xs px-2 py-0.5">+{careerGoal.gap.missing_subjects.length - 6} more</span>
+                        <span className="text-latte-subtext0 text-xs px-2 py-0.5">+{careerGoal.gap.missing_subjects.length - 6} more</span>
                       )}
                     </div>
                   </div>
                 )}
               </div>
             ) : (
-              <p className="text-gray-400 text-sm italic mb-2">No career goal set.</p>
+              <p className="text-latte-subtext0 text-sm italic mb-2">No career goal set.</p>
             )}
             
-            <button onClick={() => setShowEditCareer(true)} className="mt-4 w-full py-2 text-xs font-semibold text-white bg-green-600 border border-transparent rounded-lg hover:bg-green-700 transition-colors">
+            <button onClick={() => setShowEditCareer(true)} className="mt-4 w-full py-2 text-xs font-semibold text-latte-text bg-green-600 border border-transparent rounded-lg hover:bg-green-700 transition-colors">
               Manage Career Goal
             </button>
           </SectionCard>
 
           {/* Bookmarked Internships */}
-          <SectionCard title={<><span className="text-indigo-500">💼</span> Saved Internships <span className="ml-1 text-xs text-gray-400 font-normal">({savedInternships.length})</span></>}>
+          <SectionCard title={<><span className="text-indigo-500">💼</span> Saved Internships <span className="ml-1 text-xs text-latte-subtext0 font-normal">({savedInternships.length})</span></>}>
             {savedInternships.length === 0 ? (
-              <p className="text-gray-400 text-sm italic">No saved internships.</p>
+              <p className="text-latte-subtext0 text-sm italic">No saved internships.</p>
             ) : (
               <div className="space-y-2">
                 {savedInternships.slice(0, 5).map((item: Internship) => (
-                  <div key={item.internship_id} className="flex rounded-lg border border-gray-100 bg-gray-50 hover:border-gray-200 transition text-sm">
+                  <div key={item.internship_id} className="flex rounded-lg border border-gray-100 bg-latte-mantle hover:border-latte-crust transition text-sm">
                     <a href={item.apply_url ?? '#'} target="_blank" rel="noreferrer" className="block px-3 py-2.5 flex-1">
                       <p className="font-medium text-gray-800">{item.role_title}</p>
-                      <p className="text-xs text-gray-500">{item.company_name}</p>
+                      <p className="text-xs text-latte-overlay1">{item.company_name}</p>
                     </a>
-                    <button onClick={() => handleToggleSave('internships', item.internship_id)} className="px-3 border-l border-gray-100 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-r-lg" title="Unsave">✕</button>
+                    <button onClick={() => handleToggleSave('internships', item.internship_id)} className="px-3 border-l border-gray-100 text-latte-subtext0 hover:text-red-500 hover:bg-red-50 rounded-r-lg" title="Unsave">✕</button>
                   </div>
                 ))}
-                {savedInternships.length > 5 && <p className="text-xs text-gray-400 text-center">+{savedInternships.length - 5} more</p>}
+                {savedInternships.length > 5 && <p className="text-xs text-latte-subtext0 text-center">+{savedInternships.length - 5} more</p>}
               </div>
             )}
             
-            <button onClick={() => setShowEditInternships(true)} className="mt-4 w-full py-2 text-xs font-semibold text-white bg-indigo-600 border border-transparent rounded-lg hover:bg-indigo-700 transition-colors">
+            <button onClick={() => setShowEditInternships(true)} className="mt-4 w-full py-2 text-xs font-semibold text-latte-text bg-indigo-600 border border-transparent rounded-lg hover:bg-indigo-700 transition-colors">
               Manage Internships
             </button>
           </SectionCard>
 
           {/* Bookmarked Jobs */}
-          <SectionCard title={<><span className="text-violet-500">🗂️</span> Saved Jobs <span className="ml-1 text-xs text-gray-400 font-normal">({savedJobs.length})</span></>}>
+          <SectionCard title={<><span className="text-violet-500">🗂️</span> Saved Jobs <span className="ml-1 text-xs text-latte-subtext0 font-normal">({savedJobs.length})</span></>}>
             {savedJobs.length === 0 ? (
-              <p className="text-gray-400 text-sm italic">No saved job listings.</p>
+              <p className="text-latte-subtext0 text-sm italic">No saved job listings.</p>
             ) : (
               <div className="space-y-2">
                 {savedJobs.slice(0, 5).map((item: Job) => (
-                  <div key={item.job_id} className="flex rounded-lg border border-gray-100 bg-gray-50 hover:border-gray-200 transition text-sm">
+                  <div key={item.job_id} className="flex rounded-lg border border-gray-100 bg-latte-mantle hover:border-latte-crust transition text-sm">
                     <a href={item.apply_url ?? '#'} target="_blank" rel="noreferrer" className="block px-3 py-2.5 flex-1">
                       <p className="font-medium text-gray-800">{item.role_title}</p>
-                      <p className="text-xs text-gray-500">{item.company_name}</p>
+                      <p className="text-xs text-latte-overlay1">{item.company_name}</p>
                     </a>
-                    <button onClick={() => handleToggleSave('jobs', item.job_id)} className="px-3 border-l border-gray-100 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-r-lg" title="Unsave">✕</button>
+                    <button onClick={() => handleToggleSave('jobs', item.job_id)} className="px-3 border-l border-gray-100 text-latte-subtext0 hover:text-red-500 hover:bg-red-50 rounded-r-lg" title="Unsave">✕</button>
                   </div>
                 ))}
-                {savedJobs.length > 5 && <p className="text-xs text-gray-400 text-center">+{savedJobs.length - 5} more</p>}
+                {savedJobs.length > 5 && <p className="text-xs text-latte-subtext0 text-center">+{savedJobs.length - 5} more</p>}
               </div>
             )}
             
-            <button onClick={() => setShowEditJobs(true)} className="mt-4 w-full py-2 text-xs font-semibold text-white bg-violet-600 border border-transparent rounded-lg hover:bg-violet-700 transition-colors">
+            <button onClick={() => setShowEditJobs(true)} className="mt-4 w-full py-2 text-xs font-semibold text-latte-text bg-violet-600 border border-transparent rounded-lg hover:bg-violet-700 transition-colors">
               Manage Jobs
             </button>
           </SectionCard>
 
           {/* Bookmarked Resources */}
-          <SectionCard title={<><span className="text-cyan-500">📖</span> Saved Resources <span className="ml-1 text-xs text-gray-400 font-normal">({savedResources.length})</span></>}>
+          <SectionCard title={<><span className="text-cyan-500">📖</span> Saved Resources <span className="ml-1 text-xs text-latte-subtext0 font-normal">({savedResources.length})</span></>}>
             {savedResources.length === 0 ? (
-              <p className="text-gray-400 text-sm italic">No saved development resources.</p>
+              <p className="text-latte-subtext0 text-sm italic">No saved development resources.</p>
             ) : (
               <div className="space-y-2">
                 {savedResources.slice(0, 5).map((item: Resource) => (
-                  <div key={item.resource_id} className="flex rounded-lg border border-gray-100 bg-gray-50 hover:border-gray-200 transition text-sm">
+                  <div key={item.resource_id} className="flex rounded-lg border border-gray-100 bg-latte-mantle hover:border-latte-crust transition text-sm">
                     <a href={item.url ?? '#'} target="_blank" rel="noreferrer" className="block px-3 py-2.5 flex-1">
                       <p className="font-medium text-gray-800">{item.title}</p>
-                      <p className="text-xs text-gray-500">{item.provider ?? 'Provider not specified'}</p>
+                      <p className="text-xs text-latte-overlay1">{item.provider ?? 'Provider not specified'}</p>
                     </a>
-                    <button onClick={() => handleToggleSave('resources', item.resource_id)} className="px-3 border-l border-gray-100 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-r-lg" title="Unsave">✕</button>
+                    <button onClick={() => handleToggleSave('resources', item.resource_id)} className="px-3 border-l border-gray-100 text-latte-subtext0 hover:text-red-500 hover:bg-red-50 rounded-r-lg" title="Unsave">✕</button>
                   </div>
                 ))}
-                {savedResources.length > 5 && <p className="text-xs text-gray-400 text-center">+{savedResources.length - 5} more</p>}
+                {savedResources.length > 5 && <p className="text-xs text-latte-subtext0 text-center">+{savedResources.length - 5} more</p>}
               </div>
             )}
             
-            <button onClick={() => setShowEditResources(true)} className="mt-4 w-full py-2 text-xs font-semibold text-white bg-cyan-600 border border-transparent rounded-lg hover:bg-cyan-700 transition-colors">
+            <button onClick={() => setShowEditResources(true)} className="mt-4 w-full py-2 text-xs font-semibold text-latte-text bg-cyan-600 border border-transparent rounded-lg hover:bg-cyan-700 transition-colors">
               Manage Resources
             </button>
           </SectionCard>

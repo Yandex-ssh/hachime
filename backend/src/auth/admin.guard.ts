@@ -15,7 +15,8 @@ import { JwtPayload } from './types/jwt-payload.type';
 export class AdminGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    @InjectRepository(Student) private readonly studentsRepository: Repository<Student>,
+    @InjectRepository(Student)
+    private readonly studentsRepository: Repository<Student>,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -50,7 +51,10 @@ export class AdminGuard implements CanActivate {
 
       return true;
     } catch (e) {
-      if (e instanceof ForbiddenException || e instanceof UnauthorizedException) {
+      if (
+        e instanceof ForbiddenException ||
+        e instanceof UnauthorizedException
+      ) {
         throw e;
       }
       throw new UnauthorizedException('Invalid or expired token');

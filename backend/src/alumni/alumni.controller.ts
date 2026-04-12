@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AlumniService } from './alumni.service';
 import { CreateAlumniDto } from './dto/create-alumni.dto';
 import { UpdateAlumniDto } from './dto/update-alumni.dto';
@@ -9,7 +19,10 @@ export class AlumniController {
   constructor(private alumniService: AlumniService) {}
 
   @Get()
-  async list(@Query('program') program?: string, @Query('admin') admin?: string) {
+  async list(
+    @Query('program') program?: string,
+    @Query('admin') admin?: string,
+  ) {
     const isAdmin = admin === 'true';
     return this.alumniService.list(program, isAdmin);
   }

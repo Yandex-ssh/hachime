@@ -1,26 +1,54 @@
 @import "tailwindcss";
+@import "./theme.css";
 
 @variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-latte-base);
+  --foreground: var(--color-latte-text);
 }
 
 :root.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background: var(--color-mocha-base);
+  --foreground: var(--color-mocha-text);
+  
+  /* OVERRIDE LATTE VARIABLES WITH MOCHA IN DARK MODE */
+  --color-latte-rosewater: #f5e0dc;
+  --color-latte-flamingo:  #f2cdcd;
+  --color-latte-pink:      #f5c2e7;
+  --color-latte-mauve:     #cba6f7;
+  --color-latte-red:       #f38ba8;
+  --color-latte-maroon:    #eba0ac;
+  --color-latte-peach:     #fab387;
+  --color-latte-yellow:    #f9e2af;
+  --color-latte-green:     #a6e3a1;
+  --color-latte-teal:      #94e2d5;
+  --color-latte-sky:       #89dceb;
+  --color-latte-sapphire:  #74c7ec;
+  --color-latte-blue:      #89b4fa;
+  --color-latte-lavender:  #b4befe;
+  --color-latte-text:      #cdd6f4;
+  --color-latte-subtext1:  #bac2de;
+  --color-latte-subtext0:  #a6adc8;
+  --color-latte-overlay2:  #9399b2;
+  --color-latte-overlay1:  #7f849c;
+  --color-latte-overlay0:  #6c7086;
+  --color-latte-surface2:  #585b70;
+  --color-latte-surface1:  #45475a;
+  --color-latte-surface0:  #313244;
+  --color-latte-base:      #1e1e2e;
+  --color-latte-mantle:    #181825;
+  --color-latte-crust:     #11111b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-nerd), Arial, Helvetica, sans-serif;
 }
+

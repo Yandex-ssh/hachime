@@ -59,4 +59,3 @@ export class Internship {
   @CreateDateColumn()
   posted_at: Date;
 }
-

@@ -8,12 +8,13 @@ import { Career } from '../entities/career.entity';
 import { Subject } from '../entities/subject.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Skill } from '../entities/skill.entity';
 
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Student, Career, Subject, StudentSubject]),
+    TypeOrmModule.forFeature([Student, Career, Subject, StudentSubject, Skill]),
     AuthModule,
   ],
   controllers: [AnalyticsController],

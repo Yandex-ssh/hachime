@@ -52,7 +52,10 @@ export class ResourcesController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/save')
-  async toggleSave(@Request() req: { user: { sub: number } }, @Param('id') id: string) {
+  async toggleSave(
+    @Request() req: { user: { sub: number } },
+    @Param('id') id: string,
+  ) {
     return this.resourcesService.toggleSave(req.user.sub, parseInt(id, 10));
   }
 

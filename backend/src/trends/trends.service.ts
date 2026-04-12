@@ -30,6 +30,7 @@ export class TrendsService {
       companies: t.top_companies ?? [],
       insight: t.insight ?? null,
       year: t.year ?? null,
+      program_ids: t.program_ids ?? [],
     }));
   }
 
@@ -55,7 +56,7 @@ export class TrendsService {
       ...dto,
       is_active: dto.is_active ?? true,
     };
-    const created = this.trendsRepository.create(payload as any);
+    const created = this.trendsRepository.create(payload);
     return this.trendsRepository.save(created);
   }
 

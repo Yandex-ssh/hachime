@@ -118,15 +118,23 @@ export class CareersService {
   }
 
   async getCareerSubjectsAdmin(careerId: number) {
-    return this.careersRepository.query(`
+    return this.careersRepository.query(
+      `
       SELECT cs.subject_id, s.subject_code, s.subject_name, cs.weight, cs.is_required
       FROM career_subjects cs
       JOIN subjects s ON s.subject_id = cs.subject_id
       WHERE cs.career_id = ?
-    `, [careerId]);
+    `,
+      [careerId],
+    );
   }
 
-  async linkSubjectToCareer(careerId: number, subjectId: number, weight: number, is_required: boolean) {
+  async linkSubjectToCareer(
+    careerId: number,
+    subjectId: number,
+    weight: number,
+    is_required: boolean,
+  ) {
     await this.careersRepository.query(
       'DELETE FROM career_subjects WHERE career_id = ? AND subject_id = ?',
       [careerId, subjectId],
@@ -147,15 +155,22 @@ export class CareersService {
   }
 
   async getCareerSkillsAdmin(careerId: number) {
-    return this.careersRepository.query(`
+    return this.careersRepository.query(
+      `
       SELECT cs.skill_id, s.skill_name, s.category, s.expanded_skills, cs.priority
       FROM career_skills cs
       JOIN skills s ON s.skill_id = cs.skill_id
       WHERE cs.career_id = ?
-    `, [careerId]);
+    `,
+      [careerId],
+    );
   }
 
-  async linkSkillToCareer(careerId: number, skillId: number, priority: 'low' | 'medium' | 'high') {
+  async linkSkillToCareer(
+    careerId: number,
+    skillId: number,
+    priority: 'low' | 'medium' | 'high',
+  ) {
     await this.careersRepository.query(
       'DELETE FROM career_skills WHERE career_id = ? AND skill_id = ?',
       [careerId, skillId],

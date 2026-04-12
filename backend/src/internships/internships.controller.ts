@@ -105,7 +105,10 @@ export class InternshipsController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async get(@Request() req: { user: { sub: number } }, @Param('id') id: string) {
+  async get(
+    @Request() req: { user: { sub: number } },
+    @Param('id') id: string,
+  ) {
     await this.assertFourthYear(req.user.sub);
     return this.internshipsService.getById(parseInt(id, 10));
   }
@@ -120,4 +123,3 @@ export class InternshipsController {
     return this.internshipsService.toggleSave(req.user.sub, parseInt(id, 10));
   }
 }
-

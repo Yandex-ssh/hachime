@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  Query,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SubjectsService } from './subjects.service';
 import { AdminGuard } from '../auth/admin.guard';
@@ -17,7 +29,9 @@ export class SubjectsController {
     const myl = maxYearLevel ? parseInt(maxYearLevel, 10) : undefined;
     return this.subjectsService.list({
       program_id: Number.isFinite(pid as number) ? (pid as number) : undefined,
-      max_year_level: Number.isFinite(myl as number) ? (myl as number) : undefined,
+      max_year_level: Number.isFinite(myl as number)
+        ? (myl as number)
+        : undefined,
     }); // TODO: incorporate search into service if needed
   }
 
@@ -64,12 +78,22 @@ export class SubjectsController {
     @Param('skillId') skillId: string,
     @Body('weight') weight: number,
   ) {
-    return this.subjectsService.linkSkill(parseInt(id, 10), parseInt(skillId, 10), weight || 5);
+    return this.subjectsService.linkSkill(
+      parseInt(id, 10),
+      parseInt(skillId, 10),
+      weight || 5,
+    );
   }
 
   @UseGuards(AdminGuard)
   @Delete(':id/skills/:skillId')
-  async unlinkSkill(@Param('id') id: string, @Param('skillId') skillId: string) {
-    return this.subjectsService.unlinkSkill(parseInt(id, 10), parseInt(skillId, 10));
+  async unlinkSkill(
+    @Param('id') id: string,
+    @Param('skillId') skillId: string,
+  ) {
+    return this.subjectsService.unlinkSkill(
+      parseInt(id, 10),
+      parseInt(skillId, 10),
+    );
   }
 }

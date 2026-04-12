@@ -54,14 +54,12 @@ export class Alumni {
   skills_used: string[] | null;
 
   @Column({ type: 'json', nullable: true })
-  internships:
-    | Array<{
-        role_title?: string;
-        company_name?: string;
-        location?: string;
-        year?: number;
-      }>
-    | null;
+  internships: Array<{
+    role_title?: string;
+    company_name?: string;
+    location?: string;
+    year?: number;
+  }> | null;
 
   @Column({ type: 'text', nullable: true })
   advice: string | null;

@@ -108,7 +108,10 @@ export class StudentsController {
   // #8 – Typed DTO prevents privilege escalation
   @UseGuards(AdminGuard)
   @Patch(':id/admin')
-  async updateStudentAdmin(@Param('id') id: string, @Body() body: UpdateStudentAdminDto) {
+  async updateStudentAdmin(
+    @Param('id') id: string,
+    @Body() body: UpdateStudentAdminDto,
+  ) {
     return this.studentsService.updateStudentAdmin(parseInt(id), body);
   }
 

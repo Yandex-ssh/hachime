@@ -12,7 +12,10 @@ export class ReportsController {
   async getStudentsReport(@Res() res: Response) {
     const csv = await this.reportsService.exportStudents();
     res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename=students_report.csv');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=students_report.csv',
+    );
     return res.send(csv);
   }
 
@@ -20,7 +23,10 @@ export class ReportsController {
   async getAlumniReport(@Res() res: Response) {
     const csv = await this.reportsService.exportAlumni();
     res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename=alumni_report.csv');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=alumni_report.csv',
+    );
     return res.send(csv);
   }
 
@@ -28,7 +34,10 @@ export class ReportsController {
   async getSubjectsReport(@Res() res: Response) {
     const csv = await this.reportsService.exportSubjects();
     res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename=subjects_report.csv');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=subjects_report.csv',
+    );
     return res.send(csv);
   }
 }

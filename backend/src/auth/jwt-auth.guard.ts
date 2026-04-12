@@ -14,7 +14,8 @@ import { JwtPayload } from './types/jwt-payload.type';
 export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    @InjectRepository(Student) private readonly studentsRepository: Repository<Student>,
+    @InjectRepository(Student)
+    private readonly studentsRepository: Repository<Student>,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -33,9 +34,9 @@ export class JwtAuthGuard implements CanActivate {
 
     try {
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
-      
+
       const student = await this.studentsRepository.findOne({
-        where: { student_id: payload.sub }
+        where: { student_id: payload.sub },
       });
 
       if (!student || student.isActive === false) {

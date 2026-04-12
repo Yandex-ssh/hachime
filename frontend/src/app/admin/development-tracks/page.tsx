@@ -117,8 +117,8 @@ export default function AdminDevTracksPage() {
     <div className="max-w-7xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight text-glow">Development <span className="text-violet-500">Tracks</span></h1>
-          <p className="text-gray-500 text-sm mt-1 uppercase tracking-widest font-black text-[10px]">Resource Catalog & Pathing</p>
+          <h1 className="text-2xl font-bold text-latte-text tracking-tight text-glow">Development <span className="text-violet-500">Tracks</span></h1>
+          <p className="text-latte-overlay1 text-sm mt-1 uppercase tracking-widest font-black text-[10px]">Resource Catalog & Pathing</p>
         </div>
       </div>
 
@@ -128,8 +128,8 @@ export default function AdminDevTracksPage() {
           onClick={() => setSelectedProgramId(null)}
           className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
             selectedProgramId === null
-              ? 'bg-violet-600 text-white border-violet-500 shadow-lg shadow-violet-600/20'
-              : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+              ? 'bg-violet-600 text-latte-text border-violet-500 shadow-lg shadow-violet-600/20'
+              : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
           }`}
         >
           🌐 Global View
@@ -140,8 +140,8 @@ export default function AdminDevTracksPage() {
             onClick={() => setSelectedProgramId(p.program_id)}
             className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
               selectedProgramId === p.program_id
-                ? 'bg-violet-600 text-white border-violet-500 shadow-lg shadow-violet-600/20'
-                : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+                ? 'bg-violet-600 text-latte-text border-violet-500 shadow-lg shadow-violet-600/20'
+                : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
             }`}
           >
             {p.program_code} Resources
@@ -156,8 +156,8 @@ export default function AdminDevTracksPage() {
              onClick={() => setCostFilter(c)}
              className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all border ${
                costFilter === c
-                 ? 'bg-emerald-600 text-white border-emerald-500 shadow-lg'
-                 : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+                 ? 'bg-emerald-600 text-latte-text border-emerald-500 shadow-lg'
+                 : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
              }`}
            >
              {c === "All" ? "All Costs" : c}
@@ -165,9 +165,9 @@ export default function AdminDevTracksPage() {
         ))}
       </div>
 
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl shadow-xl overflow-hidden glass-card transition-all duration-500">
-        <div className="px-8 py-6 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950/40 flex items-center justify-between">
-           <h2 className="text-sm font-black text-gray-800 dark:text-white uppercase tracking-[0.2em] flex items-center gap-3">
+      <div className="bg-latte-surface0 border border-latte-crust rounded-3xl shadow-xl overflow-hidden glass-card transition-all duration-500">
+        <div className="px-8 py-6 border-b border-latte-crust bg-latte-surface1/40 flex items-center justify-between">
+           <h2 className="text-sm font-black text-gray-800 text-latte-text uppercase tracking-[0.2em] flex items-center gap-3">
              <span className="text-xl">{isEditing ? '💎' : '✨'}</span>
              {isEditing ? 'Refine Track' : 'Register New Resource'}
            </h2>
@@ -180,12 +180,12 @@ export default function AdminDevTracksPage() {
         <form onSubmit={handleSubmit} className="p-8 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Title *</label>
-              <input type="text" required className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Title *</label>
+              <input type="text" required className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Type</label>
-              <select className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Type</label>
+              <select className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}>
                 <option value="Course">Course</option>
                 <option value="Certification">Certification</option>
                 <option value="Roadmap">Roadmap</option>
@@ -194,15 +194,15 @@ export default function AdminDevTracksPage() {
               </select>
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Cost Type</label>
-              <select className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.cost_type} onChange={e => setFormData({...formData, cost_type: e.target.value as any})}>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Cost Type</label>
+              <select className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.cost_type} onChange={e => setFormData({...formData, cost_type: e.target.value as any})}>
                 <option value="Free">Free</option>
                 <option value="Paid">Paid</option>
                 <option value="Freemium">Freemium</option>
               </select>
             </div>
             <div className="group md:col-span-2">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-1 text-violet-400">Target Academic Tracks (Multi-Select)</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-3 ml-1 text-violet-400">Target Academic Tracks (Multi-Select)</label>
               <div className="flex flex-wrap gap-2">
                 {programs.map(p => (
                   <button
@@ -217,7 +217,7 @@ export default function AdminDevTracksPage() {
                     className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
                       formData.program_ids.includes(p.program_id)
                         ? 'bg-violet-600/20 border-violet-500/50 text-violet-400 shadow-[0_0_15px_rgba(139,92,246,0.1)]'
-                        : 'bg-gray-950 border-gray-800 text-gray-600 hover:border-gray-700'
+                        : 'bg-latte-base border-latte-crust text-latte-overlay0 hover:border-latte-mantle'
                     }`}
                   >
                     {p.program_code}
@@ -228,16 +228,16 @@ export default function AdminDevTracksPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Provider</label>
-              <input type="text" className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.provider} onChange={e => setFormData({...formData, provider: e.target.value})} />
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Provider</label>
+              <input type="text" className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.provider} onChange={e => setFormData({...formData, provider: e.target.value})} />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">URL Content</label>
-              <input type="url" required className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.url} onChange={e => setFormData({...formData, url: e.target.value})} />
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">URL Content</label>
+              <input type="url" required className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.url} onChange={e => setFormData({...formData, url: e.target.value})} />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Difficulty</label>
-              <select className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.difficulty} onChange={e => setFormData({...formData, difficulty: e.target.value})}>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Difficulty</label>
+              <select className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/50 outline-none transition-all" value={formData.difficulty} onChange={e => setFormData({...formData, difficulty: e.target.value})}>
                 <option value="Beginner">Beginner</option>
                 <option value="Intermediate">Intermediate</option>
                 <option value="Advanced">Advanced</option>
@@ -247,34 +247,34 @@ export default function AdminDevTracksPage() {
 
           <div className="flex items-center gap-6">
             <label className="flex items-center gap-2 cursor-pointer group">
-              <input type="checkbox" className="w-5 h-5 rounded border-gray-200 dark:border-gray-800 text-violet-600 focus:ring-violet-500/50 bg-gray-50 dark:bg-gray-950" checked={formData.certificate_offered} onChange={e => setFormData({...formData, certificate_offered: e.target.checked})} />
-              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest group-hover:text-gray-400">Certificate Offered</span>
+              <input type="checkbox" className="w-5 h-5 rounded border-latte-crust text-violet-600 focus:ring-violet-500/50 bg-latte-surface1" checked={formData.certificate_offered} onChange={e => setFormData({...formData, certificate_offered: e.target.checked})} />
+              <span className="text-[10px] font-black text-latte-overlay1 uppercase tracking-widest group-hover:text-latte-subtext0">Certificate Offered</span>
             </label>
              <label className="flex items-center gap-2 cursor-pointer group">
-              <input type="checkbox" className="w-5 h-5 rounded border-gray-200 dark:border-gray-800 text-violet-600 focus:ring-violet-500/50 bg-gray-50 dark:bg-gray-950" checked={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} />
-              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest group-hover:text-gray-400">Resource Active</span>
+              <input type="checkbox" className="w-5 h-5 rounded border-latte-crust text-violet-600 focus:ring-violet-500/50 bg-latte-surface1" checked={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} />
+              <span className="text-[10px] font-black text-latte-overlay1 uppercase tracking-widest group-hover:text-latte-subtext0">Resource Active</span>
             </label>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-end gap-6 pt-4 border-t border-gray-200 dark:border-gray-800">
-            <button type="submit" className="w-full sm:w-auto bg-violet-600 hover:bg-violet-500 text-white px-12 py-3.5 rounded-2xl font-bold text-sm transition-all shadow-lg active:scale-95 text-glow">
+          <div className="flex flex-col sm:flex-row items-center justify-end gap-6 pt-4 border-t border-latte-crust">
+            <button type="submit" className="w-full sm:w-auto bg-violet-600 hover:bg-violet-500 text-latte-text px-12 py-3.5 rounded-2xl font-bold text-sm transition-all shadow-lg active:scale-95 text-glow">
               {isEditing ? 'COMMIT UPDATES' : 'INITIALIZE TRACK'}
             </button>
           </div>
         </form>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl shadow-xl overflow-hidden">
+      <div className="bg-latte-surface0 border border-latte-crust rounded-3xl shadow-xl overflow-hidden">
         {loading ? (
-          <div className="p-32 text-center text-gray-500">Syncing Catalog...</div>
+          <div className="p-32 text-center text-latte-overlay1">Syncing Catalog...</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-50 dark:bg-gray-950/60 border-b border-gray-200 dark:border-gray-800">
-                  <th className="px-8 py-6 font-black text-[10px] text-gray-500 uppercase tracking-widest">Resource Identity</th>
-                  <th className="px-8 py-6 font-black text-[10px] text-gray-500 uppercase tracking-widest">Type & Source</th>
-                  <th className="px-8 py-6 font-black text-[10px] text-gray-500 uppercase tracking-widest text-right">Operations</th>
+                <tr className="bg-latte-surface1/60 border-b border-latte-crust">
+                  <th className="px-8 py-6 font-black text-[10px] text-latte-overlay1 uppercase tracking-widest">Resource Identity</th>
+                  <th className="px-8 py-6 font-black text-[10px] text-latte-overlay1 uppercase tracking-widest">Type & Source</th>
+                  <th className="px-8 py-6 font-black text-[10px] text-latte-overlay1 uppercase tracking-widest text-right">Operations</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-800/50">
@@ -289,7 +289,7 @@ export default function AdminDevTracksPage() {
                   if (filteredResources.length === 0) {
                     return (
                       <tr>
-                        <td colSpan={3} className="px-8 py-20 text-center text-gray-500">
+                        <td colSpan={3} className="px-8 py-20 text-center text-latte-overlay1">
                           <div className="text-4xl mb-4 grayscale opacity-20">📚</div>
                           <h4 className="font-black text-[10px] uppercase tracking-widest">No Domain-Specific Resources</h4>
                           <p className="text-[10px] font-bold uppercase tracking-widest mt-2 opacity-60">Initializing more learning paths for {selectedProgramId === null ? 'the entire institution' : programs.find(p => p.program_id === selectedProgramId)?.program_code || 'this track'} soon.</p>
@@ -299,19 +299,19 @@ export default function AdminDevTracksPage() {
                   }
 
                   return filteredResources.map((r) => (
-                  <tr key={r.resource_id} className="hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors group">
+                  <tr key={r.resource_id} className="hover:bg-latte-mantle hover:bg-latte-surface2/40 transition-colors group">
                     <td className="px-8 py-6">
-                      <div className="font-bold text-sm text-gray-900 dark:text-white uppercase tracking-tight">{r.title}</div>
+                      <div className="font-bold text-sm text-latte-text uppercase tracking-tight">{r.title}</div>
                       <a href={r.url} target="_blank" rel="noreferrer" className="text-[10px] font-black text-violet-500 hover:text-violet-600 hover:underline">Link ↗</a>
                     </td>
-                    <td className="px-8 py-6 text-sm text-gray-600 dark:text-gray-300">
+                    <td className="px-8 py-6 text-sm text-latte-overlay0 text-latte-subtext1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-violet-600 dark:text-violet-400 font-bold bg-violet-500/10 px-2 py-1 rounded text-[10px]">{r.type}</span>
                         <span className="text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 px-2 py-1 rounded text-[10px]">{r.cost_type || 'Free'}</span>
                         {!!r.certificate_offered && (
                           <span className="text-blue-600 dark:text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded text-[10px]">CERT</span>
                         )}
-                        <span className="text-xs text-gray-400 ml-1">{r.provider || '-'}</span>
+                        <span className="text-xs text-latte-subtext0 ml-1">{r.provider || '-'}</span>
                       </div>
                     </td>
                     <td className="px-8 py-6 text-right space-x-3">

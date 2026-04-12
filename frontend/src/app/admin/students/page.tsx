@@ -88,8 +88,8 @@ export default function AdminStudentsPage() {
       {/* ── HEADER ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Student <span className="text-indigo-400">Directory</span></h1>
-          <p className="text-gray-500 text-sm mt-1">Monitor and manage all registered student accounts.</p>
+          <h1 className="text-2xl font-bold text-latte-text tracking-tight">Student <span className="text-indigo-400">Directory</span></h1>
+          <p className="text-latte-overlay1 text-sm mt-1">Monitor and manage all registered student accounts.</p>
         </div>
         <button 
           onClick={async () => {
@@ -108,7 +108,7 @@ export default function AdminStudentsPage() {
               alert('Failed to export report');
             }
           }}
-          className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/20 active:scale-95 flex items-center gap-2 group"
+          className="bg-indigo-600 hover:bg-indigo-500 text-latte-text px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/20 active:scale-95 flex items-center gap-2 group"
         >
           <span className="text-lg group-hover:rotate-12 transition-transform">📊</span>
           Export Reports
@@ -116,21 +116,21 @@ export default function AdminStudentsPage() {
       </div>
 
       {/* ── SEARCH & FILTERS ── */}
-      <div className="bg-gray-900 border border-gray-800 p-5 rounded-2xl shadow-xl">
+      <div className="bg-latte-surface0 border border-latte-crust p-5 rounded-2xl shadow-xl">
         <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1 group">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-indigo-400 transition-colors">
+            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-latte-overlay1 group-focus-within:text-indigo-400 transition-colors">
               🔍
             </div>
             <input
               type="text"
               placeholder="Search by name, student number, or email..."
-              className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl pl-11 pr-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-600"
+              className="w-full bg-latte-base border border-latte-crust text-latte-text rounded-xl pl-11 pr-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-latte-overlay0"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <button type="submit" className="bg-gray-800 hover:bg-gray-700 text-white px-8 py-3 rounded-xl font-bold text-sm transition-all border border-gray-700">
+          <button type="submit" className="bg-latte-surface1 hover:bg-gray-700 text-latte-text px-8 py-3 rounded-xl font-bold text-sm transition-all border border-latte-mantle">
             Search
           </button>
         </form>
@@ -142,8 +142,8 @@ export default function AdminStudentsPage() {
           onClick={() => setSelectedProgramId(null)}
           className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
             selectedProgramId === null
-              ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-600/20'
-              : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+              ? 'bg-indigo-600 text-latte-text border-indigo-500 shadow-lg shadow-indigo-600/20'
+              : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
           }`}
         >
           🌐 Global View
@@ -154,8 +154,8 @@ export default function AdminStudentsPage() {
             onClick={() => setSelectedProgramId(p.program_id)}
             className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
               selectedProgramId === p.program_id
-                ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-600/20'
-                : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+                ? 'bg-indigo-600 text-latte-text border-indigo-500 shadow-lg shadow-indigo-600/20'
+                : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
             }`}
           >
             {p.program_code} Track
@@ -176,7 +176,7 @@ export default function AdminStudentsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-950/30 border-b border-gray-800/50">
+                <tr className="bg-latte-base/30 border-b border-latte-crust/50">
                   <th className="px-6 py-4 font-bold text-[10px] text-amber-500/70 uppercase tracking-widest">Student Info</th>
                   <th className="px-6 py-4 font-bold text-[10px] text-amber-500/70 uppercase tracking-widest">Program</th>
                   <th className="px-6 py-4 font-bold text-[10px] text-amber-500/70 uppercase tracking-widest text-right">Actions</th>
@@ -191,13 +191,13 @@ export default function AdminStudentsPage() {
                           {student.name?.charAt(0) || '?'}
                         </div>
                         <div>
-                          <div className="text-sm font-bold text-white">{student.name}</div>
+                          <div className="text-sm font-bold text-latte-text">{student.name}</div>
                           <div className="text-[11px] text-amber-200/50">{student.email} • {student.student_number}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-300 font-medium">
+                      <div className="text-sm text-latte-subtext1 font-medium">
                         {student.program?.program_code || 'Unassigned'}
                       </div>
                     </td>
@@ -227,23 +227,23 @@ export default function AdminStudentsPage() {
       )}
 
       {/* ── DATA TABLE ── */}
-      <h2 className="text-lg font-bold text-white mb-4">Student Directory</h2>
-      <div className="bg-gray-900 rounded-2xl shadow-2xl border border-gray-800 overflow-hidden relative active-scale-hover transition-all">
+      <h2 className="text-lg font-bold text-latte-text mb-4">Student Directory</h2>
+      <div className="bg-latte-surface0 rounded-2xl shadow-2xl border border-latte-crust overflow-hidden relative active-scale-hover transition-all">
         {loading ? (
           <div className="p-20 text-center">
             <div className="inline-block w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mb-4" />
-            <div className="text-gray-500 font-medium animate-pulse">Syncing student database...</div>
+            <div className="text-latte-overlay1 font-medium animate-pulse">Syncing student database...</div>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-950/50 border-b border-gray-800">
-                  <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest">Student ID</th>
-                  <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest">Identity</th>
-                  <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest">Program Info</th>
-                  <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest">Status</th>
-                  <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest text-right">Actions</th>
+                <tr className="bg-latte-base/50 border-b border-latte-crust">
+                  <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest">Student ID</th>
+                  <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest">Identity</th>
+                  <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest">Program Info</th>
+                  <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800/50">
@@ -251,8 +251,8 @@ export default function AdminStudentsPage() {
                   <tr>
                     <td colSpan={5} className="px-6 py-20 text-center">
                       <div className="text-3xl mb-4">📭</div>
-                      <div className="text-gray-400 font-medium tracking-widest uppercase text-[10px] font-black">No Students Registered</div>
-                      <p className="text-gray-600 text-[10px] mt-2 font-bold uppercase tracking-widest leading-relaxed">
+                      <div className="text-latte-subtext0 font-medium tracking-widest uppercase text-[10px] font-black">No Students Registered</div>
+                      <p className="text-latte-overlay0 text-[10px] mt-2 font-bold uppercase tracking-widest leading-relaxed">
                         The {selectedProgramId === null ? 'entire campus' : allPrograms.find(p => p.program_id === selectedProgramId)?.program_code || 'current'} track is currently empty.
                       </p>
                     </td>
@@ -261,9 +261,9 @@ export default function AdminStudentsPage() {
                   activeOrArchivedStudents
                     .filter(s => selectedProgramId === null || s.program_id === selectedProgramId)
                     .map((student) => (
-                    <tr key={student.student_id} className="hover:bg-gray-800/30 transition-colors group">
+                    <tr key={student.student_id} className="hover:bg-latte-surface1/30 transition-colors group">
                       <td className="px-6 py-5">
-                         <span className="px-2 py-1 bg-gray-950 border border-gray-800 rounded text-[11px] font-mono font-bold text-indigo-400">
+                         <span className="px-2 py-1 bg-latte-base border border-latte-crust rounded text-[11px] font-mono font-bold text-indigo-400">
                            {student.student_number}
                          </span>
                       </td>
@@ -273,24 +273,24 @@ export default function AdminStudentsPage() {
                              <img 
                                src={student.profile_picture_url} 
                                alt={student.name} 
-                               className="w-9 h-9 rounded-full object-cover border border-gray-800"
+                               className="w-9 h-9 rounded-full object-cover border border-latte-crust"
                              />
                            ) : (
-                             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gray-800 to-gray-950 flex items-center justify-center text-xs font-bold text-gray-400 border border-gray-800">
+                             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gray-800 to-gray-950 flex items-center justify-center text-xs font-bold text-latte-subtext0 border border-latte-crust">
                                {student.name?.charAt(0) || '?'}
                              </div>
                            )}
                            <div>
-                             <div className="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors">{student.name}</div>
-                             <div className="text-[11px] text-gray-500">{student.email || 'No email provided'}</div>
+                             <div className="text-sm font-bold text-latte-text group-hover:text-indigo-300 transition-colors">{student.name}</div>
+                             <div className="text-[11px] text-latte-overlay1">{student.email || 'No email provided'}</div>
                            </div>
                         </div>
                       </td>
                       <td className="px-6 py-5">
-                        <div className="text-sm text-gray-300 font-medium">
+                        <div className="text-sm text-latte-subtext1 font-medium">
                           {student.program?.program_code || 'Unassigned'}
                         </div>
-                        <div className="text-[11px] text-gray-500">
+                        <div className="text-[11px] text-latte-overlay1">
                           {student.year_level ? `${student.year_level}${student.year_level === 1 ? 'st' : student.year_level === 2 ? 'nd' : student.year_level === 3 ? 'rd' : 'th'} Year` : 'Level unknown'}
                         </div>
                       </td>
@@ -301,7 +301,7 @@ export default function AdminStudentsPage() {
                             Active
                           </div>
                         ) : (
-                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-800 text-gray-500 border border-gray-700 text-[10px] font-bold uppercase tracking-wide">
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-latte-surface1 text-latte-overlay1 border border-latte-mantle text-[10px] font-bold uppercase tracking-wide">
                             <div className="w-1.5 h-1.5 rounded-full bg-gray-600" />
                             Archived
                           </div>

@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
 import { AdminGuard } from '../auth/admin.guard';
 import { CareersService } from './careers.service';
 
@@ -50,9 +59,14 @@ export class CareersController {
   async linkSubjectToCareer(
     @Param('id') id: string,
     @Param('subjectId') subjectId: string,
-    @Body() body: { weight: number; is_required: boolean }
+    @Body() body: { weight: number; is_required: boolean },
   ) {
-    return this.careersService.linkSubjectToCareer(parseInt(id), parseInt(subjectId), body.weight || 1, body.is_required !== false);
+    return this.careersService.linkSubjectToCareer(
+      parseInt(id),
+      parseInt(subjectId),
+      body.weight || 1,
+      body.is_required !== false,
+    );
   }
 
   @UseGuards(AdminGuard)
@@ -61,7 +75,10 @@ export class CareersController {
     @Param('id') id: string,
     @Param('subjectId') subjectId: string,
   ) {
-    return this.careersService.unlinkSubjectFromCareer(parseInt(id), parseInt(subjectId));
+    return this.careersService.unlinkSubjectFromCareer(
+      parseInt(id),
+      parseInt(subjectId),
+    );
   }
 
   @UseGuards(AdminGuard)
@@ -75,9 +92,13 @@ export class CareersController {
   async linkSkillToCareer(
     @Param('id') id: string,
     @Param('skillId') skillId: string,
-    @Body() body: { priority: 'low' | 'medium' | 'high' }
+    @Body() body: { priority: 'low' | 'medium' | 'high' },
   ) {
-    return this.careersService.linkSkillToCareer(parseInt(id), parseInt(skillId), body.priority || 'medium');
+    return this.careersService.linkSkillToCareer(
+      parseInt(id),
+      parseInt(skillId),
+      body.priority || 'medium',
+    );
   }
 
   @UseGuards(AdminGuard)
@@ -86,6 +107,9 @@ export class CareersController {
     @Param('id') id: string,
     @Param('skillId') skillId: string,
   ) {
-    return this.careersService.unlinkSkillFromCareer(parseInt(id), parseInt(skillId));
+    return this.careersService.unlinkSkillFromCareer(
+      parseInt(id),
+      parseInt(skillId),
+    );
   }
 }

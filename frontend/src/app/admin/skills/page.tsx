@@ -171,23 +171,23 @@ export default function AdminSkillsPage() {
       {/* ── HEADER ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Skill <span className="text-indigo-400">Registry</span></h1>
-          <p className="text-gray-500 text-sm mt-1">Catalog and classify competency requirements for the career matrix.</p>
+          <h1 className="text-2xl font-bold text-latte-text tracking-tight">Skill <span className="text-indigo-400">Registry</span></h1>
+          <p className="text-latte-overlay1 text-sm mt-1">Catalog and classify competency requirements for the career matrix.</p>
         </div>
       </div>
 
       {/* ── STATISTICS OVERVIEW ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 flex flex-col justify-between group hover:border-indigo-500/30 transition-all">
+        <div className="bg-latte-surface0/50 backdrop-blur-xl border border-latte-crust/50 rounded-2xl p-5 flex flex-col justify-between group hover:border-indigo-500/30 transition-all">
           <div className="flex justify-between items-start">
-            <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Total Skills</span>
+            <span className="text-[10px] font-black text-latte-overlay1 uppercase tracking-widest">Total Skills</span>
             <span className="text-indigo-400 text-lg">📊</span>
           </div>
           <div className="mt-2 flex items-end gap-2">
-            <span className="text-3xl font-black text-white">{skills.length}</span>
-            <span className="text-[10px] text-gray-600 mb-1.5 font-bold uppercase">Competencies</span>
+            <span className="text-3xl font-black text-latte-text">{skills.length}</span>
+            <span className="text-[10px] text-latte-overlay0 mb-1.5 font-bold uppercase">Competencies</span>
           </div>
-          <div className="h-1 w-full bg-gray-800 rounded-full mt-4 overflow-hidden">
+          <div className="h-1 w-full bg-latte-surface1 rounded-full mt-4 overflow-hidden">
             <div className="h-full bg-indigo-500 rounded-full" style={{ width: '100%' }} />
           </div>
         </div>
@@ -199,16 +199,16 @@ export default function AdminSkillsPage() {
           const bgBars = ['bg-cyan-500', 'bg-amber-500', 'bg-rose-500'];
           
           return (
-            <div key={prog.program_id} className={`bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 flex flex-col justify-between group transition-all ${borders[idx % 3]}`}>
+            <div key={prog.program_id} className={`bg-latte-surface0/50 backdrop-blur-xl border border-latte-crust/50 rounded-2xl p-5 flex flex-col justify-between group transition-all ${borders[idx % 3]}`}>
               <div className="flex justify-between items-start">
-                <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{prog.program_code} Track</span>
+                <span className="text-[10px] font-black text-latte-overlay1 uppercase tracking-widest">{prog.program_code} Track</span>
                 <span className={`${colors[idx % 3]} text-lg font-bold`}>⚡</span>
               </div>
               <div className="mt-2 flex items-end gap-2">
-                <span className="text-3xl font-black text-white">{skillCount}</span>
-                <span className="text-[10px] text-gray-600 mb-1.5 font-bold uppercase">Mapped</span>
+                <span className="text-3xl font-black text-latte-text">{skillCount}</span>
+                <span className="text-[10px] text-latte-overlay0 mb-1.5 font-bold uppercase">Mapped</span>
               </div>
-              <div className="h-1 w-full bg-gray-800 rounded-full mt-4 overflow-hidden">
+              <div className="h-1 w-full bg-latte-surface1 rounded-full mt-4 overflow-hidden">
                 <div className={`h-full ${bgBars[idx % 3]} rounded-full`} style={{ width: `${(skillCount / (skills.length || 1)) * 100}%` }} />
               </div>
             </div>
@@ -217,17 +217,17 @@ export default function AdminSkillsPage() {
       </div>
 
       {/* ── SEARCH & FILTER BAR ── */}
-      <div className="bg-gray-950/50 backdrop-blur-md border border-gray-800 rounded-2xl p-2 flex flex-col md:flex-row gap-2">
+      <div className="bg-latte-base/50 backdrop-blur-md border border-latte-crust rounded-2xl p-2 flex flex-col md:flex-row gap-2">
         <div className="relative flex-1 group">
           <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-            <svg className="w-4 h-4 text-gray-500 group-focus-within:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-latte-overlay1 group-focus-within:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
           <input 
             type="text"
             placeholder="Search competencies by name, category, or description..."
-            className="w-full bg-gray-900/50 border-none text-white rounded-xl pl-12 pr-4 py-3 text-sm focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all placeholder:text-gray-700 font-medium"
+            className="w-full bg-latte-surface0/50 border-none text-latte-text rounded-xl pl-12 pr-4 py-3 text-sm focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all placeholder:text-gray-700 font-medium"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -240,8 +240,8 @@ export default function AdminSkillsPage() {
           onClick={() => setSelectedProgramId(null)}
           className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
             selectedProgramId === null
-              ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-600/20'
-              : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+              ? 'bg-indigo-600 text-latte-text border-indigo-500 shadow-lg shadow-indigo-600/20'
+              : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
           }`}
         >
           🌐 Global View
@@ -252,8 +252,8 @@ export default function AdminSkillsPage() {
             onClick={() => setSelectedProgramId(p.program_id)}
             className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
               selectedProgramId === p.program_id
-                ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-600/20'
-                : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+                ? 'bg-indigo-600 text-latte-text border-indigo-500 shadow-lg shadow-indigo-600/20'
+                : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
             }`}
           >
             {p.program_code} Track
@@ -262,30 +262,30 @@ export default function AdminSkillsPage() {
       </div>
 
       {/* ── ADD NEW SKILL FORM ── */}
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl overflow-hidden active-scale-hover transition-all">
-        <div className="px-7 py-5 bg-gray-950/30 border-b border-gray-800">
-           <h2 className="text-md font-bold text-white flex items-center gap-2">
+      <div className="bg-latte-surface0 border border-latte-crust rounded-2xl shadow-xl overflow-hidden active-scale-hover transition-all">
+        <div className="px-7 py-5 bg-latte-base/30 border-b border-latte-crust">
+           <h2 className="text-md font-bold text-latte-text flex items-center gap-2">
              <span className="text-indigo-400">🛠️</span> Register Core Competency
            </h2>
         </div>
         <form onSubmit={handleAddSkill} className="p-7 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Skill Identity *</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Skill Identity *</label>
               <input 
                 type="text" required
                 placeholder="e.g. Distributed Systems"
-                className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
+                className="w-full bg-latte-base border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
                 value={formData.skill_name}
                 onChange={(e) => setFormData({...formData, skill_name: e.target.value})}
               />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Classification</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Classification</label>
               <input 
                 type="text" 
                 placeholder="e.g. Architectural, Frontend, Soft Skill"
-                className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
+                className="w-full bg-latte-base border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
                 value={formData.category}
                 onChange={(e) => setFormData({...formData, category: e.target.value})}
               />
@@ -293,35 +293,35 @@ export default function AdminSkillsPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Conceptual Overview</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Conceptual Overview</label>
               <input 
                 type="text" 
                 placeholder="Briefly define the skill or its application..."
-                className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
+                className="w-full bg-latte-base border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
               />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1 text-indigo-400">Knowledge Base URL</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1 text-indigo-400">Knowledge Base URL</label>
               <input 
                 type="url" 
                 placeholder="https://documentation.resource/link"
-                className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
+                className="w-full bg-latte-base border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
                 value={formData.learning_resource_url}
                 onChange={(e) => setFormData({...formData, learning_resource_url: e.target.value})}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 mt-6 pt-6 border-t border-gray-800/50">
+          <div className="grid grid-cols-1 gap-6 mt-6 pt-6 border-t border-latte-crust/50">
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-1 text-indigo-400 flex justify-between items-center">
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-3 ml-1 text-indigo-400 flex justify-between items-center">
                 <span>Expanded Tech Stack / Specific Tools</span>
                 <button 
                   type="button"
                   onClick={() => setFormData({...formData, expanded_skills: [...formData.expanded_skills, {name: '', url: ''}]})}
-                  className="bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500 hover:text-white px-2 py-1 rounded border border-indigo-500/20 text-[9px] transition-colors"
+                  className="bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500 hover:text-latte-text px-2 py-1 rounded border border-indigo-500/20 text-[9px] transition-colors"
                 >
                   + Add Tool Link
                 </button>
@@ -331,7 +331,7 @@ export default function AdminSkillsPage() {
                   <div key={idx} className="flex gap-2 items-center">
                     <input 
                       type="text" placeholder="Name (e.g. GitHub)" 
-                      className="w-1/3 bg-gray-950 border border-gray-800 text-white rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
+                      className="w-1/3 bg-latte-base border border-latte-crust text-latte-text rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
                       value={sub.name}
                       onChange={e => {
                         const newSkills = [...formData.expanded_skills];
@@ -341,7 +341,7 @@ export default function AdminSkillsPage() {
                     />
                     <input 
                       type="url" placeholder="Resource URL (https://...)" 
-                      className="flex-1 bg-gray-950 border border-gray-800 text-white rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
+                      className="flex-1 bg-latte-base border border-latte-crust text-latte-text rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
                       value={sub.url}
                       onChange={e => {
                         const newSkills = [...formData.expanded_skills];
@@ -355,21 +355,21 @@ export default function AdminSkillsPage() {
                         const newSkills = formData.expanded_skills.filter((_, i) => i !== idx);
                         setFormData({...formData, expanded_skills: newSkills});
                       }}
-                      className="w-8 h-8 flex items-center justify-center bg-gray-900 border border-gray-800 hover:bg-rose-500 hover:border-rose-500 text-gray-500 hover:text-white rounded-lg transition-colors"
+                      className="w-8 h-8 flex items-center justify-center bg-latte-surface0 border border-latte-crust hover:bg-rose-500 hover:border-rose-500 text-latte-overlay1 hover:text-latte-text rounded-lg transition-colors"
                     >
                       ×
                     </button>
                   </div>
                 ))}
                 {formData.expanded_skills.length === 0 && (
-                  <div className="text-xs text-gray-600 italic px-2 py-3 border border-dashed border-gray-800 rounded-lg text-center">No specific tools mapped. Click "Add Tool Link" to create one.</div>
+                  <div className="text-xs text-latte-overlay0 italic px-2 py-3 border border-dashed border-latte-crust rounded-lg text-center">No specific tools mapped. Click "Add Tool Link" to create one.</div>
                 )}
               </div>
             </div>
           </div>
 
           <div className="group mt-4">
-            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1 text-cyan-500/70">Associated Academic Tracks (Flexible)</label>
+            <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1 text-cyan-500/70">Associated Academic Tracks (Flexible)</label>
             <div className="flex flex-wrap gap-2">
               {allPrograms.map(p => (
                 <button
@@ -384,7 +384,7 @@ export default function AdminSkillsPage() {
                   className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-tight border transition-all ${
                     formData.program_ids.includes(p.program_id)
                       ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-400 shadow-[0_0_10px_rgba(99,102,241,0.2)]'
-                      : 'bg-gray-950 border-gray-800 text-gray-600 hover:border-gray-700 hover:text-gray-400'
+                      : 'bg-latte-base border-latte-crust text-latte-overlay0 hover:border-latte-mantle hover:text-latte-subtext0'
                   }`}
                 >
                   {p.program_code}
@@ -394,7 +394,7 @@ export default function AdminSkillsPage() {
           </div>
 
           <div className="flex justify-end pt-2">
-            <button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white px-10 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/10 active:scale-95">
+            <button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-latte-text px-10 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/10 active:scale-95">
               Secure Registry Entry
             </button>
           </div>
@@ -402,21 +402,21 @@ export default function AdminSkillsPage() {
       </div>
 
       {/* ── SKILLS LIST ── */}
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl overflow-hidden relative active-scale-hover transition-all">
+      <div className="bg-latte-surface0 border border-latte-crust rounded-2xl shadow-xl overflow-hidden relative active-scale-hover transition-all">
         {loading ? (
           <div className="p-20 text-center">
             <div className="inline-block w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mb-4" />
-            <div className="text-gray-500 font-medium animate-pulse">Syncing competency map...</div>
+            <div className="text-latte-overlay1 font-medium animate-pulse">Syncing competency map...</div>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-950/50 border-b border-gray-800">
-                  <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest">Skill Identity</th>
-                  <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest">Classification</th>
-                  <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest">Core Concept</th>
-                  <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest w-24 text-right">Operations</th>
+                <tr className="bg-latte-base/50 border-b border-latte-crust">
+                  <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest">Skill Identity</th>
+                  <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest">Classification</th>
+                  <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest">Core Concept</th>
+                  <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest w-24 text-right">Operations</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800/50">
@@ -435,24 +435,24 @@ export default function AdminSkillsPage() {
                       <tr>
                         <td colSpan={4} className="px-6 py-20 text-center">
                           <div className="text-3xl mb-4 grayscale opacity-20">⚒️</div>
-                          <div className="text-gray-400 font-medium">Registry is dormant.</div>
-                          <p className="text-gray-600 text-xs mt-1">Start by defining the first competency above.</p>
+                          <div className="text-latte-subtext0 font-medium">Registry is dormant.</div>
+                          <p className="text-latte-overlay0 text-xs mt-1">Start by defining the first competency above.</p>
                         </td>
                       </tr>
                     );
                   }
 
                   return filteredSkills.map((skill) => (
-                    <tr key={skill.skill_id} className="hover:bg-gray-800/30 transition-colors group">
+                    <tr key={skill.skill_id} className="hover:bg-latte-surface1/30 transition-colors group">
                       <td className="px-6 py-5">
-                         <div className="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors uppercase tracking-tight">
+                         <div className="text-sm font-bold text-latte-text group-hover:text-indigo-300 transition-colors uppercase tracking-tight">
                            {skill.skill_name}
                          </div>
                          <div className="flex flex-wrap gap-1 mt-1.5">
                            {skill.program_ids?.map((pid: number) => {
                              const prog = allPrograms.find(p => p.program_id === pid);
                              return (
-                               <span key={pid} className="text-[8px] font-black px-1.5 py-0.5 rounded bg-gray-950 text-gray-500 border border-gray-800 uppercase">
+                               <span key={pid} className="text-[8px] font-black px-1.5 py-0.5 rounded bg-latte-base text-latte-overlay1 border border-latte-crust uppercase">
                                  {prog?.program_code}
                                </span>
                              );
@@ -465,7 +465,7 @@ export default function AdminSkillsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-5">
-                        <p className="text-[12px] text-gray-400 line-clamp-2 max-w-sm leading-relaxed">{skill.description || 'Global industry standard competency.'}</p>
+                        <p className="text-[12px] text-latte-subtext0 line-clamp-2 max-w-sm leading-relaxed">{skill.description || 'Global industry standard competency.'}</p>
                         
                         {skill.expanded_skills && Array.isArray(skill.expanded_skills) && (
                           <div className="flex flex-wrap gap-1.5 mt-2">
@@ -473,12 +473,12 @@ export default function AdminSkillsPage() {
                               s.url ? (
                                 <a 
                                   key={i} href={s.url} target="_blank" rel="noreferrer" 
-                                  className="bg-indigo-500/5 hover:bg-indigo-500/20 text-[9px] text-indigo-300 hover:text-white px-2 py-0.5 rounded border border-indigo-500/20 uppercase font-black transition-colors flex items-center gap-1"
+                                  className="bg-indigo-500/5 hover:bg-indigo-500/20 text-[9px] text-indigo-300 hover:text-latte-text px-2 py-0.5 rounded border border-indigo-500/20 uppercase font-black transition-colors flex items-center gap-1"
                                 >
                                   {s.name} <span>↗</span>
                                 </a>
                               ) : (
-                                <span key={i} className="bg-gray-950 text-[9px] text-gray-500 px-1.5 py-0.5 rounded border border-gray-800 uppercase font-black">
+                                <span key={i} className="bg-latte-base text-[9px] text-latte-overlay1 px-1.5 py-0.5 rounded border border-latte-crust uppercase font-black">
                                   {s.name}
                                 </span>
                               )
@@ -545,13 +545,13 @@ export default function AdminSkillsPage() {
             onClick={e => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-7 py-5 border-b border-white/5">
-              <h2 className="text-lg font-bold text-white flex items-center gap-3">
+            <div className="flex items-center justify-between px-7 py-5 border-b border-latte-crust/50">
+              <h2 className="text-lg font-bold text-latte-text flex items-center gap-3">
                 <span className="text-indigo-400">📝</span> Edit Competency
               </h2>
               <button 
                 onClick={() => setEditingSkill(null)}
-                className="text-gray-500 hover:text-white transition-colors"
+                className="text-latte-overlay1 hover:text-latte-text transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -563,19 +563,19 @@ export default function AdminSkillsPage() {
             <form onSubmit={handleUpdateSkill} className="p-7 space-y-6 flex-1 overflow-y-auto max-h-[80vh] custom-scrollbar">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="group">
-                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Skill Identity</label>
+                  <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Skill Identity</label>
                   <input 
                     type="text" required
-                    className="w-full bg-gray-950/50 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all placeholder:text-gray-700"
+                    className="w-full bg-latte-base/50 border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all placeholder:text-gray-700"
                     value={editFormData.skill_name}
                     onChange={(e) => setEditFormData({...editFormData, skill_name: e.target.value})}
                   />
                 </div>
                 <div className="group">
-                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Classification</label>
+                  <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Classification</label>
                   <input 
                     type="text" 
-                    className="w-full bg-gray-950/50 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all placeholder:text-gray-700"
+                    className="w-full bg-latte-base/50 border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all placeholder:text-gray-700"
                     value={editFormData.category}
                     onChange={(e) => setEditFormData({...editFormData, category: e.target.value})}
                   />
@@ -583,20 +583,20 @@ export default function AdminSkillsPage() {
               </div>
 
               <div className="group">
-                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Conceptual Overview</label>
+                <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Conceptual Overview</label>
                 <textarea 
                   rows={3}
-                  className="w-full bg-gray-950/50 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all placeholder:text-gray-700 resize-none"
+                  className="w-full bg-latte-base/50 border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all placeholder:text-gray-700 resize-none"
                   value={editFormData.description}
                   onChange={(e) => setEditFormData({...editFormData, description: e.target.value})}
                 />
               </div>
 
               <div className="group">
-                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1 text-indigo-400">Knowledge Base URL</label>
+                <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1 text-indigo-400">Knowledge Base URL</label>
                 <input 
                   type="url" 
-                  className="w-full bg-gray-950/50 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                  className="w-full bg-latte-base/50 border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
                   value={editFormData.learning_resource_url}
                   onChange={(e) => setEditFormData({...editFormData, learning_resource_url: e.target.value})}
                 />
@@ -604,12 +604,12 @@ export default function AdminSkillsPage() {
 
               <div className="grid grid-cols-1 gap-6 mt-4">
                 <div className="group">
-                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-1 text-indigo-400 flex justify-between items-center">
+                  <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-3 ml-1 text-indigo-400 flex justify-between items-center">
                     <span>Expanded Tech Stack / Specific Tools</span>
                     <button 
                       type="button"
                       onClick={() => setEditFormData({...editFormData, expanded_skills: [...editFormData.expanded_skills, {name: '', url: ''}]})}
-                      className="bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500 hover:text-white px-2 py-1 rounded border border-indigo-500/20 text-[9px] transition-colors"
+                      className="bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500 hover:text-latte-text px-2 py-1 rounded border border-indigo-500/20 text-[9px] transition-colors"
                     >
                       + Add Tool Link
                     </button>
@@ -619,7 +619,7 @@ export default function AdminSkillsPage() {
                       <div key={idx} className="flex gap-2 items-center">
                         <input 
                           type="text" placeholder="Name" 
-                          className="w-1/3 bg-gray-950/50 border border-white/10 text-white rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
+                          className="w-1/3 bg-latte-base/50 border border-latte-crust text-latte-text rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
                           value={sub.name}
                           onChange={e => {
                             const newSkills = [...editFormData.expanded_skills];
@@ -629,7 +629,7 @@ export default function AdminSkillsPage() {
                         />
                         <input 
                           type="url" placeholder="URL" 
-                          className="flex-1 bg-gray-950/50 border border-white/10 text-white rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
+                          className="flex-1 bg-latte-base/50 border border-latte-crust text-latte-text rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
                           value={sub.url}
                           onChange={e => {
                             const newSkills = [...editFormData.expanded_skills];
@@ -643,7 +643,7 @@ export default function AdminSkillsPage() {
                             const newSkills = editFormData.expanded_skills.filter((_, i) => i !== idx);
                             setEditFormData({...editFormData, expanded_skills: newSkills});
                           }}
-                          className="w-8 h-8 flex items-center justify-center bg-gray-900 border border-gray-800 hover:bg-rose-500 hover:border-rose-500 text-gray-500 hover:text-white rounded-lg transition-colors"
+                          className="w-8 h-8 flex items-center justify-center bg-latte-surface0 border border-latte-crust hover:bg-rose-500 hover:border-rose-500 text-latte-overlay1 hover:text-latte-text rounded-lg transition-colors"
                         >
                           ×
                         </button>
@@ -654,7 +654,7 @@ export default function AdminSkillsPage() {
               </div>
 
               <div className="group">
-                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1 text-cyan-500/70">Associated Academic Tracks (Flexible)</label>
+                <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1 text-cyan-500/70">Associated Academic Tracks (Flexible)</label>
                 <div className="flex flex-wrap gap-2">
                   {allPrograms.map(p => (
                     <button
@@ -669,7 +669,7 @@ export default function AdminSkillsPage() {
                       className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-tight border transition-all ${
                         editFormData.program_ids.includes(p.program_id)
                           ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-400 shadow-[0_0_10px_rgba(99,102,241,0.2)]'
-                          : 'bg-gray-950/50 border-white/10 text-gray-600 hover:border-gray-700 hover:text-gray-400'
+                          : 'bg-latte-base/50 border-latte-crust text-latte-overlay0 hover:border-latte-mantle hover:text-latte-subtext0'
                       }`}
                     >
                       {p.program_code}
@@ -678,17 +678,17 @@ export default function AdminSkillsPage() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
+              <div className="flex justify-end gap-3 pt-4 border-t border-latte-crust/50">
                 <button 
                   type="button"
                   onClick={() => setEditingSkill(null)}
-                  className="px-6 py-2.5 rounded-xl text-sm font-bold text-gray-400 hover:text-white transition-colors"
+                  className="px-6 py-2.5 rounded-xl text-sm font-bold text-latte-subtext0 hover:text-latte-text transition-colors"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit" 
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg active:scale-95"
+                  className="bg-indigo-600 hover:bg-indigo-500 text-latte-text px-8 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg active:scale-95"
                 >
                   Update Competency
                 </button>

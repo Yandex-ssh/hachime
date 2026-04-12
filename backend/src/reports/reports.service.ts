@@ -19,8 +19,9 @@ export class ReportsService {
       relations: ['program'],
     });
 
-    const header = 'Student ID,Name,Email,Program,Year Level,Semester,Last Login,Status\n';
-    const rows = students.map(s => {
+    const header =
+      'Student ID,Name,Email,Program,Year Level,Semester,Last Login,Status\n';
+    const rows = students.map((s) => {
       return `"${s.student_number}","${s.name}","${s.email || ''}","${s.program?.program_code || ''}",${s.year_level || ''},${s.semester || ''},"${s.last_login?.toISOString() || ''}","${s.isActive ? 'Active' : 'Inactive'}"`;
     });
 
@@ -30,7 +31,7 @@ export class ReportsService {
   async exportAlumni(): Promise<string> {
     const alumni = await this.alumniRepo.find({ relations: ['program'] });
     const header = 'Name,Batch,Program,Position,Company,LinkedIn,Visibility\n';
-    const rows = alumni.map(a => {
+    const rows = alumni.map((a) => {
       return `"${a.name}","${a.batch_year}","${a.program?.program_code || ''}","${a.current_job_title || ''}","${a.current_company || ''}","${a.linkedin_url || ''}","${a.is_visible ? 'Visible' : 'Hidden'}"`;
     });
 
@@ -40,7 +41,7 @@ export class ReportsService {
   async exportSubjects(): Promise<string> {
     const subjects = await this.subjectsRepo.find({ relations: ['program'] });
     const header = 'Code,Name,Program,Year Level,Semester,Category\n';
-    const rows = subjects.map(s => {
+    const rows = subjects.map((s) => {
       return `"${s.subject_code}","${s.subject_name}","${s.program?.program_code || ''}",${s.year_level || ''},${s.semester || ''},"${s.category || ''}"`;
     });
 

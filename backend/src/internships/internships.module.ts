@@ -12,4 +12,3 @@ import { StudentsModule } from '../students/students.module';
   providers: [InternshipsService],
 })
 export class InternshipsModule {}
-

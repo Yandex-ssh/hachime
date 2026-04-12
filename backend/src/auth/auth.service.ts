@@ -23,7 +23,7 @@ export class AuthService {
     private studentsRepository: Repository<Student>,
     private jwtService: JwtService,
     private mailService: MailService,
-  ) { }
+  ) {}
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
     const { email } = forgotPasswordDto;
@@ -31,11 +31,15 @@ export class AuthService {
 
     if (!student) {
       // For security, don't reveal if the email exists
-      return { message: 'If your email is in our system, you will receive a reset link.' };
+      return {
+        message:
+          'If your email is in our system, you will receive a reset link.',
+      };
     }
 
     // #13 – Use cryptographically secure random 6-digit OTP (1 hour expiry)
-    const tokenNum = parseInt(crypto.randomBytes(3).toString('hex'), 16) % 900000 + 100000;
+    const tokenNum =
+      (parseInt(crypto.randomBytes(3).toString('hex'), 16) % 900000) + 100000;
     const token = tokenNum.toString();
     const expiry = new Date();
     expiry.setHours(expiry.getHours() + 1);
@@ -47,7 +51,9 @@ export class AuthService {
 
     await this.mailService.sendPasswordResetEmail(email, token);
 
-    return { message: 'If your email is in our system, you will receive a reset link.' };
+    return {
+      message: 'If your email is in our system, you will receive a reset link.',
+    };
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
@@ -82,10 +88,7 @@ export class AuthService {
 
     // Find student by student_number or email
     const student = await this.studentsRepository.findOne({
-      where: [
-        { student_number: student_number },
-        { email: student_number }
-      ],
+      where: [{ student_number: student_number }, { email: student_number }],
       relations: ['program'],
     });
 
@@ -95,9 +98,13 @@ export class AuthService {
 
     if (student.isActive === false) {
       if (!student.last_login) {
-        throw new UnauthorizedException('Your account is pending admin approval.');
+        throw new UnauthorizedException(
+          'Your account is pending admin approval.',
+        );
       } else {
-        throw new UnauthorizedException('Account has been deactivated. Please contact an administrator.');
+        throw new UnauthorizedException(
+          'Account has been deactivated. Please contact an administrator.',
+        );
       }
     }
 
@@ -172,8 +179,12 @@ export class AuthService {
   }
 
   // #2 – Admin password reset: use random unique password, never return it in response
-  async adminResetStudentPassword(studentId: number): Promise<{ message: string }> {
-    const student = await this.studentsRepository.findOne({ where: { student_id: studentId } });
+  async adminResetStudentPassword(
+    studentId: number,
+  ): Promise<{ message: string }> {
+    const student = await this.studentsRepository.findOne({
+      where: { student_id: studentId },
+    });
     if (!student) throw new UnauthorizedException('Student not found');
 
     // Generate a secure random temporary password
@@ -184,7 +195,10 @@ export class AuthService {
 
     // If student has an email, send the new password to them
     if (student.email) {
-      await this.mailService.sendPasswordResetEmail(student.email, tempPassword);
+      await this.mailService.sendPasswordResetEmail(
+        student.email,
+        tempPassword,
+      );
     }
 
     return {

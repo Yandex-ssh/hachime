@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Student } from '../entities/student.entity';
 import { Subject } from '../entities/subject.entity';
 import { Career } from '../entities/career.entity';
+import { Skill } from '../entities/skill.entity';
 
 @Injectable()
 export class AnalyticsService {
@@ -11,34 +12,45 @@ export class AnalyticsService {
     @InjectRepository(Student) private studentsRepo: Repository<Student>,
     @InjectRepository(Subject) private subjectsRepo: Repository<Subject>,
     @InjectRepository(Career) private careersRepo: Repository<Career>,
+    @InjectRepository(Skill) private skillsRepo: Repository<Skill>,
   ) {}
 
   async getDashboardStats() {
-    const totalStudents = await this.studentsRepo.count({ where: { isAdmin: false } });
-    const activeProfiles = await this.studentsRepo.count({ where: { isAdmin: false, isActive: true } });
+    const totalStudents = await this.studentsRepo.count({
+      where: { isAdmin: false },
+    });
+    const activeProfiles = await this.studentsRepo.count({
+      where: { isAdmin: false, isActive: true },
+    });
     const totalSubjects = await this.subjectsRepo.count();
     const totalCareers = await this.careersRepo.count();
+    const totalSkills = await this.skillsRepo.count();
 
     // Advanced Metrics
     const popularCareers = await this.getPopularCareers();
     const topSubjects = await this.getMostLikedSubjects();
     const progression = await this.getProgressionStats();
 
-    return { 
-      totalStudents, 
-      activeProfiles, 
-      totalSubjects, 
+    return {
+      totalStudents,
+      activeProfiles,
+      totalSubjects,
       totalCareers,
+      totalSkills,
       popularCareers,
       topSubjects,
-      progression
+      progression,
     };
   }
 
   private async getPopularCareers() {
     return this.careersRepo
       .createQueryBuilder('career')
-      .leftJoin('students', 'student', 'student.target_career_id = career.career_id')
+      .leftJoin(
+        'students',
+        'student',
+        'student.target_career_id = career.career_id',
+      )
       .select('career.title', 'title')
       .addSelect('COUNT(student.student_id)', 'count')
       .groupBy('career.career_id')

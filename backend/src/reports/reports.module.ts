@@ -11,10 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Student, Alumni, Subject]),
-    AuthModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Student, Alumni, Subject]), AuthModule],
   providers: [ReportsService],
   controllers: [ReportsController],
 })

@@ -88,7 +88,9 @@ export class StudentsService {
     const values: unknown[] = [];
     const placeholders: string[] = [];
     for (const subjectId of set) {
-      const isFinished = (finished_subject_ids ?? []).includes(subjectId) ? 1 : 0;
+      const isFinished = (finished_subject_ids ?? []).includes(subjectId)
+        ? 1
+        : 0;
       const isLiked = (liked_subject_ids ?? []).includes(subjectId) ? 1 : 0;
       placeholders.push('(?, ?, ?, ?)');
       values.push(studentId, subjectId, isFinished, isLiked);
@@ -170,7 +172,7 @@ export class StudentsService {
             : yearLevel === 3
               ? '3rd'
               : `${yearLevel}th`;
-      
+
       if (semester) {
         const ordinalSem = semester === 1 ? '1st' : '2nd';
         semesterLabel = `${ordinalYear} Year ${ordinalSem} Semester`;
@@ -184,7 +186,6 @@ export class StudentsService {
         );
       total = Number(allTotal) || 0;
     }
-
 
     let careerGoal: {
       career_id: number;
@@ -309,14 +310,14 @@ export class StudentsService {
       number,
       'None' | 'Beginner' | 'Intermediate' | 'Advanced'
     >();
-    const dynamicPriorityMap = new Map<number, 'high'|'medium'|'low'>();
+    const dynamicPriorityMap = new Map<number, 'high' | 'medium' | 'low'>();
 
     for (const r of subjectSkillProgressRows as any[]) {
       const total = Number(r.total_weight) || 0;
       if (total <= 0) continue;
       const earned = Number(r.earned_weight) || 0;
       const pct = Math.round((earned / total) * 100);
-      
+
       perSkillLevel.set(Number(r.skill_id), this.mapPercentToLevel(pct));
       dynamicPriorityMap.set(Number(r.skill_id), pct < 100 ? 'high' : 'low');
     }
@@ -368,18 +369,25 @@ export class StudentsService {
         level: perSkillLevel.get(Number(r.skill_id)) ?? derivedLevel,
         priority: dynamicPriorityMap.get(Number(r.skill_id)) ?? 'medium',
         resource: r.learning_resource_url ?? null,
-        expanded_skills: typeof r.expanded_skills === 'string' ? JSON.parse(r.expanded_skills) : r.expanded_skills,
+        expanded_skills:
+          typeof r.expanded_skills === 'string'
+            ? JSON.parse(r.expanded_skills)
+            : r.expanded_skills,
       });
     }
 
-    const priorityWeight: Record<string, number> = { high: 3, medium: 2, low: 1 };
+    const priorityWeight: Record<string, number> = {
+      high: 3,
+      medium: 2,
+      low: 1,
+    };
     for (const bucket of categoriesMap.values()) {
-        bucket.skills.sort((a, b) => {
-            const pA = priorityWeight[a.priority as string] ?? 0;
-            const pB = priorityWeight[b.priority as string] ?? 0;
-            if (pA !== pB) return pB - pA;
-            return a.name.localeCompare(b.name);
-        });
+      bucket.skills.sort((a, b) => {
+        const pA = priorityWeight[a.priority as string] ?? 0;
+        const pB = priorityWeight[b.priority as string] ?? 0;
+        if (pA !== pB) return pB - pA;
+        return a.name.localeCompare(b.name);
+      });
     }
 
     return {
@@ -596,13 +604,17 @@ export class StudentsService {
   }
 
   async getAllStudentsAdmin(query?: string) {
-    const qb = this.studentsRepository.createQueryBuilder('student')
+    const qb = this.studentsRepository
+      .createQueryBuilder('student')
       .leftJoinAndSelect('student.program', 'program')
       .leftJoinAndSelect('student.targetCareer', 'career')
       .where('student.isAdmin = :isAdmin', { isAdmin: false });
 
     if (query) {
-      qb.andWhere('(student.name LIKE :query OR student.student_number LIKE :query OR student.email LIKE :query)', { query: `%${query}%` });
+      qb.andWhere(
+        '(student.name LIKE :query OR student.student_number LIKE :query OR student.email LIKE :query)',
+        { query: `%${query}%` },
+      );
     }
 
     return qb.getMany();
@@ -610,7 +622,9 @@ export class StudentsService {
 
   // #8 – Use typed DTO instead of `any` to prevent privilege escalation
   async updateStudentAdmin(studentId: number, dto: UpdateStudentAdminDto) {
-    const student = await this.studentsRepository.findOne({ where: { student_id: studentId } });
+    const student = await this.studentsRepository.findOne({
+      where: { student_id: studentId },
+    });
     if (!student) throw new NotFoundException('Student not found');
 
     await this.studentsRepository.update(studentId, dto as Partial<Student>);
@@ -619,7 +633,9 @@ export class StudentsService {
 
   // #10 – Renamed from deleteStudentAdmin; verb is more accurate
   async deactivateStudentAdmin(studentId: number) {
-    const student = await this.studentsRepository.findOne({ where: { student_id: studentId } });
+    const student = await this.studentsRepository.findOne({
+      where: { student_id: studentId },
+    });
     if (!student) throw new NotFoundException('Student not found');
 
     await this.studentsRepository.update(studentId, { isActive: false } as any);
@@ -627,7 +643,9 @@ export class StudentsService {
   }
 
   async deleteStudentPermanently(studentId: number) {
-    const student = await this.studentsRepository.findOne({ where: { student_id: studentId } });
+    const student = await this.studentsRepository.findOne({
+      where: { student_id: studentId },
+    });
     if (!student) throw new NotFoundException('Student not found');
 
     await this.studentsRepository.delete(studentId);
@@ -635,11 +653,12 @@ export class StudentsService {
   }
 
   async activateStudentAdmin(studentId: number) {
-    const student = await this.studentsRepository.findOne({ where: { student_id: studentId } });
+    const student = await this.studentsRepository.findOne({
+      where: { student_id: studentId },
+    });
     if (!student) throw new NotFoundException('Student not found');
-    
+
     await this.studentsRepository.update(studentId, { isActive: true } as any);
     return { message: 'Student activated successfully' };
   }
-
 }

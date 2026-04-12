@@ -254,8 +254,8 @@ export default function AdminSubjectsPage() {
       {/* ── HEADER ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Curriculum <span className="text-indigo-400">Management</span></h1>
-          <p className="text-gray-500 text-sm mt-1">Configure academic subjects, programs, and mappings.</p>
+          <h1 className="text-2xl font-bold text-latte-text tracking-tight">Curriculum <span className="text-indigo-400">Management</span></h1>
+          <p className="text-latte-overlay1 text-sm mt-1">Configure academic subjects, programs, and mappings.</p>
         </div>
         <div className="flex flex-wrap gap-3">
           <button 
@@ -275,12 +275,12 @@ export default function AdminSubjectsPage() {
                 alert('Failed to export report');
               }
             }}
-            className="bg-gray-800 hover:bg-gray-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all border border-gray-700 active:scale-95 flex items-center gap-2"
+            className="bg-latte-surface1 hover:bg-gray-700 text-latte-text px-5 py-2.5 rounded-xl font-bold text-sm transition-all border border-latte-mantle active:scale-95 flex items-center gap-2"
           >
             <span className="text-lg">📥</span>
             Export CSV
           </button>
-          <label className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/20 cursor-pointer active:scale-95 flex items-center gap-2 group">
+          <label className="bg-indigo-600 hover:bg-indigo-500 text-latte-text px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/20 cursor-pointer active:scale-95 flex items-center gap-2 group">
             <span className="text-lg group-hover:rotate-12 transition-transform">⚡</span>
             Bulk Import
             <input type="file" accept=".csv" className="hidden" onChange={handleFileUpload} />
@@ -289,9 +289,9 @@ export default function AdminSubjectsPage() {
       </div>
 
       {/* ── ADD/EDIT FORM ── */}
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl overflow-hidden active-scale-hover transition-all">
-        <div className="px-7 py-5 bg-gray-950/30 border-b border-gray-800">
-           <h2 className="text-md font-bold text-white flex items-center gap-2">
+      <div className="bg-latte-surface0 border border-latte-crust rounded-2xl shadow-xl overflow-hidden active-scale-hover transition-all">
+        <div className="px-7 py-5 bg-latte-base/30 border-b border-latte-crust">
+           <h2 className="text-md font-bold text-latte-text flex items-center gap-2">
              <span className="text-indigo-400">{isEditing ? '✏️' : '➕'}</span>
              {isEditing ? 'Update Existing Subject' : 'Register New Subject'}
            </h2>
@@ -299,21 +299,21 @@ export default function AdminSubjectsPage() {
         <form onSubmit={handleSubmit} className="p-7 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Subject Code *</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Subject Code *</label>
               <input 
                 type="text" required
                 placeholder="e.g. CS101"
-                className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
+                className="w-full bg-latte-base border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
                 value={formData.subject_code}
                 onChange={(e) => setFormData({...formData, subject_code: e.target.value})}
               />
             </div>
             <div className="md:col-span-2 group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Full Descriptive Name *</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Full Descriptive Name *</label>
               <input 
                 type="text" required
                 placeholder="e.g. Introduction to Computer Science"
-                className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
+                className="w-full bg-latte-base border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-700"
                 value={formData.subject_name}
                 onChange={(e) => setFormData({...formData, subject_name: e.target.value})}
               />
@@ -322,9 +322,9 @@ export default function AdminSubjectsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
             <div>
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Program</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Program</label>
               <select 
-                className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all"
+                className="w-full bg-latte-base border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all"
                 value={formData.program_id}
                 onChange={(e) => setFormData({...formData, program_id: e.target.value})}
               >
@@ -335,31 +335,31 @@ export default function AdminSubjectsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Year Level</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Year Level</label>
               <input 
                 type="number"
                 placeholder="1-4"
-                className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all"
+                className="w-full bg-latte-base border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all"
                 value={formData.year_level}
                 onChange={(e) => setFormData({...formData, year_level: e.target.value})}
               />
             </div>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Semester</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Semester</label>
               <input 
                 type="number"
                 placeholder="1-2"
-                className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all"
+                className="w-full bg-latte-base border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all"
                 value={formData.semester}
                 onChange={(e) => setFormData({...formData, semester: e.target.value})}
               />
             </div>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Category</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1.5 ml-1">Category</label>
               <input 
                 type="text"
                 placeholder="Core, Professional, etc."
-                className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all"
+                className="w-full bg-latte-base border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all"
                 value={formData.category}
                 onChange={(e) => setFormData({...formData, category: e.target.value})}
               />
@@ -371,12 +371,12 @@ export default function AdminSubjectsPage() {
               <button 
                 type="button" 
                 onClick={resetForm}
-                className="text-gray-500 hover:text-gray-300 font-bold text-xs px-4 py-2.5 transition-colors"
+                className="text-latte-overlay1 hover:text-latte-subtext1 font-bold text-xs px-4 py-2.5 transition-colors"
               >
                 Discard Changes
               </button>
             )}
-            <button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white px-10 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/10 active:scale-95">
+            <button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-latte-text px-10 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/10 active:scale-95">
               {isEditing ? 'Commit Changes' : 'Register Subject'}
             </button>
           </div>
@@ -389,8 +389,8 @@ export default function AdminSubjectsPage() {
           onClick={() => setSelectedProgramId(null)}
           className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
             selectedProgramId === null
-              ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-600/20'
-              : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+              ? 'bg-indigo-600 text-latte-text border-indigo-500 shadow-lg shadow-indigo-600/20'
+              : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
           }`}
         >
           🌐 Global View
@@ -401,8 +401,8 @@ export default function AdminSubjectsPage() {
             onClick={() => setSelectedProgramId(p.program_id)}
             className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
               selectedProgramId === p.program_id
-                ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-600/20'
-                : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+                ? 'bg-indigo-600 text-latte-text border-indigo-500 shadow-lg shadow-indigo-600/20'
+                : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
             }`}
           >
             {p.program_code} Track
@@ -413,9 +413,9 @@ export default function AdminSubjectsPage() {
       {/* ── YEAR LEVEL CARDS ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-0">
         {loading ? (
-          <div className="col-span-full p-20 text-center bg-gray-900 border border-gray-800 rounded-2xl shadow-xl">
+          <div className="col-span-full p-20 text-center bg-latte-surface0 border border-latte-crust rounded-2xl shadow-xl">
              <div className="inline-block w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mb-4" />
-             <div className="text-gray-500 font-medium animate-pulse">Filtering subjects...</div>
+             <div className="text-latte-overlay1 font-medium animate-pulse">Filtering subjects...</div>
           </div>
         ) : (
           (() => {
@@ -423,10 +423,10 @@ export default function AdminSubjectsPage() {
             
             if (filteredSubjects.length === 0) {
               return (
-                <div className="col-span-full bg-gray-900 border border-gray-800 rounded-2xl p-20 text-center shadow-xl">
+                <div className="col-span-full bg-latte-surface0 border border-latte-crust rounded-2xl p-20 text-center shadow-xl">
                    <div className="text-3xl mb-4">📚</div>
-                   <div className="text-gray-400 font-medium tracking-widest uppercase text-[10px] font-black">Curriculum Dormant</div>
-                   <p className="text-gray-600 text-[10px] mt-2 font-bold uppercase tracking-widest">No subjects registered for {selectedProgramId === null ? 'the entire curriculum' : programs.find(p => p.program_id === selectedProgramId)?.program_code || 'this track'}.</p>
+                   <div className="text-latte-subtext0 font-medium tracking-widest uppercase text-[10px] font-black">Curriculum Dormant</div>
+                   <p className="text-latte-overlay0 text-[10px] mt-2 font-bold uppercase tracking-widest">No subjects registered for {selectedProgramId === null ? 'the entire curriculum' : programs.find(p => p.program_id === selectedProgramId)?.program_code || 'this track'}.</p>
                 </div>
               );
             }
@@ -444,18 +444,18 @@ export default function AdminSubjectsPage() {
                     setSelectedYearView(year);
                     setIsYearModalOpen(true);
                   }}
-                  className="bg-gray-900 hover:bg-gray-800 border border-gray-800 hover:border-indigo-500/50 rounded-2xl p-6 cursor-pointer transition-all shadow-lg hover:shadow-indigo-500/20 group relative overflow-hidden flex flex-col justify-between min-h-[160px]"
+                  className="bg-latte-surface0 hover:bg-latte-surface1 border border-latte-crust hover:border-indigo-500/50 rounded-2xl p-6 cursor-pointer transition-all shadow-lg hover:shadow-indigo-500/20 group relative overflow-hidden flex flex-col justify-between min-h-[160px]"
                 >
                   <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 transition-transform duration-500">
                       <span className="text-6xl font-black">{year === null ? '?' : year}</span>
                   </div>
                   <div>
                     <div className="text-3xl mb-4">{year === null ? '📦' : ['🥇', '🥈', '🥉', '🏅'][year - 1] || '🎓'}</div>
-                    <h3 className="text-white font-bold text-lg mb-1">{title}</h3>
+                    <h3 className="text-latte-text font-bold text-lg mb-1">{title}</h3>
                     <p className="text-indigo-400 text-xs font-black uppercase tracking-widest">{count} Subjects</p>
                   </div>
                   
-                  <div className="mt-4 flex items-center justify-between text-gray-500 text-[10px] font-bold uppercase tracking-widest group-hover:text-white transition-colors">
+                  <div className="mt-4 flex items-center justify-between text-latte-overlay1 text-[10px] font-bold uppercase tracking-widest group-hover:text-latte-text transition-colors">
                      <span>View Curriculum List</span>
                      <span>→</span>
                   </div>
@@ -479,67 +479,67 @@ export default function AdminSubjectsPage() {
 
       {/* ── YEAR LEVEL SUBJECT LIST MODAL ── */}
       {isYearModalOpen && (
-        <div className="fixed inset-0 bg-gray-950/80 backdrop-blur-sm flex items-center justify-center z-40 p-4 animate-in fade-in duration-300">
-          <div className="bg-gray-900 border border-gray-800 rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
-             <div className="px-8 py-6 border-b border-gray-800 flex justify-between items-center bg-gray-950/20 shrink-0">
+        <div className="fixed inset-0 bg-latte-base/80 backdrop-blur-sm flex items-center justify-center z-40 p-4 animate-in fade-in duration-300">
+          <div className="bg-latte-surface0 border border-latte-crust rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+             <div className="px-8 py-6 border-b border-latte-crust flex justify-between items-center bg-latte-base/20 shrink-0">
                <div>
-                  <h2 className="text-xl font-bold text-white uppercase tracking-tight">
+                  <h2 className="text-xl font-bold text-latte-text uppercase tracking-tight">
                     {selectedYearView === null ? 'Unassigned Subjects' : `${['First', 'Second', 'Third', 'Fourth'][selectedYearView - 1] || `Year ${selectedYearView}`} Year Curriculum`}
                   </h2>
-                  <p className="text-gray-500 text-xs mt-0.5 font-bold uppercase tracking-widest">
+                  <p className="text-latte-overlay1 text-xs mt-0.5 font-bold uppercase tracking-widest">
                     {selectedProgramId === null ? '🌐 Global View' : `${programs.find(p => p.program_id === selectedProgramId)?.program_code || 'Track'} Curriculum`}
                   </p>
                </div>
                <button 
                  onClick={() => setIsYearModalOpen(false)} 
-                 className="w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white flex items-center justify-center transition-all border border-gray-700"
+                 className="w-10 h-10 rounded-full bg-latte-surface1 hover:bg-gray-700 text-latte-subtext0 hover:text-latte-text flex items-center justify-center transition-all border border-latte-mantle"
                >
                  ×
                </button>
              </div>
              
              <div className="overflow-y-auto custom-scrollbar flex-1 p-8">
-               <div className="bg-gray-950/50 border border-gray-800 rounded-2xl overflow-hidden">
+               <div className="bg-latte-base/50 border border-latte-crust rounded-2xl overflow-hidden">
                  <table className="w-full text-left border-collapse">
                    <thead>
-                     <tr className="bg-gray-900/50 border-b border-gray-800">
-                       <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest">Code</th>
-                       <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest">Subject Name</th>
-                       <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest">Academic Level</th>
-                       <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest">Classification</th>
-                       <th className="px-6 py-5 font-bold text-[10px] text-gray-500 uppercase tracking-widest text-right">Operations</th>
+                     <tr className="bg-latte-surface0/50 border-b border-latte-crust">
+                       <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest">Code</th>
+                       <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest">Subject Name</th>
+                       <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest">Academic Level</th>
+                       <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest">Classification</th>
+                       <th className="px-6 py-5 font-bold text-[10px] text-latte-overlay1 uppercase tracking-widest text-right">Operations</th>
                      </tr>
                    </thead>
                    <tbody className="divide-y divide-gray-800/50">
                      {subjects.filter(s => (selectedProgramId === null || s.program_id === selectedProgramId) && (s.year_level === selectedYearView || (!s.year_level && selectedYearView === null))).length === 0 ? (
                        <tr>
-                         <td colSpan={5} className="px-6 py-12 text-center text-gray-500 text-xs font-bold uppercase tracking-widest">
+                         <td colSpan={5} className="px-6 py-12 text-center text-latte-overlay1 text-xs font-bold uppercase tracking-widest">
                            No Subjects Found
                          </td>
                        </tr>
                      ) : (
                        subjects.filter(s => (selectedProgramId === null || s.program_id === selectedProgramId) && (s.year_level === selectedYearView || (!s.year_level && selectedYearView === null))).map((subject) => (
-                         <tr key={subject.subject_id} className="hover:bg-gray-800/30 transition-colors group">
+                         <tr key={subject.subject_id} className="hover:bg-latte-surface1/30 transition-colors group">
                            <td className="px-6 py-4">
-                              <span className="px-2 py-1 bg-gray-950 border border-gray-800 rounded text-[11px] font-mono font-bold text-indigo-400">
+                              <span className="px-2 py-1 bg-latte-base border border-latte-crust rounded text-[11px] font-mono font-bold text-indigo-400">
                                 {subject.subject_code}
                               </span>
                            </td>
                            <td className="px-6 py-4">
-                              <div className="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors">{subject.subject_name}</div>
+                              <div className="text-sm font-bold text-latte-text group-hover:text-indigo-300 transition-colors">{subject.subject_name}</div>
                            </td>
                            <td className="px-6 py-4">
                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-gray-400 font-medium">
+                                <span className="text-xs text-latte-subtext0 font-medium">
                                  {subject.year_level ? `Year ${subject.year_level}` : '-'}
                                 </span>
                                 <span className="w-1 h-1 rounded-full bg-gray-700" />
-                                <span className="text-xs text-gray-500 font-medium">
+                                <span className="text-xs text-latte-overlay1 font-medium">
                                  {subject.semester ? `Sem ${subject.semester}` : '-'}
                                 </span>
                              </div>
                            </td>
-                           <td className="px-6 py-4 text-sm text-gray-500">
+                           <td className="px-6 py-4 text-sm text-latte-overlay1">
                              <span className="bg-indigo-500/10 text-indigo-400 px-2.5 py-1 rounded-lg border border-indigo-500/20 text-[10px] font-black uppercase tracking-wider">
                                {subject.category || 'Professional'}
                              </span>
@@ -557,7 +557,7 @@ export default function AdminSubjectsPage() {
                                  handleEdit(subject);
                                  setIsYearModalOpen(false); // Close modal when editing
                                }}
-                               className="inline-flex items-center gap-1.5 text-gray-400 hover:text-white font-bold text-xs transition-colors bg-gray-800/50 hover:bg-gray-700 px-3 py-1.5 rounded-lg border border-gray-700"
+                               className="inline-flex items-center gap-1.5 text-latte-subtext0 hover:text-latte-text font-bold text-xs transition-colors bg-latte-surface1/50 hover:bg-gray-700 px-3 py-1.5 rounded-lg border border-latte-mantle"
                              >
                                Edit
                              </button>
@@ -581,16 +581,16 @@ export default function AdminSubjectsPage() {
 
       {/* ── SKILL MAPPING MODAL ── */}
       {isSkillModalOpen && activeSubject && (
-        <div className="fixed inset-0 bg-gray-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
-          <div className="bg-gray-900 border border-gray-800 rounded-3xl shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-8 py-6 border-b border-gray-800 flex justify-between items-center bg-gray-950/20">
+        <div className="fixed inset-0 bg-latte-base/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
+          <div className="bg-latte-surface0 border border-latte-crust rounded-3xl shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-8 py-6 border-b border-latte-crust flex justify-between items-center bg-latte-base/20">
               <div>
-                 <h2 className="text-xl font-bold text-white uppercase tracking-tight">Skill <span className="text-amber-400">Mapping</span></h2>
-                 <p className="text-gray-500 text-xs mt-0.5">{activeSubject.subject_code} - {activeSubject.subject_name}</p>
+                 <h2 className="text-xl font-bold text-latte-text uppercase tracking-tight">Skill <span className="text-amber-400">Mapping</span></h2>
+                 <p className="text-latte-overlay1 text-xs mt-0.5">{activeSubject.subject_code} - {activeSubject.subject_name}</p>
               </div>
               <button 
                 onClick={() => setIsSkillModalOpen(false)} 
-                className="w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white flex items-center justify-center transition-all"
+                className="w-10 h-10 rounded-full bg-latte-surface1 hover:bg-gray-700 text-latte-subtext0 hover:text-latte-text flex items-center justify-center transition-all"
               >
                 ×
               </button>
@@ -598,9 +598,9 @@ export default function AdminSubjectsPage() {
             
             <div className="p-8 space-y-6">
               {/* Link Form */}
-              <form onSubmit={handleLinkSkill} className="flex gap-3 bg-gray-950/50 p-4 rounded-2xl border border-gray-800">
+              <form onSubmit={handleLinkSkill} className="flex gap-3 bg-latte-base/50 p-4 rounded-2xl border border-latte-crust">
                 <select 
-                  className="flex-1 bg-gray-900 border border-gray-800 text-white rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-amber-500/50 appearance-none"
+                  className="flex-1 bg-latte-surface0 border border-latte-crust text-latte-text rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-amber-500/50 appearance-none"
                   value={mappingForm.skillId}
                   onChange={(e) => setMappingForm({...mappingForm, skillId: e.target.value})}
                   required
@@ -613,13 +613,13 @@ export default function AdminSubjectsPage() {
                 <div className="relative w-20">
                    <input 
                      type="number" min="1" max="10"
-                     className="w-full bg-gray-900 border border-gray-800 text-white rounded-xl px-3 py-2.5 text-sm text-center outline-none focus:ring-2 focus:ring-amber-500/50"
+                     className="w-full bg-latte-surface0 border border-latte-crust text-latte-text rounded-xl px-3 py-2.5 text-sm text-center outline-none focus:ring-2 focus:ring-amber-500/50"
                      value={mappingForm.weight}
                      onChange={(e) => setMappingForm({...mappingForm, weight: parseInt(e.target.value)})}
                    />
-                   <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-gray-900 border border-gray-800 text-[8px] font-black px-1.5 rounded text-amber-500">WT</span>
+                   <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-latte-surface0 border border-latte-crust text-[8px] font-black px-1.5 rounded text-amber-500">WT</span>
                 </div>
-                <button type="submit" className="bg-amber-600 hover:bg-amber-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-amber-600/10 active:scale-95">
+                <button type="submit" className="bg-amber-600 hover:bg-amber-500 text-latte-text px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-amber-600/10 active:scale-95">
                   Link
                 </button>
               </form>
@@ -627,25 +627,25 @@ export default function AdminSubjectsPage() {
               {/* Current Mapping List */}
               <div className="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
                 {subjectSkills.length === 0 ? (
-                  <div className="py-12 text-center border border-dashed border-gray-800 rounded-2xl">
+                  <div className="py-12 text-center border border-dashed border-latte-crust rounded-2xl">
                      <span className="text-3xl opacity-20">⚡</span>
-                     <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-3">No skills mapped yet</p>
+                     <p className="text-latte-overlay1 text-xs font-bold uppercase tracking-widest mt-3">No skills mapped yet</p>
                   </div>
                 ) : (
                   subjectSkills.map((ss) => (
-                    <div key={ss.skill_id} className="flex items-center justify-between p-4 border border-gray-800 rounded-2xl bg-gray-950/40 hover:bg-gray-800/30 transition-all group">
+                    <div key={ss.skill_id} className="flex items-center justify-between p-4 border border-latte-crust rounded-2xl bg-latte-base/40 hover:bg-latte-surface1/30 transition-all group">
                       <div className="flex items-center gap-4">
-                         <div className="w-10 h-10 rounded-xl bg-gray-950 border border-gray-800 flex items-center justify-center font-bold text-amber-400 shadow-inner">
+                         <div className="w-10 h-10 rounded-xl bg-latte-base border border-latte-crust flex items-center justify-center font-bold text-amber-400 shadow-inner">
                             {ss.weight}
                          </div>
                          <div>
-                            <p className="font-bold text-sm text-white">{ss.skill.skill_name}</p>
-                            <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black">{ss.skill.category || 'Competency'}</p>
+                            <p className="font-bold text-sm text-latte-text">{ss.skill.skill_name}</p>
+                            <p className="text-[10px] text-latte-overlay1 uppercase tracking-widest font-black">{ss.skill.category || 'Competency'}</p>
                          </div>
                       </div>
                       <button 
                         onClick={() => handleUnlinkSkill(ss.skill_id)}
-                        className="w-8 h-8 rounded-lg bg-gray-800 hover:bg-rose-600 text-gray-500 hover:text-white flex items-center justify-center transition-all border border-gray-700"
+                        className="w-8 h-8 rounded-lg bg-latte-surface1 hover:bg-rose-600 text-latte-overlay1 hover:text-latte-text flex items-center justify-center transition-all border border-latte-mantle"
                       >
                         ×
                       </button>
@@ -655,10 +655,10 @@ export default function AdminSubjectsPage() {
               </div>
             </div>
             
-            <div className="px-8 py-5 border-t border-gray-800 flex justify-end bg-gray-950/20">
+            <div className="px-8 py-5 border-t border-latte-crust flex justify-end bg-latte-base/20">
                <button 
                  onClick={() => setIsSkillModalOpen(false)}
-                 className="px-6 py-2 rounded-xl text-xs font-black text-gray-500 hover:text-gray-300 uppercase tracking-widest transition-colors"
+                 className="px-6 py-2 rounded-xl text-xs font-black text-latte-overlay1 hover:text-latte-subtext1 uppercase tracking-widest transition-colors"
                >
                  Close Mapping View
                </button>

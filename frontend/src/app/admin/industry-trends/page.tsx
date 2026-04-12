@@ -4,6 +4,17 @@ import * as React from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminTrendsPage() {
+  const formatSalary = (val: string | number | null | undefined) => {
+    if (val === null || val === undefined || val === '') return '';
+    const num = val.toString().replace(/[^0-9.]/g, '');
+    if (!num) return '';
+    return '₱' + parseFloat(num).toLocaleString();
+  };
+
+  const unformatSalary = (val: string) => {
+    return val.replace(/[^0-9.]/g, '');
+  };
+
   const [trends, setTrends] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [isEditing, setIsEditing] = React.useState(false);
@@ -79,8 +90,8 @@ export default function AdminTrendsPage() {
 
       const payload = {
         ...formData,
-        salary_min: formData.salary_min ? parseFloat(formData.salary_min) : null,
-        salary_max: formData.salary_max ? parseFloat(formData.salary_max) : null,
+        salary_min: formData.salary_min ? parseFloat(unformatSalary(formData.salary_min)) : null,
+        salary_max: formData.salary_max ? parseFloat(unformatSalary(formData.salary_max)) : null,
         year: formData.year ? parseInt(formData.year) : null,
         top_roles: formData.top_roles.split(',').map(s => s.trim()).filter(s => s !== ""),
         top_skills: formData.top_skills.split(',').map(s => s.trim()).filter(s => s !== ""),
@@ -115,8 +126,8 @@ export default function AdminTrendsPage() {
       title: trend.title || '',
       growth_rate: trend.growth_rate || trend.growth || '',
       demand_level: trend.demand_level || trend.demandLevel || '',
-      salary_min: trend.salary_min || trend.salaryMin || '',
-      salary_max: trend.salary_max || trend.salaryMax || '',
+      salary_min: formatSalary(trend.salary_min || trend.salaryMin),
+      salary_max: formatSalary(trend.salary_max || trend.salaryMax),
       description: trend.description || '',
       year: trend.year || '',
       icon: trend.icon || '📌',
@@ -162,8 +173,8 @@ export default function AdminTrendsPage() {
     <div className="max-w-7xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight text-glow">Industry <span className="text-emerald-500">Trends</span></h1>
-          <p className="text-gray-500 text-sm mt-1 uppercase tracking-widest font-black text-[10px]">Market Growth & Demand Signals</p>
+          <h1 className="text-2xl font-bold text-latte-text tracking-tight text-glow">Industry <span className="text-emerald-500">Trends</span></h1>
+          <p className="text-latte-overlay1 text-sm mt-1 uppercase tracking-widest font-black text-[10px]">Market Growth & Demand Signals</p>
         </div>
       </div>
 
@@ -173,8 +184,8 @@ export default function AdminTrendsPage() {
           onClick={() => setSelectedProgramId(null)}
           className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
             selectedProgramId === null
-              ? 'bg-emerald-600 text-white border-emerald-500 shadow-lg shadow-emerald-600/20'
-              : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+              ? 'bg-emerald-600 text-latte-text border-emerald-500 shadow-lg shadow-emerald-600/20'
+              : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
           }`}
         >
           🌐 Global View
@@ -185,8 +196,8 @@ export default function AdminTrendsPage() {
             onClick={() => setSelectedProgramId(p.program_id)}
             className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border whitespace-nowrap ${
               selectedProgramId === p.program_id
-                ? 'bg-emerald-600 text-white border-emerald-500 shadow-lg shadow-emerald-600/20'
-                : 'bg-gray-900 text-gray-500 border-gray-800 hover:border-gray-700 hover:text-gray-400'
+                ? 'bg-emerald-600 text-latte-text border-emerald-500 shadow-lg shadow-emerald-600/20'
+                : 'bg-latte-surface0 text-latte-overlay1 border-latte-crust hover:border-latte-mantle hover:text-latte-subtext0'
             }`}
           >
             {p.program_code} Insights
@@ -194,9 +205,9 @@ export default function AdminTrendsPage() {
         ))}
       </div>
 
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl shadow-xl overflow-hidden glass-card transition-all duration-500">
-        <div className="px-8 py-6 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950/40 flex items-center justify-between">
-           <h2 className="text-sm font-black text-gray-800 dark:text-white uppercase tracking-[0.2em] flex items-center gap-3">
+      <div className="bg-latte-surface0 border border-latte-crust rounded-3xl shadow-xl overflow-hidden glass-card transition-all duration-500">
+        <div className="px-8 py-6 border-b border-latte-crust bg-latte-surface1/40 flex items-center justify-between">
+           <h2 className="text-sm font-black text-gray-800 text-latte-text uppercase tracking-[0.2em] flex items-center gap-3">
              <span className="text-xl">{isEditing ? '💎' : '✨'}</span>
              {isEditing ? 'Refine Market Trend' : 'Register New Trend'}
            </h2>
@@ -209,31 +220,31 @@ export default function AdminTrendsPage() {
         <form onSubmit={handleSubmit} className="p-8 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="group md:col-span-2">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Trend Domain *</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Trend Domain *</label>
               <input 
                 type="text" required
                 placeholder="e.g. Artificial Intelligence"
-                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
+                className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
               />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Icon (Emoji)</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Icon (Emoji)</label>
               <input 
                 type="text"
                 placeholder="🚀"
-                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
+                className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
                 value={formData.icon}
                 onChange={(e) => setFormData({...formData, icon: e.target.value})}
               />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Reference Year</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Reference Year</label>
               <input 
                 type="number"
                 placeholder="2026"
-                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
+                className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
                 value={formData.year}
                 onChange={(e) => setFormData({...formData, year: e.target.value})}
               />
@@ -242,19 +253,19 @@ export default function AdminTrendsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Growth Index</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Growth Index</label>
               <input 
                 type="text"
                 placeholder="e.g. +45%"
-                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
+                className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
                 value={formData.growth_rate}
                 onChange={(e) => setFormData({...formData, growth_rate: e.target.value})}
               />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Demand Level</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Demand Level</label>
               <select 
-                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
+                className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
                 value={formData.demand_level}
                 onChange={(e) => setFormData({...formData, demand_level: e.target.value})}
               >
@@ -267,23 +278,23 @@ export default function AdminTrendsPage() {
             </div>
             <div className="group flex gap-4">
               <div className="flex-1">
-                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Salary Min</label>
+                <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Salary Min</label>
                 <input 
-                  type="number"
-                  placeholder="Min"
-                  className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
+                  type="text"
+                  placeholder="e.g. ₱50,000"
+                  className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
                   value={formData.salary_min}
-                  onChange={(e) => setFormData({...formData, salary_min: e.target.value})}
+                  onChange={(e) => setFormData({...formData, salary_min: formatSalary(e.target.value)})}
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Salary Max</label>
+                <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Salary Max</label>
                 <input 
-                  type="number"
-                  placeholder="Max"
-                  className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
+                  type="text"
+                  placeholder="e.g. ₱100,000"
+                  className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
                   value={formData.salary_max}
-                  onChange={(e) => setFormData({...formData, salary_max: e.target.value})}
+                  onChange={(e) => setFormData({...formData, salary_max: formatSalary(e.target.value)})}
                 />
               </div>
             </div>
@@ -291,21 +302,21 @@ export default function AdminTrendsPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Top Job Roles (comma separated)</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Top Job Roles (comma separated)</label>
               <input 
                 type="text"
                 placeholder="Software Engineer, Data Scientist"
-                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
+                className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
                 value={formData.top_roles}
                 onChange={(e) => setFormData({...formData, top_roles: e.target.value})}
               />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">In-Demand Skills (comma separated)</label>
+              <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">In-Demand Skills (comma separated)</label>
               <input 
                 type="text"
                 placeholder="React, TypeScript, Python"
-                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
+                className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
                 value={formData.top_skills}
                 onChange={(e) => setFormData({...formData, top_skills: e.target.value})}
               />
@@ -313,7 +324,7 @@ export default function AdminTrendsPage() {
           </div>
 
           <div className="group">
-            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-1 text-emerald-400">Target Academic Tracks (Multi-Select)</label>
+            <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-3 ml-1 text-emerald-400">Target Academic Tracks (Multi-Select)</label>
             <div className="flex flex-wrap gap-2">
               {allPrograms.map(p => (
                 <button
@@ -328,7 +339,7 @@ export default function AdminTrendsPage() {
                   className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
                     formData.program_ids.includes(p.program_id)
                       ? 'bg-emerald-600/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
-                      : 'bg-gray-950 border-gray-800 text-gray-600 hover:border-gray-700'
+                      : 'bg-latte-base border-latte-crust text-latte-overlay0 hover:border-latte-mantle'
                   }`}
                 >
                   {p.program_code}
@@ -339,21 +350,21 @@ export default function AdminTrendsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="group">
-                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Companies Hiring (comma separated)</label>
+                <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Companies Hiring (comma separated)</label>
                 <input 
                     type="text"
                     placeholder="Google, Microsoft, Accenture"
-                    className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
+                    className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all"
                     value={formData.top_companies}
                     onChange={(e) => setFormData({...formData, top_companies: e.target.value})}
                 />
             </div>
             <div className="group">
-                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1 text-indigo-400">Industry Insight Snippet</label>
+                <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1 text-indigo-400">Industry Insight Snippet</label>
                 <input 
                     type="text"
                     placeholder="Brief 1-sentence tip/insight"
-                    className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                    className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
                     value={formData.insight}
                     onChange={(e) => setFormData({...formData, insight: e.target.value})}
                 />
@@ -361,34 +372,34 @@ export default function AdminTrendsPage() {
           </div>
 
           <div className="group">
-            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-1">Full Market Insight / Description</label>
+            <label className="block text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-2 ml-1">Full Market Insight / Description</label>
             <textarea 
-              className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none resize-none h-24"
+              className="w-full bg-latte-surface1 border border-latte-crust text-latte-text rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-emerald-500/50 outline-none resize-none h-24"
               value={formData.description}
               onChange={(e) => setFormData({...formData, description: e.target.value})}
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-end gap-6 pt-4 border-t border-gray-200 dark:border-gray-800">
-            <button type="submit" className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white px-12 py-3.5 rounded-2xl font-bold text-sm transition-all shadow-lg active:scale-95 text-glow">
+          <div className="flex flex-col sm:flex-row items-center justify-end gap-6 pt-4 border-t border-latte-crust">
+            <button type="submit" className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-latte-text px-12 py-3.5 rounded-2xl font-bold text-sm transition-all shadow-lg active:scale-95 text-glow">
               {isEditing ? 'COMMIT UPDATES' : 'INITIALIZE TREND'}
             </button>
           </div>
         </form>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl shadow-xl overflow-hidden">
+      <div className="bg-latte-surface0 border border-latte-crust rounded-3xl shadow-xl overflow-hidden">
         {loading ? (
-          <div className="p-32 text-center text-gray-500">Syncing Matrix...</div>
+          <div className="p-32 text-center text-latte-overlay1">Syncing Matrix...</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-50 dark:bg-gray-950/60 border-b border-gray-200 dark:border-gray-800">
-                  <th className="px-8 py-6 font-black text-[10px] text-gray-500 uppercase tracking-widest">Domain</th>
-                  <th className="px-8 py-6 font-black text-[10px] text-gray-500 uppercase tracking-widest">Growth Index</th>
-                  <th className="px-8 py-6 font-black text-[10px] text-gray-500 uppercase tracking-widest">Compensation Matrix</th>
-                  <th className="px-8 py-6 font-black text-[10px] text-gray-500 uppercase tracking-widest text-right">Operations</th>
+                <tr className="bg-latte-surface1/60 border-b border-latte-crust">
+                  <th className="px-8 py-6 font-black text-[10px] text-latte-overlay1 uppercase tracking-widest">Domain</th>
+                  <th className="px-8 py-6 font-black text-[10px] text-latte-overlay1 uppercase tracking-widest">Growth Index</th>
+                  <th className="px-8 py-6 font-black text-[10px] text-latte-overlay1 uppercase tracking-widest">Compensation Matrix</th>
+                  <th className="px-8 py-6 font-black text-[10px] text-latte-overlay1 uppercase tracking-widest text-right">Operations</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-800/50">
@@ -404,8 +415,8 @@ export default function AdminTrendsPage() {
                       <tr>
                         <td colSpan={4} className="px-8 py-20 text-center">
                            <div className="text-4xl mb-4 grayscale opacity-20">📊</div>
-                           <h4 className="text-gray-400 font-black text-[10px] uppercase tracking-widest">No Sector Intelligence Available</h4>
-                           <p className="text-gray-600 text-[10px] font-bold uppercase tracking-widest mt-2 leading-relaxed">
+                           <h4 className="text-latte-subtext0 font-black text-[10px] uppercase tracking-widest">No Sector Intelligence Available</h4>
+                           <p className="text-latte-overlay0 text-[10px] font-bold uppercase tracking-widest mt-2 leading-relaxed">
                              The {selectedProgramId === null ? 'entire market' : allPrograms.find(p => p.program_id === selectedProgramId)?.program_code || 'current'} track doesn't have active trends tracked yet.
                            </p>
                         </td>
@@ -414,23 +425,23 @@ export default function AdminTrendsPage() {
                   }
 
                   return filteredTrends.map((t) => (
-                    <tr key={t.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors group">
+                    <tr key={t.id} className="hover:bg-latte-mantle hover:bg-latte-surface2/40 transition-colors group">
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-950/50 flex items-center justify-center text-xl border border-gray-200 dark:border-gray-800 transition-transform group-hover:scale-110">
+                          <div className="w-10 h-10 rounded-xl bg-latte-mantle bg-latte-surface1/50 flex items-center justify-center text-xl border border-latte-crust transition-transform group-hover:scale-110">
                               {t.icon || '📌'}
                           </div>
                           <div>
-                              <div className="font-bold text-sm text-gray-900 dark:text-white uppercase tracking-tight">{t.title}</div>
-                              <div className="text-[10px] font-black text-gray-500">{t.year || 'Current'}</div>
+                              <div className="font-bold text-sm text-latte-text uppercase tracking-tight">{t.title}</div>
+                              <div className="text-[10px] font-black text-latte-overlay1">{t.year || 'Current'}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-8 py-6 text-sm">
                         <span className="text-emerald-500 font-bold bg-emerald-500/10 px-2 py-1 rounded">{t.growth || 'N/A'}</span>
-                        <span className="ml-2 text-xs text-gray-500">{t.demandLevel}</span>
+                        <span className="ml-2 text-xs text-latte-overlay1">{t.demandLevel}</span>
                       </td>
-                      <td className="px-8 py-6 text-sm text-gray-600 dark:text-gray-300 tabular-nums">
+                      <td className="px-8 py-6 text-sm text-latte-overlay0 text-latte-subtext1 tabular-nums">
                         ₱{(t.salaryMin || t.salary_min || 0).toLocaleString()} – ₱{(t.salaryMax || t.salary_max || 0).toLocaleString()}
                       </td>
                       <td className="px-8 py-6 text-right flex items-center justify-end gap-4">
@@ -472,10 +483,10 @@ export default function AdminTrendsPage() {
             onClick={e => e.stopPropagation()}
           >
             {/* Glossy Header Area */}
-            <div className="relative px-12 py-12 border-b border-white/5 bg-gradient-to-br from-indigo-500/10 to-transparent">
+            <div className="relative px-12 py-12 border-b border-latte-crust/50 bg-gradient-to-br from-indigo-500/10 to-transparent">
               <button 
                 onClick={() => setViewingTrend(null)}
-                className="absolute top-10 right-10 w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all border border-white/10 active:scale-90 z-10"
+                className="absolute top-10 right-10 w-12 h-12 rounded-full bg-latte-base/5 flex items-center justify-center text-latte-subtext0 hover:text-latte-text hover:bg-latte-base/10 transition-all border border-latte-crust active:scale-90 z-10"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -495,8 +506,8 @@ export default function AdminTrendsPage() {
                       {viewingTrend.demand_level || viewingTrend.demandLevel || 'High Demand'}
                     </span>
                   </div>
-                  <h2 className="text-4xl font-black text-white tracking-tighter uppercase">{viewingTrend.title}</h2>
-                  <p className="text-gray-500 font-bold text-xs mt-1 tracking-widest uppercase opacity-70">Strategic Market Intelligence Report</p>
+                  <h2 className="text-4xl font-black text-latte-text tracking-tighter uppercase">{viewingTrend.title}</h2>
+                  <p className="text-latte-overlay1 font-bold text-xs mt-1 tracking-widest uppercase opacity-70">Strategic Market Intelligence Report</p>
                 </div>
               </div>
             </div>
@@ -505,20 +516,20 @@ export default function AdminTrendsPage() {
             <div className="p-12 space-y-12 overflow-y-auto custom-scrollbar">
               {/* Stats & Demand Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-1 p-8 rounded-[2rem] bg-white/5 border border-white/5 shadow-inner flex flex-col justify-center">
-                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">Compounded Growth</p>
+                <div className="lg:col-span-1 p-8 rounded-[2rem] bg-latte-base/5 border border-latte-crust/50 shadow-inner flex flex-col justify-center">
+                  <p className="text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-3">Compounded Growth</p>
                   <p className="text-4xl font-black text-emerald-500 tracking-tight">{viewingTrend.growth_rate || viewingTrend.growth || 'No Data'}</p>
                 </div>
-                <div className="lg:col-span-2 p-8 rounded-[2rem] bg-white/5 border border-white/5 shadow-inner">
+                <div className="lg:col-span-2 p-8 rounded-[2rem] bg-latte-base/5 border border-latte-crust/50 shadow-inner">
                     <div className="flex justify-between items-end mb-4">
                         <div>
-                            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Market Saturation Index</p>
-                            <p className="text-xl font-black text-white uppercase tracking-tight">{viewingTrend.demand_level || viewingTrend.demandLevel || 'Targeting'}</p>
+                            <p className="text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-1">Market Saturation Index</p>
+                            <p className="text-xl font-black text-latte-text uppercase tracking-tight">{viewingTrend.demand_level || viewingTrend.demandLevel || 'Targeting'}</p>
                         </div>
-                        <p className="text-emerald-500 font-black text-sm">₱{(viewingTrend.salary_min || viewingTrend.salaryMin || 0).toLocaleString()} <span className="text-gray-600 text-xs">—</span> ₱{(viewingTrend.salary_max || viewingTrend.salaryMax || 0).toLocaleString()} <span className="text-[10px] text-gray-500">/MO</span></p>
+                        <p className="text-emerald-500 font-black text-sm">₱{(viewingTrend.salary_min || viewingTrend.salaryMin || 0).toLocaleString()} <span className="text-latte-overlay0 text-xs">—</span> ₱{(viewingTrend.salary_max || viewingTrend.salaryMax || 0).toLocaleString()} <span className="text-[10px] text-latte-overlay1">/MO</span></p>
                     </div>
                     {/* Progress Bar logic matching dashboard */}
-                    <div className="w-full bg-gray-950 rounded-full h-3 p-1 border border-white/5">
+                    <div className="w-full bg-latte-base rounded-full h-3 p-1 border border-latte-crust/50">
                         <div 
                             className="h-full rounded-full bg-gradient-to-r from-indigo-600 to-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.5)] transition-all duration-1000"
                             style={{ 
@@ -535,15 +546,15 @@ export default function AdminTrendsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 {/* Top Roles */}
                 <div>
-                   <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-5 flex items-center gap-2">
+                   <h3 className="text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-5 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
                         Key Professional Archetypes
                     </h3>
                     <div className="space-y-3">
                         {(Array.isArray(viewingTrend.top_roles) ? viewingTrend.top_roles : (Array.isArray(viewingTrend.topRoles) ? viewingTrend.topRoles : ['Pending Analysis'])).map((role: string) => (
-                            <div key={role} className="flex items-center gap-3 bg-white/5 rounded-2xl px-5 py-4 border border-white/5 transition-colors hover:bg-white/10 group">
+                            <div key={role} className="flex items-center gap-3 bg-latte-base/5 rounded-2xl px-5 py-4 border border-latte-crust/50 transition-colors hover:bg-latte-base/10 group">
                                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:scale-150 transition-transform" />
-                                <span className="text-gray-300 text-sm font-bold uppercase tracking-tight">{role}</span>
+                                <span className="text-latte-subtext1 text-sm font-bold uppercase tracking-tight">{role}</span>
                             </div>
                         ))}
                     </div>
@@ -551,7 +562,7 @@ export default function AdminTrendsPage() {
 
                 {/* In-Demand Skills */}
                 <div>
-                    <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-5 flex items-center gap-2">
+                    <h3 className="text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mb-5 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
                         Technological Prerequisites
                     </h3>
@@ -563,13 +574,13 @@ export default function AdminTrendsPage() {
                         ))}
                     </div>
 
-                    <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-10 mb-5 flex items-center gap-2">
+                    <h3 className="text-[10px] font-black text-latte-overlay1 uppercase tracking-widest mt-10 mb-5 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
                         Hiring Entities (PH Market)
                     </h3>
                     <div className="flex flex-wrap gap-2.5">
                         {(Array.isArray(viewingTrend.top_companies) ? viewingTrend.top_companies : (Array.isArray(viewingTrend.companies) ? viewingTrend.companies : ['Confidential'])).map((company: string) => (
-                            <span key={company} className="text-[10px] font-bold px-4 py-2 bg-gray-950 border border-white/5 text-gray-500 rounded-xl hover:text-gray-300 transition-colors">
+                            <span key={company} className="text-[10px] font-bold px-4 py-2 bg-latte-base border border-latte-crust/50 text-latte-overlay1 rounded-xl hover:text-latte-subtext1 transition-colors">
                                 {company}
                             </span>
                         ))}
@@ -595,7 +606,7 @@ export default function AdminTrendsPage() {
               <div className="pt-6 grid grid-cols-2 gap-4">
                 <button 
                    onClick={() => setViewingTrend(null)}
-                   className="w-full border border-white/10 text-white hover:bg-white/5 px-8 py-5 rounded-[1.8rem] font-black text-xs transition-all uppercase tracking-[0.3em] active:scale-[0.98]"
+                   className="w-full border border-latte-crust text-latte-text hover:bg-latte-base/5 px-8 py-5 rounded-[1.8rem] font-black text-xs transition-all uppercase tracking-[0.3em] active:scale-[0.98]"
                 >
                    Close Dossier
                 </button>
@@ -604,7 +615,7 @@ export default function AdminTrendsPage() {
                         handleEdit(viewingTrend);
                         setViewingTrend(null);
                    }}
-                   className="w-full bg-white text-gray-950 hover:bg-gray-200 px-8 py-5 rounded-[1.8rem] font-black text-xs transition-all flex items-center justify-center gap-3 uppercase tracking-[0.3em] active:scale-[0.98] shadow-2xl"
+                   className="w-full bg-latte-base text-gray-950 hover:bg-gray-200 px-8 py-5 rounded-[1.8rem] font-black text-xs transition-all flex items-center justify-center gap-3 uppercase tracking-[0.3em] active:scale-[0.98] shadow-2xl"
                 >
                    💎 Finalize Adjustment 
                 </button>
