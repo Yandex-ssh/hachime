@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SkillsController } from './skills.controller';
 import { SkillsService } from './skills.service';
-import { Skill } from '../entities/skill.entity';
+import { Skill } from './skill.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 

@@ -7,8 +7,8 @@ import {
   UpdateDateColumn,
   JoinColumn,
 } from 'typeorm';
-import { Program } from './program.entity';
-import { Career } from './career.entity';
+import { Program } from '../programs/program.entity';
+import { Career } from '../careers/career.entity';
 
 @Entity('students')
 export class Student {

@@ -6,8 +6,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Program } from './program.entity';
-import { Career } from './career.entity';
+import { Program } from '../programs/program.entity';
+import { Career } from '../careers/career.entity';
 
 @Entity('job_listings')
 export class JobListing {

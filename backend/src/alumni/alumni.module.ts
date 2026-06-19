@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Alumni } from '../entities/alumni.entity';
-import { Program } from '../entities/program.entity';
+import { Alumni } from './alumni.entity';
+import { Program } from '../programs/program.entity';
 import { AlumniController } from './alumni.controller';
 import { AlumniService } from './alumni.service';
 

@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { Student } from '../entities/student.entity';
+import { Student } from '../students/student.entity';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 import { MailModule } from '../mail/mail.module';

@@ -7,7 +7,7 @@ import {
   Unique,
 } from 'typeorm';
 import { Career } from './career.entity';
-import { Skill } from './skill.entity';
+import { Skill } from '../skills/skill.entity';
 
 @Entity('career_skills')
 @Unique(['career_id', 'skill_id'])

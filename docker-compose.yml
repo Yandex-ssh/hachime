@@ -31,6 +31,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -43,10 +45,20 @@ services:
       DB_NAME: tmc_career
       JWT_SECRET: tmc-local-dev-secret
       PORT: 4000
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     env_file:
       - ./backend/.env
     ports:
       - '4000:4000'
+
+  # ─── Redis Cache ──────────────────────────────────────────────────
+  redis:
+    image: redis:alpine
+    container_name: hachime_redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
 
   # ─── Next.js Frontend ────────────────────────────────────────────
   frontend:

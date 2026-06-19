@@ -19,13 +19,11 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { SetCareerGoalDto } from './dto/set-career-goal.dto';
 import { UpdateStudentAdminDto } from './dto/update-student-admin.dto';
-import { AuthService } from '../auth/auth.service';
 
 @Controller('students')
 export class StudentsController {
   constructor(
     private studentsService: StudentsService,
-    private authService: AuthService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -139,7 +137,7 @@ export class StudentsController {
   @UseGuards(AdminGuard)
   @Post(':id/reset-password')
   async adminResetPassword(@Param('id') id: string) {
-    return this.authService.adminResetStudentPassword(parseInt(id));
+    return this.studentsService.adminResetStudentPassword(parseInt(id));
   }
 
   @UseGuards(AdminGuard)

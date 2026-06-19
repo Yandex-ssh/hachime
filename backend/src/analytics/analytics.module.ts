@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AnalyticsController } from './analytics.controller';
 import { AnalyticsService } from './analytics.service';
-import { StudentSubject } from '../entities/student-subject.entity';
-import { Student } from '../entities/student.entity';
-import { Career } from '../entities/career.entity';
-import { Subject } from '../entities/subject.entity';
+import { StudentSubject } from '../students/student-subject.entity';
+import { Student } from '../students/student.entity';
+import { Career } from '../careers/career.entity';
+import { Subject } from '../subjects/subject.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Skill } from '../entities/skill.entity';
+import { Skill } from '../skills/skill.entity';
 
 import { AuthModule } from '../auth/auth.module';
 

@@ -6,7 +6,7 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { Program } from './program.entity';
+import { Program } from '../programs/program.entity';
 
 @Entity('subjects')
 export class Subject {

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Student } from '../entities/student.entity';
-import { Alumni } from '../entities/alumni.entity';
-import { Subject } from '../entities/subject.entity';
+import { Student } from '../students/student.entity';
+import { Alumni } from '../alumni/alumni.entity';
+import { Subject } from '../subjects/subject.entity';
 
 @Injectable()
 export class ReportsService {

@@ -6,7 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Program } from './program.entity';
+import { Program } from '../programs/program.entity';
 
 @Entity('development_resources')
 export class DevelopmentResource {

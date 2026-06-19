@@ -14,9 +14,10 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+  describe('status', () => {
+    it('should return status object', () => {
+      const res = appController.checkStatus();
+      expect(res.status).toBe('NestJS is alive!');
     });
   });
 });

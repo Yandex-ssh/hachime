@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IndustryTrend } from '../entities/industry-trend.entity';
+import { IndustryTrend } from './industry-trend.entity';
 
 @Injectable()
 export class TrendsService {

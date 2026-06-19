@@ -15,7 +15,7 @@ import { AdminGuard } from '../auth/admin.guard';
 import { ResourcesService } from './resources.service';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { UpdateResourceDto } from './dto/update-resource.dto';
-import { DevelopmentResource } from '../entities/development-resource.entity';
+import { DevelopmentResource } from './development-resource.entity';
 
 @Controller('resources')
 export class ResourcesController {

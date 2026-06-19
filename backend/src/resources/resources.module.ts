@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
-import { DevelopmentResource } from '../entities/development-resource.entity';
+import { DevelopmentResource } from './development-resource.entity';
 import { ResourcesController } from './resources.controller';
 import { ResourcesService } from './resources.service';
 

@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Subject } from '../entities/subject.entity';
-import { Skill } from '../entities/skill.entity';
-import { SubjectSkill } from '../entities/subject-skill.entity';
+import { Subject } from './subject.entity';
+import { Skill } from '../skills/skill.entity';
+import { SubjectSkill } from './subject-skill.entity';
 
 @Injectable()
 export class SubjectsService {

@@ -9,7 +9,7 @@ import {
   Unique,
 } from 'typeorm';
 import { Student } from './student.entity';
-import { Subject } from './subject.entity';
+import { Subject } from '../subjects/subject.entity';
 
 @Entity('student_subjects')
 @Unique(['student_id', 'subject_id'])

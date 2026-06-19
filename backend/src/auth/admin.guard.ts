@@ -8,7 +8,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Student } from '../entities/student.entity';
+import { Student } from '../students/student.entity';
 import { JwtPayload } from './types/jwt-payload.type';
 
 @Injectable()
