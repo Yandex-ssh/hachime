@@ -2,6 +2,48 @@
 
 Hachime is a comprehensive career guidance and academic tracking platform. It charts student progress through finished and liked subjects, maps academic achievements to industry skills, and dynamically calculates personalized career pathways, salary growth indicators, and curriculum gap analyses.
 
+## 📸 Previews & Screenshots
+
+<details>
+<summary><b>🖥️ Admin Web Console (Click to expand)</b></summary>
+
+| Dashboard | Student Management | Alumni Tracking |
+| :---: | :---: | :---: |
+| ![Admin Dashboard](assets/screenshots/admin-web/admin_dashboard.png) | ![Student Management](assets/screenshots/admin-web/admin_student.png) | ![Alumni Tracking](assets/screenshots/admin-web/admin_alumni.png) |
+| Core stats and analytics overview | Student profile list and details | Management of alumni database |
+
+| Subject Config | Skills Mapping | Dev Tracks Configuration |
+| :---: | :---: | :---: |
+| ![Subject Settings](assets/screenshots/admin-web/admin_subject.png) | ![Skills Mapping](assets/screenshots/admin-web/admin_skills.png) | ![Dev Tracks Settings](assets/screenshots/admin-web/admin_dev.png) |
+| Curriculum subject configurations | Academic skills mapping & gap analysis settings | Career track pathways definitions |
+
+| Industry Trends | Internship Opportunities | Job Listings Config |
+| :---: | :---: | :---: |
+| ![Industry Trends](assets/screenshots/admin-web/admin_industry_trends.png) | ![Internship Settings](assets/screenshots/admin-web/admin_internships.png) | ![Job Listings Config](assets/screenshots/admin-web/job_listing.png) |
+| Market salary and job trends analysis config | Career internship posting management | Standardized job profile management |
+
+</details>
+
+<details>
+<summary><b>📱 Student Mobile App (Click to expand)</b></summary>
+
+| Login & Welcome | Home Screen | Skills Progress |
+| :---: | :---: | :---: |
+| ![Login Screen](assets/screenshots/user-mobile/login.jpg) | ![Home Screen](assets/screenshots/user-mobile/Home.jpg) | ![Skills Progress](assets/screenshots/user-mobile/skills.jpg) |
+| Secure student access | Personalized dashboard and feeds | Academic skill achievement visualization |
+
+| Career Pathway | Dev Tracks | Industry Trends |
+| :---: | :---: | :---: |
+| ![Career Pathway](assets/screenshots/user-mobile/career.jpg) | ![Dev Tracks](assets/screenshots/user-mobile/dev_tracks.jpg) | ![Industry Trends](assets/screenshots/user-mobile/industry_trends.jpg) |
+| Dynamic career path calculator | Professional specialization roadmaps | Market metrics and trend updates |
+
+| Internships | Alumni Network | Job Listings |
+| :---: | :---: | :---: |
+| ![Internships](assets/screenshots/user-mobile/internships.jpg) | ![Alumni Network](assets/screenshots/user-mobile/alumni.jpg) | ![Job Listings](assets/screenshots/user-mobile/job_listing.jpg) |
+| Interactive internship opportunities | Connect with graduate peers | Career search and application board |
+
+</details>
+
 ---
 
 ## 🏗️ Architecture & Engineering Highlights
